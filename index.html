@@ -1,0 +1,2023 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>Interview Prep — Shanish Singh | Week 1 + Week 2</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;background:#f4f4f0;color:#1a1a1a;font-size:14px;line-height:1.6}
+.app{max-width:980px;margin:0 auto;padding:20px 16px}
+
+/* Header */
+.header{background:#fff;border:1px solid #e2e2da;border-radius:14px;padding:20px 24px;margin-bottom:18px}
+.header h1{font-size:20px;font-weight:700;color:#1a1a1a}
+.header p{font-size:13px;color:#666;margin-top:3px}
+.header-meta{display:flex;gap:12px;margin-top:12px;flex-wrap:wrap}
+.hm{background:#f4f4f0;border-radius:8px;padding:7px 14px;font-size:12px;font-weight:600;color:#444}
+.hm span{font-weight:400;color:#888;margin-left:4px}
+
+/* Progress */
+.prog-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:18px}
+.prog-card{background:#fff;border:1px solid #e2e2da;border-radius:10px;padding:12px 16px}
+.prog-label{font-size:11px;font-weight:600;color:#888;text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px}
+.prog-bar{height:6px;background:#e8e8e2;border-radius:3px;overflow:hidden}
+.prog-fill-1{height:100%;background:#3b82f6;border-radius:3px;width:25%}
+.prog-fill-2{height:100%;background:#0d9488;border-radius:3px;width:50%}
+.prog-sub{font-size:12px;color:#888;margin-top:5px}
+
+/* Week switcher */
+.week-switch{display:flex;gap:8px;margin-bottom:16px}
+.ws-btn{flex:1;padding:12px;border-radius:10px;border:1.5px solid #e2e2da;font-size:14px;font-weight:600;cursor:pointer;background:#fff;color:#888;transition:all .15s;text-align:center}
+.ws-btn:hover{border-color:#aaa}
+.ws-btn.active-w1{background:#eff6ff;border-color:#3b82f6;color:#1d4ed8}
+.ws-btn.active-w2{background:#f0fdfa;border-color:#0d9488;color:#0f766e}
+
+/* Main nav */
+.main-nav{display:flex;gap:6px;margin-bottom:18px;flex-wrap:wrap}
+.main-nav button{padding:8px 20px;border-radius:8px;border:1px solid #d8d8d0;font-size:13px;font-weight:500;cursor:pointer;background:#fff;color:#666;transition:all .15s}
+.main-nav button:hover{background:#f0f0e8}
+.main-nav button.active{background:#1d4ed8;border-color:#1d4ed8;color:#fff}
+.active-w2 ~ .main-nav button.active,.w2-active .main-nav button.active{background:#0f766e;border-color:#0f766e}
+
+/* Sections */
+.week-block{display:none}.week-block.active{display:block}
+.section{display:none}.section.active{display:block}
+
+/* Day tabs */
+.day-tabs{display:flex;gap:6px;margin-bottom:16px;flex-wrap:wrap}
+.day-tabs button{padding:6px 14px;border-radius:20px;border:1px solid #d8d8d0;font-size:12px;font-weight:500;cursor:pointer;background:#fff;color:#666;white-space:nowrap}
+.day-tabs button.active{background:#3b82f6;border-color:#3b82f6;color:#fff}
+.w2-day .day-tabs button.active{background:#0d9488;border-color:#0d9488}
+.day-panel{display:none}.day-panel.active{display:block}
+
+/* Cards */
+.card{background:#fff;border:1px solid #e2e2da;border-radius:12px;margin-bottom:12px;overflow:hidden}
+.card-head{padding:14px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;user-select:none;border-bottom:1px solid transparent}
+.card-head:hover{background:#fafaf7}
+.card-head.open{border-bottom-color:#e2e2da}
+.card-title{font-size:13px;font-weight:600;color:#1a1a1a;flex:1;line-height:1.4}
+.card-body{display:none;padding:16px 18px}
+.card-body.open{display:block}
+.chev{font-size:11px;color:#bbb;transition:transform .2s;flex-shrink:0;margin-top:2px}
+.chev.open{transform:rotate(180deg)}
+.topic-badges{display:flex;gap:5px;flex-wrap:wrap;margin-bottom:10px}
+
+/* Topic content */
+.topic-intro{font-size:13px;color:#444;line-height:1.7;margin-bottom:14px}
+.subsection{margin-bottom:18px}
+.sub-title{font-size:12px;font-weight:700;color:#1a1a1a;text-transform:uppercase;letter-spacing:.05em;margin-bottom:8px;padding-bottom:4px;border-bottom:2px solid #f0f0e8}
+pre{background:#1e1e2e;color:#cdd6f4;border-radius:10px;padding:16px;font-family:'SF Mono',Monaco,'Courier New',monospace;font-size:12px;line-height:1.7;overflow-x:auto;margin:10px 0;white-space:pre}
+.inline-code{font-family:'SF Mono',Monaco,monospace;font-size:11px;background:#f0f0e8;padding:1px 5px;border-radius:4px;color:#c2410c}
+.tip-box{padding:11px 14px;background:#fffbeb;border-radius:8px;border-left:3px solid #f59e0b;margin:12px 0}
+.tip-box .tip-lbl{font-size:11px;font-weight:700;color:#92400e;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.tip-box p{font-size:13px;color:#78350f;line-height:1.6}
+.info-box{padding:11px 14px;background:#eff6ff;border-radius:8px;border-left:3px solid #3b82f6;margin:12px 0}
+.info-box p{font-size:13px;color:#1e40af;line-height:1.6}
+.warn-box{padding:11px 14px;background:#fff1f2;border-radius:8px;border-left:3px solid #f43f5e;margin:12px 0}
+.warn-box .warn-lbl{font-size:11px;font-weight:700;color:#be123c;text-transform:uppercase;letter-spacing:.04em;margin-bottom:3px}
+.warn-box p{font-size:13px;color:#9f1239;line-height:1.6}
+.bullet-list{list-style:none;margin:8px 0}
+.bullet-list li{display:flex;gap:9px;align-items:flex-start;padding:5px 0;border-bottom:1px solid #f5f5f0;font-size:13px;color:#444;line-height:1.55}
+.bullet-list li:last-child{border-bottom:none}
+.dot{width:7px;height:7px;border-radius:50%;margin-top:5px;flex-shrink:0}
+.d-blue{background:#3b82f6}.d-teal{background:#0d9488}.d-purple{background:#7c3aed}
+.d-amber{background:#d97706}.d-red{background:#dc2626}.d-green{background:#16a34a}
+.two-col{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin:10px 0}
+.mini-card{background:#f8f8f4;border:1px solid #e8e8e0;border-radius:8px;padding:12px}
+.mini-title{font-size:12px;font-weight:600;color:#444;margin-bottom:6px}
+.mini-body{font-size:12px;color:#666;line-height:1.6}
+
+/* Badges */
+.badge{font-size:10px;font-weight:600;padding:2px 7px;border-radius:20px;display:inline-block}
+.b-hard{background:#fee2e2;color:#b91c1c}
+.b-med{background:#fef3c7;color:#92400e}
+.b-easy{background:#dcfce7;color:#166534}
+.b-key{background:#ede9fe;color:#5b21b6}
+.b-new{background:#dbeafe;color:#1e40af}
+
+/* Q&A */
+.q-item{background:#fff;border:1px solid #e2e2da;border-radius:12px;margin-bottom:10px;overflow:hidden}
+.q-head{padding:13px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:flex-start;gap:12px;user-select:none}
+.q-head:hover{background:#fafaf7}
+.q-text{font-size:13px;font-weight:500;color:#1a1a1a;line-height:1.5;flex:1}
+.q-meta{display:flex;gap:6px;align-items:center;flex-shrink:0}
+.q-body{display:none;padding:0 18px 16px;border-top:1px solid #f0f0e8}
+.q-body.open{display:block}
+.q-section-label{font-size:11px;font-weight:700;color:#888;text-transform:uppercase;letter-spacing:.05em;margin:12px 0 5px}
+.q-text-content{font-size:13px;color:#444;line-height:1.7}
+.q-hint{font-size:12px;color:#1d4ed8;padding:9px 12px;background:#eff6ff;border-radius:8px;border-left:3px solid #3b82f6;margin-top:10px;line-height:1.6}
+.q-warn{font-size:12px;color:#92400e;padding:9px 12px;background:#fffbeb;border-radius:8px;border-left:3px solid #f59e0b;margin-top:10px;line-height:1.6}
+
+/* Category filter */
+.cat-filter{display:flex;gap:6px;margin-bottom:14px;flex-wrap:wrap}
+.cat-filter button{padding:5px 13px;border-radius:20px;border:1px solid #d8d8d0;font-size:12px;cursor:pointer;background:#fff;color:#666}
+.cat-filter button.active{background:#1d4ed8;border-color:#1d4ed8;color:#fff}
+.w2-active .cat-filter button.active{background:#0f766e;border-color:#0f766e}
+
+/* STAR */
+.star-card{background:#fff;border:1px solid #e2e2da;border-radius:12px;margin-bottom:10px;overflow:hidden}
+.star-hd{padding:13px 18px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;user-select:none}
+.star-hd:hover{background:#fafaf7}
+.star-title{font-size:13px;font-weight:500;color:#1a1a1a;line-height:1.4}
+.star-body{display:none;padding:16px 18px;border-top:1px solid #f0f0e8}
+.star-body.open{display:block}
+.star-step{margin-bottom:16px}
+.star-lbl{font-size:11px;font-weight:700;padding:3px 10px;border-radius:20px;display:inline-block;margin-bottom:7px}
+.lbl-s{background:#dbeafe;color:#1e40af}
+.lbl-t{background:#ede9fe;color:#5b21b6}
+.lbl-a{background:#dcfce7;color:#166534}
+.lbl-r{background:#fef3c7;color:#92400e}
+.star-desc{font-size:11px;color:#999;margin-bottom:5px}
+.star-fill{font-size:13px;color:#1a1a1a;font-style:italic;padding:10px 14px;background:#f8f8f4;border-radius:8px;line-height:1.7;border:1px solid #e8e8e0}
+
+/* Decision table */
+.dtable{width:100%;border-collapse:collapse;font-size:12px;margin:10px 0}
+.dtable th{background:#f0f0e8;padding:8px 12px;text-align:left;font-weight:600;color:#444;border-bottom:2px solid #e0e0d8}
+.dtable td{padding:8px 12px;border-bottom:1px solid #f0f0e8;color:#555;vertical-align:top}
+.dtable tr:last-child td{border-bottom:none}
+.dtable tr:hover td{background:#fafaf7}
+
+@media(max-width:600px){
+  .prog-row{grid-template-columns:1fr}
+  .two-col{grid-template-columns:1fr}
+  .week-switch{flex-direction:column}
+}
+</style>
+</head>
+<body>
+<div class="app">
+
+<!-- HEADER -->
+<div class="header">
+  <h1>Interview Preparation — Complete Package</h1>
+  <p>Shanish Singh &nbsp;·&nbsp; .NET Full Stack Developer &nbsp;·&nbsp; 5+ Years &nbsp;·&nbsp; AZ-204 Certified</p>
+  <div class="header-meta">
+    <div class="hm">Duration <span>4 weeks</span></div>
+    <div class="hm">This file <span>Week 1 + Week 2</span></div>
+    <div class="hm">Topics <span>40+</span></div>
+    <div class="hm">Practice Qs <span>22</span></div>
+    <div class="hm">STAR Templates <span>8</span></div>
+  </div>
+</div>
+
+<!-- PROGRESS -->
+<div class="prog-row">
+  <div class="prog-card">
+    <div class="prog-label">Week 1 — C# &amp; .NET Core</div>
+    <div class="prog-bar"><div class="prog-fill-1"></div></div>
+    <div class="prog-sub">OOP · SOLID · LINQ · DI · Design Patterns</div>
+  </div>
+  <div class="prog-card">
+    <div class="prog-label">Week 2 — SQL Server, REST APIs &amp; JWT</div>
+    <div class="prog-bar"><div class="prog-fill-2"></div></div>
+    <div class="prog-sub">Indexes · Transactions · API Design · Security</div>
+  </div>
+</div>
+
+<!-- WEEK SWITCH -->
+<div class="week-switch">
+  <button class="ws-btn active-w1" id="wbtn1" onclick="switchWeek(1)">Week 1 — C# &amp; .NET Core Fundamentals</button>
+  <button class="ws-btn" id="wbtn2" onclick="switchWeek(2)">Week 2 — SQL Server, REST APIs &amp; JWT</button>
+</div>
+
+<!-- ═══════════════════════════ WEEK 1 ═══════════════════════════ -->
+<div id="week1" class="week-block active">
+  <div class="main-nav">
+    <button class="active" onclick="showSec('w1','topics',this)">Topic lists</button>
+    <button onclick="showSec('w1','questions',this)">Practice questions</button>
+    <button onclick="showSec('w1','star',this)">STAR templates</button>
+  </div>
+
+  <!-- W1 TOPICS -->
+  <div id="w1-topics" class="section active">
+    <div class="day-tabs">
+      <button class="active" onclick="showDay('w1d','d1',this)">Mon — OOP</button>
+      <button onclick="showDay('w1d','d2',this)">Tue — SOLID</button>
+      <button onclick="showDay('w1d','d3',this)">Wed — LINQ &amp; Async</button>
+      <button onclick="showDay('w1d','d4',this)">Thu — DI &amp; Middleware</button>
+      <button onclick="showDay('w1d','d5',this)">Fri — Design Patterns</button>
+      <button onclick="showDay('w1d','d6',this)">Sat — Coding Practice</button>
+    </div>
+
+    <!-- MON: OOP -->
+    <div id="w1d-d1" class="day-panel active">
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">1. Encapsulation — protect internal state, expose controlled behaviour</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <p class="topic-intro">Encapsulation means hiding implementation details inside a class and only exposing what callers genuinely need. Fields are always private — properties are the controlled gateway with validation logic.</p>
+          <div class="subsection">
+            <div class="sub-title">Violation vs correct implementation</div>
+<pre>// BAD — anyone can set Price = -999, no validation
+public class Product {
+    public decimal Price; // public field — no protection
+}
+
+// GOOD — encapsulated with business rule enforcement
+public class Product {
+    private decimal _price;
+
+    public decimal Price {
+        get => _price;
+        private set {  // only this class can set it
+            if (value &lt; 0)
+                throw new ArgumentException("Price cannot be negative.");
+            _price = value;
+        }
+    }
+
+    // The only valid way to change price — business logic in one place
+    public void ApplyDiscount(decimal percentage) {
+        if (percentage is &lt; 0 or > 100)
+            throw new ArgumentOutOfRangeException(nameof(percentage));
+        Price = _price - (_price * percentage / 100);
+    }
+}</pre>
+          </div>
+          <div class="tip-box"><div class="tip-lbl">Interview answer</div><p>"Encapsulation protects invariants. In my e-commerce project, Product.Price was always set through ApplyDiscount() — this guaranteed the 0–100% validation ran consistently, instead of having ad-hoc assignments scattered across controllers and services."</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">2. Inheritance — base/derived classes, sealed, virtual, override vs new</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <p class="topic-intro">Inheritance models a true "is-a" relationship. It lets derived classes reuse and extend base class logic. The keywords <span class="inline-code">virtual</span>, <span class="inline-code">override</span>, <span class="inline-code">abstract</span>, and <span class="inline-code">sealed</span> control the behaviour precisely.</p>
+          <div class="subsection">
+            <div class="sub-title">E-commerce payment hierarchy</div>
+<pre>public abstract class Payment {
+    public Guid OrderId { get; }
+    public decimal Amount { get; }
+    protected Payment(Guid orderId, decimal amount) {
+        OrderId = orderId; Amount = amount;
+    }
+    // virtual — derived classes CAN override but don't have to
+    public virtual string GetReceipt()
+        => $"Order {OrderId} — {Amount:C}";
+    // abstract — derived classes MUST implement this
+    public abstract Task&lt;bool&gt; ProcessAsync();
+}
+
+public class CreditCardPayment : Payment {
+    private readonly string _maskedCard;
+    public CreditCardPayment(Guid id, decimal amt, string card)
+        : base(id, amt) { _maskedCard = "**** " + card[^4..]; }
+    public override async Task&lt;bool&gt; ProcessAsync()
+        => await CardGateway.ChargeAsync(OrderId, Amount);
+    public override string GetReceipt()
+        => base.GetReceipt() + $" | Card: {_maskedCard}"; // extends base
+}
+
+// sealed — no further subclassing allowed
+public sealed class WalletPayment : Payment {
+    public WalletPayment(Guid id, decimal amt) : base(id, amt) {}
+    public override async Task&lt;bool&gt; ProcessAsync()
+        => await WalletService.DeductAsync(OrderId, Amount);
+}</pre>
+          </div>
+          <div class="warn-box"><div class="warn-lbl">override vs new — the key trap</div><p><span class="inline-code">override</span> replaces via vtable — calling through a base reference calls the derived version. <span class="inline-code">new</span> hides the method — calling through a base reference calls the base version. If you write <span class="inline-code">Payment p = new CreditCardPayment()</span> and CreditCardPayment uses <span class="inline-code">new</span>, then <span class="inline-code">p.GetReceipt()</span> calls the base — almost never what you want.</p></div>
+          <div class="two-col">
+            <div class="mini-card"><div class="mini-title">When to use sealed</div><div class="mini-body">When subclassing would break your internal assumptions. WalletPayment's logic assumes a fixed deduction flow — any override could corrupt wallet state.</div></div>
+            <div class="mini-card"><div class="mini-title">When to use abstract</div><div class="mini-body">When a base concept cannot meaningfully exist on its own. You cannot instantiate "Payment" — it must be a specific payment method.</div></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">3. Polymorphism — runtime dispatch and compile-time overloading</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <p class="topic-intro">Polymorphism means the same interface produces different behaviour depending on the actual type at runtime. This eliminates if/else chains and makes your code open to extension.</p>
+          <div class="subsection">
+            <div class="sub-title">Runtime polymorphism — CheckoutService knows nothing about payment types</div>
+<pre>public class CheckoutService {
+    public async Task&lt;string&gt; CompleteOrderAsync(Payment payment) {
+        // Correct ProcessAsync() called based on ACTUAL type, not declared type
+        bool success = await payment.ProcessAsync();
+        if (!success) throw new PaymentFailedException();
+        return payment.GetReceipt(); // also polymorphic
+    }
+}
+// Same method handles both — no if/else needed
+await checkout.CompleteOrderAsync(new CreditCardPayment(...));
+await checkout.CompleteOrderAsync(new WalletPayment(...));</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Compile-time polymorphism — method overloading</div>
+<pre>public class OrderService {
+    public Order GetOrder(Guid id) { ... }
+    public Order GetOrder(string reference) { ... }  // same name, different signature
+    public Order GetOrder(Guid id, bool includeItems) { ... }
+    // Resolved at compile time — no runtime cost
+}</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Safe casting with is and as</div>
+<pre>// is with pattern matching (C# 7+) — preferred
+if (payment is CreditCardPayment credit)
+    Console.WriteLine(credit._maskedCard); // credit only in scope when cast succeeds
+
+// as — returns null if cast fails (no exception)
+var wallet = payment as WalletPayment;
+if (wallet != null) Console.WriteLine("Wallet payment");</pre>
+          </div>
+          <div class="info-box"><p>Prefer <span class="inline-code">is</span> with pattern matching over <span class="inline-code">as</span>. It declares and assigns in one step and the variable is only accessible when the cast succeeds — safer and cleaner.</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">4. Abstraction — interfaces vs abstract classes, default interface methods (C# 8+)</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <p class="topic-intro">Abstraction hides <em>how</em> something works and exposes only <em>what</em> it does. In .NET Core this is achieved primarily through interfaces and abstract classes.</p>
+          <div class="subsection">
+            <div class="sub-title">Interface — contract for unrelated types</div>
+<pre>// IExportable can apply to Order and Invoice even though they are unrelated
+public interface IExportable {
+    byte[] ExportToPdf();
+    byte[] ExportToCsv();
+}
+// ExportService works with ANY exportable — doesn't care what it is
+public class ExportService {
+    public void Download(IExportable doc, string format) {
+        var data = format == "pdf" ? doc.ExportToPdf() : doc.ExportToCsv();
+        FileHelper.Save(data, format);
+    }
+}</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Abstract class — shared implementation + is-a relationship</div>
+<pre>public abstract class PaymentProcessor {
+    protected readonly ILogger Logger;
+    protected readonly IPaymentAuditRepository AuditRepo;
+    protected PaymentProcessor(ILogger logger, IPaymentAuditRepository audit)
+        { Logger = logger; AuditRepo = audit; }
+
+    // Template Method — algorithm skeleton is fixed here
+    public async Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest req) {
+        Logger.LogInformation("Processing {OrderId}", req.OrderId);
+        await ValidateAsync(req);              // shared validation
+        var result = await ExecuteAsync(req);  // provider-specific
+        await AuditRepo.SaveAsync(req, result);// shared audit
+        return result;
+    }
+    protected virtual async Task ValidateAsync(PaymentRequest req) {
+        if (req.Amount &lt;= 0) throw new InvalidPaymentException("Amount invalid.");
+    }
+    protected abstract Task&lt;PaymentResult&gt; ExecuteAsync(PaymentRequest req);
+}</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Default interface methods (C# 8+) — backward compatibility</div>
+<pre>public interface IDiscountStrategy {
+    decimal Apply(decimal price);
+    // NEW method — existing implementations are NOT broken
+    string GetDescription() => $"Strategy: {GetType().Name}";
+}
+// Old class — compiles fine, uses default GetDescription()
+public class SeasonalDiscount : IDiscountStrategy {
+    public decimal Apply(decimal price) => price * 0.85m;
+    // GetDescription() not written — default version used automatically
+}
+// IMPORTANT GOTCHA — only accessible through the interface reference
+SeasonalDiscount s = new SeasonalDiscount();
+s.GetDescription();         // COMPILE ERROR — not visible on concrete type
+IDiscountStrategy s2 = s;
+s2.GetDescription();        // OK — accessed through interface</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Decision guide</div>
+            <table class="dtable">
+              <tr><th>Question</th><th>Interface</th><th>Abstract class</th></tr>
+              <tr><td>Multiple inheritance needed?</td><td>Yes</td><td>No</td></tr>
+              <tr><td>Shared implementation logic?</td><td>No</td><td>Yes</td></tr>
+              <tr><td>Unrelated types share behaviour?</td><td>Yes</td><td>No</td></tr>
+              <tr><td>True "is-a" relationship?</td><td>No</td><td>Yes</td></tr>
+              <tr><td>Project example</td><td>IExportable on Order &amp; Invoice</td><td>BaseClaimProcessor for claim types</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">5. C# type system — value types, reference types, boxing, nullable, records, generics</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">Value types vs reference types</div>
+<pre>// VALUE TYPE (struct) — copied by value, each variable owns its data
+public struct Money {
+    public decimal Amount { get; }
+    public string Currency { get; }
+    public Money(decimal amount, string currency) { Amount=amount; Currency=currency; }
+    public Money Add(Money other) => new Money(Amount + other.Amount, Currency);
+}
+// COPY BEHAVIOUR
+var price1 = new Money(100, "USD");
+var price2 = price1;           // full COPY made
+price2 = new Money(200, "USD");
+Console.WriteLine(price1);     // USD 100 — unchanged
+
+// REFERENCE TYPE (class) — copy shares the SAME object
+var cart1 = new ShoppingCart();
+var cart2 = cart1;             // both point to SAME heap object
+cart1.AddItem(new CartItem()); 
+Console.WriteLine(cart2.Items.Count); // 1 — cart2 sees cart1's change!</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Boxing and unboxing — avoid in hot paths</div>
+<pre>// IMPLICIT BOXING — happens inside non-generic collections and string.Format
+ArrayList legacyList = new ArrayList();
+legacyList.Add(99.99m);   // decimal → object: BOXING (heap allocation!)
+legacyList.Add(42);       // int    → object: BOXING
+
+// FIX — generic collections eliminate boxing entirely
+List&lt;decimal&gt; prices = new();
+prices.Add(99.99m);       // no boxing
+
+// TRAP — string.Format boxes value types
+string bad  = string.Format("Total: {0}", 99.99m); // boxing!
+string good = $"Total: {99.99m:C}";                // no boxing (calls ToString directly)</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Nullable types — all four operators</div>
+<pre>var product = await _repo.GetByIdAsync(id); // returns Product?
+
+string category = product?.Category?.Name ?? "Uncategorised"; // ?. + ??
+int stock       = product?.StockCount ?? 0;  // null-coalescing default
+
+// ??= null-coalescing assignment (great for caching)
+_cache[customerId] ??= new ShoppingCart(); // assign only if null
+
+// ! null-forgiving — use only when YOU are certain it's not null
+var customer = cart.GetCustomer()!; // suppress warning, you take responsibility</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Records (C# 9+) — value equality + immutability</div>
+<pre>// Compiler generates: constructor, properties, Equals, GetHashCode, ToString
+public record OrderSummary(Guid OrderId, string CustomerName,
+                           decimal Total, OrderStatus Status);
+
+// VALUE EQUALITY — unlike classes, same data = equal
+var s1 = new OrderSummary(id, "Shanish", 1500m, OrderStatus.Confirmed);
+var s2 = new OrderSummary(id, "Shanish", 1500m, OrderStatus.Confirmed);
+Console.WriteLine(s1 == s2); // TRUE — records compare by data, not reference
+
+// with expression — non-destructive mutation (original unchanged)
+var shipped = s1 with { Status = OrderStatus.Shipped };
+Console.WriteLine(s1.Status); // Confirmed — unchanged
+Console.WriteLine(shipped.Status); // Shipped — new record</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Generics with constraints</div>
+<pre>// Generic repository — type-safe, no casting, no boxing
+public interface IRepository&lt;T&gt; where T : class {
+    Task&lt;T?&gt; GetByIdAsync(Guid id);
+    Task AddAsync(T entity);
+}
+
+// Multiple constraints
+public class BaseRepository&lt;T&gt; : IRepository&lt;T&gt;
+    where T : class, IEntity, new() { // ref type + interface + parameterless ctor
+    protected readonly AppDbContext _db;
+    public BaseRepository(AppDbContext db) => _db = db;
+    public async Task&lt;T?&gt; GetByIdAsync(Guid id)
+        => await _db.Set&lt;T&gt;().FirstOrDefaultAsync(e => e.Id == id);
+    public async Task AddAsync(T entity)
+        { _db.Set&lt;T&gt;().Add(entity); await _db.SaveChangesAsync(); }
+}
+// Zero boilerplate — all repos inherit base
+public class OrderRepository : BaseRepository&lt;Order&gt; {
+    public OrderRepository(AppDbContext db) : base(db) {}
+}</pre>
+          </div>
+          <div class="tip-box"><div class="tip-lbl">When to use records</div><p>DTOs, API request/response models, value objects (Money, Address, DateRange). Never for entities with identity (Order, Product, Customer) — use class there.</p></div>
+        </div>
+      </div>
+
+    </div><!-- /d1 -->
+
+    <!-- TUE: SOLID -->
+    <div id="w1d-d2" class="day-panel">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">SRP — Single Responsibility Principle</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <p class="topic-intro">A class should have one reason to change. If two different business requirements can force you to modify the same class, it has too many responsibilities.</p>
+          <div class="subsection">
+            <div class="sub-title">Violation — three jobs in one class</div>
+<pre>// BAD — OrderService has THREE reasons to change:
+// 1. Validation rules change  2. DB/persistence changes  3. Email provider changes
+public class OrderService {
+    public async Task PlaceOrderAsync(OrderRequest req) {
+        if (!req.Items.Any()) throw new ValidationException("Empty cart.");  // Resp 1
+        _db.Orders.Add(new Order(req)); await _db.SaveChangesAsync();        // Resp 2
+        await _smtp.SendAsync(req.Email, "Confirmed", "...");                // Resp 3
+    }
+}</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Fixed — one class, one responsibility</div>
+<pre>public class OrderValidator {
+    public void Validate(OrderRequest req) {
+        if (!req.Items.Any()) throw new ValidationException("Empty cart.");
+    }
+}
+public class OrderRepository : IOrderRepository {
+    public async Task&lt;Order&gt; SaveAsync(Order order) { ... }
+}
+public class OrderNotificationService : IOrderNotificationService {
+    public async Task SendConfirmationAsync(Order order, string email) { ... }
+}
+// Thin orchestrator — delegates, owns no logic itself
+public class OrderService : IOrderService {
+    public async Task&lt;Order&gt; PlaceOrderAsync(OrderRequest req) {
+        _validator.Validate(req);
+        var order = new Order(req);
+        await _orderRepository.SaveAsync(order);
+        await _notificationService.SendConfirmationAsync(order, req.Email);
+        return order;
+    }
+}</pre>
+          </div>
+          <div class="tip-box"><div class="tip-lbl">Your resume story</div><p>"I separated OrderNotificationService from OrderService at Cognine because switching from SMTP to SendGrid should never require touching order logic or its unit tests."</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">OCP — Open/Closed Principle + Strategy Pattern</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <p class="topic-intro">Open for extension, closed for modification. Adding new behaviour should not require editing existing tested code.</p>
+          <div class="subsection">
+            <div class="sub-title">Violation — if/else grows forever</div>
+<pre>// BAD — every new payment method requires editing this class
+public async Task&lt;bool&gt; ProcessAsync(PaymentRequest req) {
+    if (req.Method == "CreditCard") return await ChargeCreditCardAsync(req);
+    else if (req.Method == "Wallet") return await DeductWalletAsync(req);
+    else if (req.Method == "UPI")    return await ProcessUpiAsync(req); // new edit!
+    throw new NotSupportedException();
+}</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Fixed — Strategy pattern, zero modification for new providers</div>
+<pre>public interface IPaymentStrategy {
+    string Method { get; }
+    Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest req);
+}
+public class CreditCardPaymentStrategy : IPaymentStrategy {
+    public string Method => "CreditCard";
+    public async Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest req)
+        => await _gateway.ChargeAsync(req.CardToken, req.Amount);
+}
+public class UpiPaymentStrategy : IPaymentStrategy { // NEW — zero modification elsewhere
+    public string Method => "UPI";
+    public async Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest req)
+        => await _upiGateway.InitiateAsync(req.UpiId, req.Amount);
+}
+// PaymentService NEVER changes
+public class PaymentService {
+    private readonly Dictionary&lt;string, IPaymentStrategy&gt; _strategies;
+    public PaymentService(IEnumerable&lt;IPaymentStrategy&gt; strategies)
+        => _strategies = strategies.ToDictionary(s => s.Method);
+    public async Task&lt;PaymentResult&gt; ProcessAsync(PaymentRequest req) {
+        if (!_strategies.TryGetValue(req.Method, out var s))
+            return PaymentResult.Failure("Unsupported method.");
+        return await s.ProcessAsync(req);
+    }
+}
+// Adding UPI = one new registration line only
+builder.Services.AddScoped&lt;IPaymentStrategy, UpiPaymentStrategy&gt;();</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">LSP — Liskov Substitution Principle</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <p class="topic-intro">Derived types must be substitutable for base types without altering correctness. A derived class must honour the base class contract — no stricter preconditions, no unexpected exceptions.</p>
+          <div class="subsection">
+            <div class="sub-title">Classic violation — Rectangle → Square</div>
+<pre>public class Rectangle { public virtual int Width{get;set;} public virtual int Height{get;set;} }
+public class Square : Rectangle {
+    public override int Width  { set { base.Width=value; base.Height=value; } } // SIDE EFFECT!
+    public override int Height { set { base.Width=value; base.Height=value; } }
+}
+void Resize(Rectangle r) {
+    r.Width = 4; r.Height = 5;
+    // Rectangle: 4*5 = 20 correct
+    // Square: Width setter sets Height=4, then Height=5 sets Width=5 → Area=25 WRONG
+}</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">E-commerce violation — discount adds unexpected precondition</div>
+<pre>// BAD
+public class PremiumDiscount : DiscountStrategy {
+    public override decimal Apply(decimal price) {
+        if (price &lt; 100) throw new InvalidOperationException("Min price 100 required.");
+        // VIOLATION — base only required price > 0. Callers don't expect this exception.
+        return price * 0.80m;
+    }
+}
+// FIXED — no extra preconditions, graceful fallback
+public class PremiumDiscount : DiscountStrategy {
+    public override decimal Apply(decimal price)
+        => price >= 100 ? price * 0.80m : price; // no exception — just no discount
+}</pre>
+          </div>
+          <div class="warn-box"><div class="warn-lbl">LSP checklist</div><p>No new exceptions the base doesn't throw &nbsp;·&nbsp; No stricter preconditions (accept less) &nbsp;·&nbsp; No weaker postconditions (return less) &nbsp;·&nbsp; If you write <span class="inline-code">if (obj is DerivedType)</span> — that is a LSP smell.</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">ISP — Interface Segregation Principle</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <p class="topic-intro">Clients should not be forced to depend on methods they do not use. Prefer many small focused interfaces over one fat interface.</p>
+          <div class="subsection">
+            <div class="sub-title">Violation vs fixed</div>
+<pre>// BAD — fat interface forces all implementors to implement everything
+public interface IProductRepository {
+    Task&lt;Product?&gt; GetByIdAsync(Guid id);   // read
+    Task AddAsync(Product p);               // write
+    Task DeleteAsync(Guid id);              // write
+    Task UpdateStockAsync(Guid id, int qty); // stock
+    Task BulkInsertAsync(IEnumerable&lt;Product&gt; p); // write
+}
+// ReportingService only reads but drags in write/stock methods
+
+// FIXED — segregated by responsibility
+public interface IProductReadRepository  { Task&lt;Product?&gt; GetByIdAsync(Guid id); Task&lt;IEnumerable&lt;Product&gt;&gt; GetAllAsync(); }
+public interface IProductWriteRepository { Task AddAsync(Product p); Task UpdateAsync(Product p); Task DeleteAsync(Guid id); }
+public interface IProductStockRepository { Task&lt;int&gt; GetStockCountAsync(Guid id); Task UpdateStockAsync(Guid id, int qty); }
+
+// Concrete class implements all — fine for the DB layer
+public class ProductRepository : IProductReadRepository, IProductWriteRepository, IProductStockRepository { ... }
+
+// Each service depends ONLY on what it needs
+public class ProductReportingService {
+    public ProductReportingService(IProductReadRepository readRepo) { ... }
+}
+public class InventoryService {
+    public InventoryService(IProductStockRepository stockRepo) { ... }
+}
+
+// Registration — one concrete, multiple interfaces
+builder.Services.AddScoped&lt;ProductRepository&gt;();
+builder.Services.AddScoped&lt;IProductReadRepository&gt;(sp => sp.GetRequiredService&lt;ProductRepository&gt;());
+builder.Services.AddScoped&lt;IProductWriteRepository&gt;(sp => sp.GetRequiredService&lt;ProductRepository&gt;());</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">DIP — Dependency Inversion Principle + Unit Testing</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <p class="topic-intro">High-level modules should not depend on low-level modules. Both should depend on abstractions. This is the foundation of ASP.NET Core's DI system.</p>
+          <div class="subsection">
+            <div class="sub-title">Violation — tightly coupled, impossible to test</div>
+<pre>// BAD — OrderService creates its own dependencies (impossible to mock)
+public class OrderService {
+    private readonly SqlOrderRepository _repo = new SqlOrderRepository();    // concrete
+    private readonly SmtpEmailSender _email = new SmtpEmailSender("smtp.."); // concrete
+    private readonly StripeGateway _stripe = new StripeGateway("sk_live_.."); // concrete
+}</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Fixed — depend on abstractions injected from outside</div>
+<pre>public class OrderService : IOrderService {
+    private readonly IOrderRepository _repo;
+    private readonly IEmailSender _email;
+    private readonly IPaymentGateway _payment;
+
+    public OrderService(IOrderRepository repo, IEmailSender email, IPaymentGateway payment)
+        { _repo = repo; _email = email; _payment = payment; }
+
+    public async Task&lt;Result&lt;Order&gt;&gt; PlaceOrderAsync(OrderRequest req) {
+        var pay = await _payment.ChargeAsync(req.CardToken, req.Amount);
+        if (!pay.IsSuccess) return Result&lt;Order&gt;.Failure(pay.Error!);
+        var order = new Order { CustomerId = req.CustomerId, Items = req.Items };
+        await _repo.SaveAsync(order);
+        await _email.SendAsync(req.Email, $"Order #{order.Id} confirmed", "...");
+        return Result&lt;Order&gt;.Success(order);
+    }
+}</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Unit test — DIP makes this possible</div>
+<pre>[Fact]
+public async Task PlaceOrder_WhenPaymentFails_ReturnsFailure_AndDoesNotSaveOrder() {
+    var mockPayment = new Mock&lt;IPaymentGateway&gt;();
+    mockPayment.Setup(g => g.ChargeAsync(It.IsAny&lt;string&gt;(), It.IsAny&lt;decimal&gt;()))
+               .ReturnsAsync(PaymentResult.Failure("Card declined."));
+    var mockRepo  = new Mock&lt;IOrderRepository&gt;();
+    var mockEmail = new Mock&lt;IEmailSender&gt;();
+    var svc = new OrderService(mockRepo.Object, mockEmail.Object, mockPayment.Object);
+
+    var result = await svc.PlaceOrderAsync(new OrderRequest { Amount = 1500m, ... });
+
+    Assert.False(result.IsSuccess);
+    Assert.Equal("Card declined.", result.Error);
+    mockRepo.Verify(r => r.SaveAsync(It.IsAny&lt;Order&gt;()), Times.Never); // never saved
+    mockEmail.Verify(e => e.SendAsync(It.IsAny&lt;string&gt;(), ...), Times.Never);
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div><!-- /d2 -->
+
+    <!-- WED: LINQ & Async -->
+    <div id="w1d-d3" class="day-panel">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">LINQ internals — deferred execution, IQueryable vs IEnumerable, N+1</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">Deferred vs immediate execution</div>
+<pre>// DEFERRED — no DB query happens yet
+IQueryable&lt;Order&gt; query = _db.Orders.Where(o => o.CustomerId == id); // deferred
+query = query.Where(o => o.Status == OrderStatus.Confirmed);          // still deferred
+query = query.OrderByDescending(o => o.CreatedAt);                   // still deferred
+
+// IMMEDIATE — query executes NOW
+var orders = await query.ToListAsync();  // single SQL query with all filters
+var count  = await query.CountAsync();   // separate optimised COUNT query</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">IQueryable vs IEnumerable — the most important EF Core distinction</div>
+<pre>// CORRECT — filter in SQL (IQueryable stays as expression tree)
+var highValueOrders = await _db.Orders
+    .Where(o => o.Total > 1000)    // WHERE clause in SQL
+    .Select(o => new { o.Id, o.Total })
+    .ToListAsync();                // single efficient query
+
+// WRONG — materialise THEN filter (entire table loaded into memory)
+var allOrders = await _db.Orders.ToListAsync(); // loads ALL rows — could be millions!
+var filtered  = allOrders.Where(o => o.Total > 1000); // filter in C# memory</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">N+1 query problem — most common EF Core performance killer</div>
+<pre>// BAD — 1 query for orders + 1 query PER order for Customer = N+1
+var orders = await _db.Orders.ToListAsync();
+foreach (var order in orders)
+    Console.WriteLine(order.Customer.Name); // lazy load fires here — 1 query each!
+
+// FIXED — eager loading with Include
+var orders = await _db.Orders
+    .Include(o => o.Customer)
+    .Include(o => o.Items)
+    .ToListAsync(); // single JOIN query
+
+// ALTERNATIVE — projection (load only what you need)
+var summaries = await _db.Orders
+    .Select(o => new { o.Id, CustomerName = o.Customer.Name, o.Total })
+    .ToListAsync(); // no navigation property loading at all</pre>
+          </div>
+          <div class="warn-box"><div class="warn-lbl">Detection tip</div><p>Enable EF Core logging: <span class="inline-code">optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information)</span> — N+1 shows up as dozens of identical queries in the log.</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">async/await — how it works, common mistakes, CancellationToken</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">How async/await works under the hood</div>
+<pre>// The compiler transforms this into a STATE MACHINE
+public async Task&lt;Order&gt; GetOrderAsync(Guid id) {
+    var order = await _repo.GetByIdAsync(id);  // state 1: suspend, free thread
+    var items = await _itemRepo.GetAsync(id);  // state 2: suspend, free thread
+    return order; // state 3: complete
+}
+// Thread is RELEASED back to the pool while waiting for I/O
+// This is why async scales — 100 concurrent requests don't need 100 blocked threads</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Common mistakes — memorise all three</div>
+<pre>// MISTAKE 1 — async void: exceptions are unobservable, fire-and-forget is dangerous
+public async void SendEmail() { ... } // BAD — use async Task instead
+
+// MISTAKE 2 — .Result and .Wait() cause deadlocks in sync contexts
+var order = _orderService.GetOrderAsync(id).Result; // DANGEROUS — use await instead
+
+// MISTAKE 3 — sequential awaits when calls are independent
+var order    = await _orderRepo.GetAsync(id);       // waits 200ms
+var customer = await _customerRepo.GetAsync(cId);   // waits another 200ms = 400ms total
+
+// FIX — parallel execution with Task.WhenAll
+var orderTask    = _orderRepo.GetAsync(id);
+var customerTask = _customerRepo.GetAsync(cId);
+await Task.WhenAll(orderTask, customerTask); // 200ms total — runs in parallel
+var order    = await orderTask;
+var customer = await customerTask;</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">CancellationToken — propagate through all layers</div>
+<pre>// Controller — gets token from ASP.NET Core automatically
+[HttpGet("{id}")]
+public async Task&lt;IActionResult&gt; GetOrder(Guid id, CancellationToken ct) {
+    var order = await _orderService.GetOrderAsync(id, ct);
+    return Ok(order);
+}
+// Service — pass token down
+public async Task&lt;Order&gt; GetOrderAsync(Guid id, CancellationToken ct) {
+    return await _repo.GetByIdAsync(id, ct); // if client disconnects, query is cancelled
+}
+// Repository — EF Core honours CancellationToken
+public async Task&lt;Order?&gt; GetByIdAsync(Guid id, CancellationToken ct)
+    => await _db.Orders.FirstOrDefaultAsync(o => o.Id == id, ct);</pre>
+          </div>
+          <div class="info-box"><p><span class="inline-code">ConfigureAwait(false)</span>: use in library code to avoid capturing the synchronisation context. In ASP.NET Core application code you don't need it — there is no SynchronizationContext by default.</p></div>
+        </div>
+      </div>
+    </div><!-- /d3 -->
+
+    <!-- THU: DI & Middleware -->
+    <div id="w1d-d4" class="day-panel">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">Service lifetimes — Transient, Scoped, Singleton &amp; captive dependency</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">Three lifetimes explained</div>
+<pre>// TRANSIENT — new instance on every injection
+// Use for: lightweight, stateless services (validators, mappers)
+builder.Services.AddTransient&lt;IOrderValidator, OrderValidator&gt;();
+
+// SCOPED — one instance per HTTP request
+// Use for: DbContext, unit-of-work, anything that should be consistent in one request
+builder.Services.AddScoped&lt;IOrderRepository, SqlOrderRepository&gt;();
+builder.Services.AddDbContext&lt;AppDbContext&gt;(); // DbContext is always Scoped
+
+// SINGLETON — one instance for the entire app lifetime
+// Use for: caches, configuration, thread-safe shared services
+builder.Services.AddSingleton&lt;IProductCache, InMemoryProductCache&gt;();</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Captive dependency — the critical bug</div>
+<pre>// PROBLEM — Singleton holds a Scoped service
+public class ProductCacheService { // Singleton
+    private readonly IProductRepository _repo; // Scoped — WRONG!
+    public ProductCacheService(IProductRepository repo) => _repo = repo;
+    // _repo is now never released — becomes a de-facto Singleton
+    // Causes stale DbContext, thread-safety issues, data leaks between requests
+}
+
+// DETECTION — enable in development
+builder.Host.UseDefaultServiceProvider(opts => opts.ValidateScopes = true);
+// Throws InvalidOperationException at startup if captive dependency detected
+
+// FIX — inject IServiceScopeFactory and create scope per operation
+public class ProductCacheService {
+    private readonly IServiceScopeFactory _scopeFactory;
+    public ProductCacheService(IServiceScopeFactory factory) => _scopeFactory = factory;
+    public async Task RefreshAsync() {
+        using var scope = _scopeFactory.CreateScope();
+        var repo = scope.ServiceProvider.GetRequiredService&lt;IProductRepository&gt;();
+        // use repo — scope disposed correctly after using block
+    }
+}</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">Middleware pipeline — Use, Run, Map, filters vs middleware</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">How Use, Run, and Map differ</div>
+<pre>var app = builder.Build();
+
+// ORDER IS CRITICAL — top to bottom defines execution order
+app.UseExceptionHandler("/error");  // FIRST — catches all exceptions
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthentication();            // Who are you?
+app.UseAuthorization();             // What can you do?
+app.MapControllers();
+
+// Use — calls next middleware in chain
+app.Use(async (context, next) =&gt; {
+    Console.WriteLine("Before request");
+    await next(context);              // passes to next middleware
+    Console.WriteLine("After response");
+});
+
+// Run — terminal, never calls next
+app.Run(async context =&gt; {
+    await context.Response.WriteAsync("Final response — pipeline ends here");
+});
+
+// Map — branches pipeline for specific path
+app.Map("/health", branch =&gt; {
+    branch.Run(async ctx =&gt; await ctx.Response.WriteAsync("Healthy"));
+});</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Custom middleware — IMiddleware vs inline</div>
+<pre>// PREFERRED — class-based, testable, DI-friendly
+public class RequestLoggingMiddleware : IMiddleware {
+    private readonly ILogger&lt;RequestLoggingMiddleware&gt; _logger;
+    public RequestLoggingMiddleware(ILogger&lt;RequestLoggingMiddleware&gt; logger)
+        => _logger = logger;
+    public async Task InvokeAsync(HttpContext context, RequestDelegate next) {
+        _logger.LogInformation("{Method} {Path}", context.Request.Method, context.Request.Path);
+        await next(context);
+        _logger.LogInformation("Responded {StatusCode}", context.Response.StatusCode);
+    }
+}
+// Register
+builder.Services.AddTransient&lt;RequestLoggingMiddleware&gt;();
+app.UseMiddleware&lt;RequestLoggingMiddleware&gt;();</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Filters vs middleware — when to use which</div>
+            <table class="dtable">
+              <tr><th>Aspect</th><th>Middleware</th><th>Filters (MVC)</th></tr>
+              <tr><td>Scope</td><td>All requests (static files, health checks)</td><td>MVC actions only</td></tr>
+              <tr><td>Access to MVC context</td><td>No (HttpContext only)</td><td>Yes (ActionContext, ModelState)</td></tr>
+              <tr><td>Use for</td><td>Auth, logging, CORS, exceptions</td><td>Validation, caching, audit per action</td></tr>
+              <tr><td>Examples</td><td>UseAuthentication, UseRateLimiter</td><td>AuthorizeFilter, ValidateModelFilter</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div><!-- /d4 -->
+
+    <!-- FRI: Design Patterns -->
+    <div id="w1d-d5" class="day-panel">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">Repository, Decorator, Strategy, CQRS / MediatR</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">Repository pattern + caching decorator</div>
+<pre>public interface IProductRepository {
+    Task&lt;Product?&gt; GetByIdAsync(Guid id);
+    Task&lt;IEnumerable&lt;Product&gt;&gt; GetAllAsync();
+}
+// DECORATOR — adds caching without touching SqlProductRepository
+public class CachingProductRepository : IProductRepository {
+    private readonly IProductRepository _inner; // wraps the real repo
+    private readonly IMemoryCache _cache;
+    public CachingProductRepository(IProductRepository inner, IMemoryCache cache)
+        { _inner = inner; _cache = cache; }
+    public async Task&lt;Product?&gt; GetByIdAsync(Guid id) {
+        return await _cache.GetOrCreateAsync($"product:{id}", async entry =&gt; {
+            entry.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);
+            return await _inner.GetByIdAsync(id); // delegates to real repo on cache miss
+        });
+    }
+}
+// Registration — decorator wraps real implementation transparently
+builder.Services.AddScoped&lt;SqlProductRepository&gt;();
+builder.Services.AddScoped&lt;IProductRepository&gt;(sp =&gt; new CachingProductRepository(
+    sp.GetRequiredService&lt;SqlProductRepository&gt;(),
+    sp.GetRequiredService&lt;IMemoryCache&gt;()));</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">CQRS with MediatR — separate read and write models</div>
+<pre>// COMMAND — changes state, returns result
+public record PlaceOrderCommand(Guid CustomerId, List&lt;CartItem&gt; Items) : IRequest&lt;Result&lt;Order&gt;&gt;;
+public class PlaceOrderCommandHandler : IRequestHandler&lt;PlaceOrderCommand, Result&lt;Order&gt;&gt; {
+    public async Task&lt;Result&lt;Order&gt;&gt; Handle(PlaceOrderCommand cmd, CancellationToken ct) {
+        // ... create and save order
+        return Result&lt;Order&gt;.Success(order);
+    }
+}
+// QUERY — reads state, never modifies
+public record GetOrderQuery(Guid OrderId) : IRequest&lt;OrderSummary?&gt;;
+public class GetOrderQueryHandler : IRequestHandler&lt;GetOrderQuery, OrderSummary?&gt; {
+    public async Task&lt;OrderSummary?&gt; Handle(GetOrderQuery q, CancellationToken ct)
+        => await _db.Orders.Where(o => o.Id == q.OrderId)
+                           .Select(o => new OrderSummary(o.Id, o.Total, o.Status))
+                           .FirstOrDefaultAsync(ct);
+}
+// Controller — thin, delegates via MediatR
+[HttpPost] public async Task&lt;IActionResult&gt; PlaceOrder(PlaceOrderCommand cmd)
+    =&gt; Ok(await _mediator.Send(cmd));</pre>
+          </div>
+          <div class="tip-box"><div class="tip-lbl">CQRS benefit</div><p>Queries can use AsNoTracking, lightweight DTOs, and even direct SQL for performance. Commands go through full domain logic. Separating them keeps each path optimised for its purpose.</p></div>
+        </div>
+      </div>
+    </div><!-- /d5 -->
+
+    <!-- SAT: Coding -->
+    <div id="w1d-d6" class="day-panel">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">LeetCode targets + coding interview approach</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <ul class="bullet-list">
+            <li><span class="dot d-blue"></span><strong>Two Sum #1</strong> — HashMap O(n). Use Dictionary&lt;int,int&gt; to store complement. <span class="badge b-easy">Easy</span></li>
+            <li><span class="dot d-blue"></span><strong>Group Anagrams #49</strong> — Sort each string as key, group with Dictionary. LINQ GroupBy equivalent. <span class="badge b-med">Medium</span></li>
+            <li><span class="dot d-blue"></span><strong>Valid Parentheses #20</strong> — Stack. Push open brackets, pop and validate on close. <span class="badge b-easy">Easy</span></li>
+            <li><span class="dot d-blue"></span><strong>Longest Substring Without Repeating #3</strong> — Sliding window with HashSet. <span class="badge b-med">Medium</span></li>
+            <li><span class="dot d-amber"></span><strong>Product of Array Except Self #238</strong> — Left/right prefix products. No division. <span class="badge b-med">Medium</span></li>
+          </ul>
+          <div class="subsection" style="margin-top:14px">
+            <div class="sub-title">Coding interview approach — follow this every time</div>
+            <ul class="bullet-list">
+              <li><span class="dot d-teal"></span>Step 1: Clarify input/output, constraints, and edge cases before writing anything</li>
+              <li><span class="dot d-teal"></span>Step 2: State the brute-force approach and its complexity first</li>
+              <li><span class="dot d-teal"></span>Step 3: Identify the bottleneck and propose optimisation</li>
+              <li><span class="dot d-teal"></span>Step 4: Code the optimised solution, narrating as you write</li>
+              <li><span class="dot d-teal"></span>Step 5: State time and space complexity before declaring done</li>
+              <li><span class="dot d-teal"></span>Step 6: Test with one normal case and one edge case (empty input, single element)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div><!-- /d6 -->
+
+  </div><!-- /w1-topics -->
+
+  <!-- W1 QUESTIONS -->
+  <div id="w1-questions" class="section">
+    <div class="cat-filter">
+      <button class="active" onclick="filterQ('w1','all',this)">All</button>
+      <button onclick="filterQ('w1','oop',this)">OOP</button>
+      <button onclick="filterQ('w1','solid',this)">SOLID</button>
+      <button onclick="filterQ('w1','async',this)">Async / LINQ</button>
+      <button onclick="filterQ('w1','di',this)">DI &amp; Middleware</button>
+      <button onclick="filterQ('w1','patterns',this)">Design Patterns</button>
+    </div>
+    <div id="w1-qlist">
+
+    <div class="q-item" data-week="w1" data-cat="oop">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is the difference between an abstract class and an interface in C#? When would you choose one over the other?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">An abstract class can have implementation, constructor, and state. An interface defines only a contract (default implementations allowed from C# 8+). Choose abstract class when types share a true "is-a" relationship with common logic — for example a base <span class="inline-code">ClaimProcessor</span> with shared validation and audit logging. Choose interface when unrelated types share a capability — <span class="inline-code">IExportable</span> applied to both <span class="inline-code">Order</span> and <span class="inline-code">Invoice</span> regardless of their inheritance hierarchy.</div>
+        <div class="q-hint">Resume link: "In the health insurance system, I used an abstract base class for claim processing because all claim types shared validation and logging logic. I exposed them via interfaces so OrderService could use DI and be unit-tested independently."</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w1" data-cat="oop">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">Explain method hiding (<span class="inline-code">new</span> keyword) vs method overriding (<span class="inline-code">override</span>). What is the runtime behaviour difference?</span>
+        <div class="q-meta"><span class="badge b-hard">Hard</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content"><span class="inline-code">override</span> replaces the base method through the vtable — calling through a base reference still dispatches to the derived version. <span class="inline-code">new</span> hides the method — calling through a base reference calls the base version. Example: <span class="inline-code">Payment p = new CreditCardPayment()</span> — if CreditCardPayment uses <span class="inline-code">new GetReceipt()</span>, then <span class="inline-code">p.GetReceipt()</span> calls <span class="inline-code">Payment.GetReceipt()</span>, not <span class="inline-code">CreditCardPayment.GetReceipt()</span>. This is almost never intended. Always use <span class="inline-code">override</span> for polymorphic behaviour.</div>
+        <div class="q-hint">Interviewers ask this to test whether you understand CLR dispatch, not just syntax. Knowing the vtable mechanism is what earns senior-level credibility.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w1" data-cat="solid">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">Give a concrete example where violating SRP caused a real problem in your project.</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">Use the Cognine project story: "In the e-commerce project, an early version of OrderService handled validation, database persistence, and sending confirmation emails. When the client switched from SMTP to SendGrid, I had to modify OrderService — which triggered a full regression test cycle on all order logic even though nothing business-related changed. I refactored it into three classes: OrderValidator, OrderRepository, and OrderNotificationService. After that, switching notification providers only required deploying and testing the notification class."</div>
+        <div class="q-hint">SRP questions are really asking: "Do you apply SOLID in practice?" Always answer with a story — definitions alone score poorly at the senior level.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w1" data-cat="solid">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">How does the Dependency Inversion Principle differ from Dependency Injection? Are they the same thing?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">No — they are not the same. DIP is a design principle: high-level modules should depend on abstractions, not on low-level concretions. DI is a technique that helps implement DIP — it supplies the abstractions at runtime via constructor injection. You can use DI while still violating DIP — for example, injecting a concrete <span class="inline-code">SqlOrderRepository</span> directly instead of an <span class="inline-code">IOrderRepository</span> interface. ASP.NET Core's DI container makes injection easy, but choosing to inject abstractions is your responsibility as the developer.</div>
+        <div class="q-hint">Many developers confuse these. Explaining the distinction clearly — principle vs technique — immediately signals senior-level understanding of design.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w1" data-cat="async">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What happens when you call <span class="inline-code">.Result</span> on a Task in an ASP.NET Core controller? Why is it dangerous?</span>
+        <div class="q-meta"><span class="badge b-hard">Hard</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">In classic ASP.NET with a SynchronizationContext, calling <span class="inline-code">.Result</span> blocks the current thread while waiting for the Task. If the continuation tries to resume on the same blocked thread, you get a deadlock. In ASP.NET Core there is no SynchronizationContext by default, so deadlocks are less common — but <span class="inline-code">.Result</span> still synchronously blocks a thread pool thread, wasting resources and reducing throughput under load. Always use <span class="inline-code">await</span>. The only acceptable use of <span class="inline-code">.GetAwaiter().GetResult()</span> is in console app entry points or code proven to run outside a sync context.</div>
+        <div class="q-hint">Follow-up: "What is the difference between Task.Result and Task.GetAwaiter().GetResult()?" — Both block, but GetResult() unwraps exceptions cleanly without the AggregateException wrapper.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w1" data-cat="async">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is the difference between <span class="inline-code">IQueryable</span> and <span class="inline-code">IEnumerable</span> in EF Core?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content"><span class="inline-code">IQueryable&lt;T&gt;</span> builds an expression tree that EF Core translates into SQL — filtering, ordering, and projection happen in the database. <span class="inline-code">IEnumerable&lt;T&gt;</span> pulls all data into memory first and then filters in C#. The critical mistake is calling <span class="inline-code">ToList()</span> prematurely in a chain, which materialises the query before your <span class="inline-code">Where</span> filter runs. In the 30% performance improvement you made at Cognine, this distinction is directly relevant — a misplaced <span class="inline-code">ToList()</span> before a filter can load millions of rows into memory, negating all stored procedure optimisations.</div>
+        <div class="q-hint">This is one of the most frequently asked EF Core questions in .NET senior interviews. Also know that AsNoTracking() on IQueryable avoids ChangeTracker overhead for read-only queries — 2–3x faster on large result sets.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w1" data-cat="di">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">Explain the three service lifetimes in ASP.NET Core DI. What is the captive dependency problem?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">Transient: new instance on every injection. Scoped: one instance per HTTP request, shared within the request. Singleton: one instance for the entire application lifetime. The captive dependency problem occurs when a Singleton depends on a Scoped service. Because the Singleton lives forever, it holds the Scoped service beyond its intended lifetime — making it effectively a Singleton too. With EF Core's DbContext this means stale data, concurrency issues, and connection leaks. Fix: inject <span class="inline-code">IServiceScopeFactory</span> into the Singleton and create a new scope explicitly when needed. Enable <span class="inline-code">ValidateScopes = true</span> in development to catch this at startup.</div>
+        <div class="q-hint">Concrete example: a Singleton background job service injecting a Scoped DbContext — the connection is never released per-request and the context accumulates stale tracked entities over time.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w1" data-cat="di">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">How does the ASP.NET Core middleware pipeline work? Difference between Use, Run, and Map?</span>
+        <div class="q-meta"><span class="badge b-easy">Easy</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content"><span class="inline-code">Use</span> adds middleware that calls <span class="inline-code">next</span> — the pipeline continues. <span class="inline-code">Run</span> is terminal — it never calls <span class="inline-code">next</span> and short-circuits the pipeline. <span class="inline-code">Map</span> branches the pipeline based on path. The order of registration determines execution order — exception handling must be first (outermost), authentication before authorization, static files before MVC. Think of the pipeline as nested functions — each middleware wraps the next like Russian dolls.</div>
+        <div class="q-hint">Draw the nested structure when explaining in interviews: Request → ExceptionHandler → Auth → Routing → Controller → Response. This visual makes the concept instantly clear.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w1" data-cat="patterns">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">You have multiple notification channels (email, SMS, push). How would you design this using a design pattern?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">Strategy pattern: define <span class="inline-code">INotificationStrategy</span> with <span class="inline-code">Send(NotificationMessage msg)</span>. Implement <span class="inline-code">EmailNotificationStrategy</span>, <span class="inline-code">SmsNotificationStrategy</span>, and <span class="inline-code">PushNotificationStrategy</span> separately. A <span class="inline-code">NotificationService</span> receives <span class="inline-code">IEnumerable&lt;INotificationStrategy&gt;</span> via DI and dispatches to all or selects based on user preferences. This satisfies OCP — adding a WhatsApp notification means adding one new class with zero modification to existing code. For testing, each strategy is mocked independently.</div>
+        <div class="q-hint">Follow-up: "How would you allow a user to choose which channels they receive?" → Store preferences in UserNotificationSettings, filter strategies by user preferences at dispatch time.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w1" data-cat="patterns">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is the Repository pattern? What problem does it solve and what is its biggest criticism?</span>
+        <div class="q-meta"><span class="badge b-easy">Easy</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">Repository abstracts data access behind an interface, decoupling business logic from persistence technology. Benefits: testability (mock the interface), swappability (replace SQL with NoSQL without touching services), and centralised query logic. The main criticism: it can be a leaky abstraction over EF Core because DbContext is already a Unit of Work and Repository. Wrapping it adds boilerplate without value unless you genuinely need to swap data providers or need strict query encapsulation for domain consistency. I use Repository when it adds value — not as a blanket rule.</div>
+        <div class="q-hint">Saying "I don't always use Repository — only when there is a genuine benefit" signals senior-level pragmatism. Cargo-culting patterns without understanding the trade-off is a junior signal.</div>
+      </div>
+    </div>
+
+    </div><!-- /w1-qlist -->
+  </div><!-- /w1-questions -->
+
+  <!-- W1 STAR -->
+  <div id="w1-star" class="section">
+    <div class="tip-box" style="margin-bottom:16px"><div class="tip-lbl">STAR format guide</div><p>Situation → Task → Action → Result. Each answer: 90–120 seconds. Result must be quantified. Use "I" not "we" in the Action — you must own the work you describe.</p></div>
+
+    <div class="star-card">
+      <div class="star-hd" onclick="toggleStar(this)">
+        <span class="star-title">Template 1 — "Tell me about a performance improvement you made"</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="star-body">
+        <div class="star-step"><span class="star-lbl lbl-s">Situation</span><div class="star-fill">"At Cognine Technologies, I was working on the RAB application — a data-heavy reporting module running complex queries across millions of records in SQL Server. Users reported load times of 8–10 seconds, making it unusable during peak hours."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-t">Task</span><div class="star-fill">"I was assigned to diagnose and fix the query performance without changing any business logic or the UI."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-a">Action</span><div class="star-fill">"I used SQL Server's execution plan analyser and identified three issues: full table scans on a date column, key lookups because non-clustered indexes did not cover all selected columns, and repeated scalar calculations happening in the application layer. I added a covering index on the date and status columns with INCLUDE for the queried fields, rewrote the N+1 pattern into a set-based stored procedure, and moved scalar calculations into a SQL function to reduce round-trips."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-r">Result</span><div class="star-fill">"Query execution time dropped by 30%, reducing load from ~9 seconds to under 3 seconds. I measured this using SET STATISTICS TIME ON before and after each change. This eliminated the most common support ticket for the module."</div></div>
+      </div>
+    </div>
+
+    <div class="star-card">
+      <div class="star-hd" onclick="toggleStar(this)">
+        <span class="star-title">Template 2 — "Describe a complex feature you built end-to-end"</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="star-body">
+        <div class="star-step"><span class="star-lbl lbl-s">Situation</span><div class="star-fill">"In the ELogR project at Cognine, clients manually filled Word document reports — a process taking 3–4 hours per report and producing inconsistent formatting across documents."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-t">Task</span><div class="star-fill">"I was tasked with designing and building an automated document generation system that produced formatted Word reports from dynamic data sources."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-a">Action</span><div class="star-fill">"I chose Open XML SDK over third-party libraries to avoid licensing costs and gain full control over the document structure. I designed a placeholder-based template engine in C# that replaced typed tokens in Word templates with data from SQL Server and user input. I handled edge cases including merged table cells, conditional sections, and image insertion, and collaborated with QA to build a regression test suite for document output consistency."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-r">Result</span><div class="star-fill">"Report creation time dropped 70% — from roughly 4 hours to under 45 minutes. Formatting errors were eliminated entirely and the feature became a key selling point in new client demos."</div></div>
+      </div>
+    </div>
+
+    <div class="star-card">
+      <div class="star-hd" onclick="toggleStar(this)">
+        <span class="star-title">Template 3 — "Tell me about a time you disagreed with a technical decision"</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="star-body">
+        <div class="star-step"><span class="star-lbl lbl-s">Situation</span><div class="star-fill">"During the e-commerce project, the initial design stored JWT signing secrets directly in appsettings.json, which was committed to source control."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-t">Task</span><div class="star-fill">"I identified this as a security vulnerability. My task was to raise the concern constructively and propose a solution the team would adopt without significant delay."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-a">Action</span><div class="star-fill">"I prepared a short comparison showing the risk of secrets in source control versus Azure Key Vault with Managed Identity, including the setup effort for both approaches. I presented it in sprint planning, demonstrated the integration required only a few lines of ASP.NET Core configuration, and offered to implement it myself to remove any time objection."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-r">Result</span><div class="star-fill">"The team agreed. We migrated all secrets to Azure Key Vault within the sprint. This also prompted us to add a pre-commit hook detecting accidentally committed secrets, which became a team-wide standard."</div></div>
+      </div>
+    </div>
+
+    <div class="star-card">
+      <div class="star-hd" onclick="toggleStar(this)">
+        <span class="star-title">Template 4 — "Describe a time you had to learn something quickly"</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="star-body">
+        <div class="star-step"><span class="star-lbl lbl-s">Situation</span><div class="star-fill">"When we began the e-commerce project at Cognine, the client required CI/CD pipelines in Azure DevOps — a tool I had limited hands-on experience with at that point."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-t">Task</span><div class="star-fill">"I needed to design, implement, and own the deployment pipeline for both the ASP.NET Core API and the Angular frontend within the first two weeks."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-a">Action</span><div class="star-fill">"I dedicated evenings in the first week to Microsoft's official AZ-204 learning path and built a sample YAML pipeline in a sandbox environment. I focused on deployment slot swapping for zero-downtime releases, which directly addressed the project's availability requirement."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-r">Result</span><div class="star-fill">"We had a working pipeline in production within two weeks. I earned the AZ-204 certification in January 2023, and the same pipeline structure has been reused on subsequent projects with minimal changes."</div></div>
+      </div>
+    </div>
+  </div><!-- /w1-star -->
+</div><!-- /week1 -->
+
+<!-- ═══════════════════════════ WEEK 2 ═══════════════════════════ -->
+<div id="week2" class="week-block">
+  <div class="main-nav w2-active">
+    <button class="active" onclick="showSec('w2','topics',this)">Topic lists</button>
+    <button onclick="showSec('w2','questions',this)">Practice questions</button>
+    <button onclick="showSec('w2','star',this)">STAR templates</button>
+  </div>
+
+  <!-- W2 TOPICS -->
+  <div id="w2-topics" class="section active w2-day">
+    <div class="day-tabs">
+      <button class="active" onclick="showDay('w2d','e1',this)">Mon — SQL Indexes</button>
+      <button onclick="showDay('w2d','e2',this)">Tue — SP &amp; Transactions</button>
+      <button onclick="showDay('w2d','e3',this)">Wed — REST API Design</button>
+      <button onclick="showDay('w2d','e4',this)">Thu — JWT &amp; Security</button>
+      <button onclick="showDay('w2d','e5',this)">Fri — Project Stories</button>
+      <button onclick="showDay('w2d','e6',this)">Sat — Practice</button>
+    </div>
+
+    <!-- MON: SQL Indexes -->
+    <div id="w2d-e1" class="day-panel active">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">SQL Server indexes — clustered, non-clustered, covering, filtered</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">Index types and their purpose</div>
+<pre>-- CLUSTERED INDEX — defines physical row order on disk
+-- One per table. Primary key is clustered by default.
+CREATE CLUSTERED INDEX IX_Orders_Id ON Orders(Id);
+
+-- NON-CLUSTERED INDEX — separate B-tree with pointer to data row
+-- Multiple allowed per table. Good for frequently filtered columns.
+CREATE NONCLUSTERED INDEX IX_Orders_CustomerId ON Orders(CustomerId);
+
+-- KEY LOOKUP PROBLEM — query selects columns not in the index
+-- SQL Server must jump from index to clustered index for each row = expensive
+SELECT Id, Total, Status FROM Orders WHERE CustomerId = @cid;
+-- Execution plan shows: Index Seek (IX_Orders_CustomerId) → Key Lookup → ...
+
+-- COVERING INDEX — include all needed columns, eliminates key lookup
+CREATE NONCLUSTERED INDEX IX_Orders_CustomerId_Covering
+ON Orders(CustomerId)
+INCLUDE (Total, Status, CreatedAt); -- all selected columns are in the index now
+-- Execution plan: Index Seek only — no key lookup
+
+-- FILTERED INDEX — index with WHERE clause, smaller and faster for specific patterns
+CREATE NONCLUSTERED INDEX IX_Orders_Active
+ON Orders(CustomerId, CreatedAt)
+WHERE Status = 'Active'; -- only active orders indexed — much smaller</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Reading execution plans — what to look for</div>
+            <table class="dtable">
+              <tr><th>Operation</th><th>Meaning</th><th>What to do</th></tr>
+              <tr><td>Table Scan</td><td>No usable index — reads all rows</td><td>Add an appropriate index</td></tr>
+              <tr><td>Index Seek</td><td>Targeted lookup — O(log n)</td><td>Good — this is what you want</td></tr>
+              <tr><td>Index Scan</td><td>Reads all rows in index</td><td>Add a more selective filter or covering index</td></tr>
+              <tr><td>Key Lookup</td><td>Extra trip to clustered index</td><td>Add INCLUDE columns to index</td></tr>
+              <tr><td>Hash Match</td><td>Large join — building hash table in memory</td><td>Check for missing indexes or statistics</td></tr>
+            </table>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">SARGable predicates — critical for index usage</div>
+<pre>-- NON-SARGABLE — function wraps indexed column → index cannot be used → Table Scan
+WHERE YEAR(CreatedAt) = 2024              -- BAD
+WHERE CONVERT(VARCHAR, OrderDate) = '...' -- BAD
+WHERE UPPER(Email) = 'TEST@TEST.COM'      -- BAD
+
+-- SARGABLE — index can seek directly → fast
+WHERE CreatedAt >= '2024-01-01' AND CreatedAt &lt; '2025-01-01'  -- GOOD
+WHERE Email = 'test@test.com' COLLATE SQL_Latin1_General_CP1_CI_AS  -- GOOD
+
+-- RULE: never apply functions to the indexed column in WHERE clause
+-- Move the function to the value side instead</pre>
+          </div>
+          <div class="tip-box"><div class="tip-lbl">Resume connection</div><p>Your 30% performance improvement. Be ready to say: "I used SQL Server's actual execution plan, identified key lookup operations, and converted the index to a covering index by adding INCLUDE columns. I verified improvement with SET STATISTICS TIME ON before and after."</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">CTEs, window functions &amp; query optimisation patterns</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">Window functions — essential for reporting queries</div>
+<pre>-- ROW_NUMBER — unique sequential, no gaps, no handling of ties
+-- RANK       — gaps after ties (1,1,3)
+-- DENSE_RANK — no gaps after ties (1,1,2)
+
+-- Find top 3 best-selling products per category
+WITH RankedSales AS (
+    SELECT p.CategoryId, p.Name, SUM(oi.Quantity) AS TotalSold,
+           DENSE_RANK() OVER (PARTITION BY p.CategoryId ORDER BY SUM(oi.Quantity) DESC) AS Rnk
+    FROM Products p JOIN OrderItems oi ON p.Id = oi.ProductId
+    GROUP BY p.CategoryId, p.Id, p.Name
+)
+SELECT * FROM RankedSales WHERE Rnk &lt;= 3;
+
+-- Running total of revenue per day
+SELECT OrderDate, DailyRevenue,
+       SUM(DailyRevenue) OVER (ORDER BY OrderDate ROWS UNBOUNDED PRECEDING) AS RunningTotal
+FROM DailyRevenueSummary;
+
+-- LAG/LEAD — access previous/next row values
+SELECT OrderDate, Total,
+       LAG(Total) OVER (ORDER BY OrderDate) AS PreviousDayTotal,
+       Total - LAG(Total) OVER (ORDER BY OrderDate) AS DailyChange
+FROM DailyRevenueSummary;</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Recursive CTE — category hierarchy</div>
+<pre>WITH CategoryHierarchy AS (
+    -- Anchor: top-level categories (no parent)
+    SELECT Id, Name, ParentId, 0 AS Level, CAST(Name AS VARCHAR(500)) AS Path
+    FROM Categories WHERE ParentId IS NULL
+    UNION ALL
+    -- Recursive: join each level to its children
+    SELECT c.Id, c.Name, c.ParentId, ch.Level + 1,
+           CAST(ch.Path + ' > ' + c.Name AS VARCHAR(500))
+    FROM Categories c JOIN CategoryHierarchy ch ON c.ParentId = ch.Id
+)
+SELECT * FROM CategoryHierarchy ORDER BY Path;</pre>
+          </div>
+        </div>
+      </div>
+    </div><!-- /e1 -->
+
+    <!-- TUE: SP & Transactions -->
+    <div id="w2d-e2" class="day-panel">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">Stored procedures — compilation, parameter sniffing, performance</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">Parameter sniffing — the hidden performance trap</div>
+<pre>CREATE PROCEDURE GetOrdersByRegion @RegionId INT AS
+    SELECT * FROM Orders WHERE RegionId = @RegionId;
+-- First call: GetOrdersByRegion @RegionId = 99 (small region, 100 rows)
+-- Optimizer creates plan optimised for 100 rows: Nested Loop join
+-- Plan is CACHED for all future calls
+
+-- Later call: GetOrdersByRegion @RegionId = 1 (large region, 1,000,000 rows)
+-- CACHED Nested Loop plan runs on 1M rows — catastrophically slow
+
+-- FIX 1: OPTION (RECOMPILE) — new plan every execution (good for infrequent SPs)
+SELECT * FROM Orders WHERE RegionId = @RegionId OPTION (RECOMPILE);
+
+-- FIX 2: OPTIMIZE FOR UNKNOWN — ignores sniffed value, uses average statistics
+SELECT * FROM Orders WHERE RegionId = @RegionId OPTION (OPTIMIZE FOR (@RegionId UNKNOWN));
+
+-- FIX 3: Local variable technique — optimizer cannot sniff local variables
+DECLARE @LocalRegionId INT = @RegionId;
+SELECT * FROM Orders WHERE RegionId = @LocalRegionId;</pre>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">Transactions, ACID, isolation levels &amp; deadlocks</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">ACID in an order processing context</div>
+<pre>-- A = Atomicity: stock deduction + order insert must both succeed or both fail
+BEGIN TRANSACTION;
+    UPDATE Products SET StockCount = StockCount - @qty WHERE Id = @productId;
+    INSERT INTO Orders (CustomerId, Total, Status) VALUES (@cid, @total, 'Confirmed');
+    -- If any error occurs, ROLLBACK ensures no partial state
+COMMIT TRANSACTION;
+
+-- C = Consistency: stock cannot go negative (CHECK constraint)
+ALTER TABLE Products ADD CONSTRAINT CK_Stock CHECK (StockCount >= 0);
+
+-- I = Isolation: two customers buying the last item cannot both succeed
+-- D = Durability: once committed, survives server restart (transaction log)</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Isolation levels comparison</div>
+            <table class="dtable">
+              <tr><th>Level</th><th>Dirty Read</th><th>Non-Repeatable Read</th><th>Phantom Read</th><th>Use case</th></tr>
+              <tr><td>READ UNCOMMITTED</td><td>Yes</td><td>Yes</td><td>Yes</td><td>Never for financial data</td></tr>
+              <tr><td>READ COMMITTED (default)</td><td>No</td><td>Yes</td><td>Yes</td><td>General queries</td></tr>
+              <tr><td>REPEATABLE READ</td><td>No</td><td>No</td><td>Yes</td><td>Multi-read consistency</td></tr>
+              <tr><td>SERIALIZABLE</td><td>No</td><td>No</td><td>No</td><td>Stock reservation</td></tr>
+              <tr><td>SNAPSHOT</td><td>No</td><td>No</td><td>No</td><td>Read-heavy e-commerce</td></tr>
+            </table>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Deadlock — how to prevent and handle</div>
+<pre>-- CAUSE: Transaction A locks Orders then Products
+--        Transaction B locks Products then Orders → circular wait
+-- PREVENTION: always access tables in the same order across all transactions
+
+-- C# retry logic for deadlock (error 1205)
+public async Task PlaceOrderWithRetryAsync(OrderRequest req, int maxRetries = 3) {
+    for (int attempt = 1; attempt &lt;= maxRetries; attempt++) {
+        try {
+            await _db.ExecuteInTransactionAsync(async () => { ... });
+            return; // success
+        }
+        catch (SqlException ex) when (ex.Number == 1205) { // 1205 = deadlock victim
+            if (attempt == maxRetries) throw;
+            await Task.Delay(TimeSpan.FromMilliseconds(100 * attempt)); // exponential backoff
+        }
+    }
+}</pre>
+          </div>
+        </div>
+      </div>
+    </div><!-- /e2 -->
+
+    <!-- WED: REST API -->
+    <div id="w2d-e3" class="day-panel">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">REST API design — resources, HTTP methods, status codes, idempotency</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">Resource naming and HTTP method semantics</div>
+<pre>// NAMING — nouns, plural for collections
+GET    /api/orders           → list orders
+GET    /api/orders/{id}      → get specific order
+POST   /api/orders           → create new order (not idempotent)
+PUT    /api/orders/{id}      → full replace of order
+PATCH  /api/orders/{id}      → partial update (e.g., update status only)
+DELETE /api/orders/{id}      → delete order
+
+// IDEMPOTENCY — same call N times = same result as once
+// GET, PUT, DELETE = idempotent
+// POST = NOT idempotent by default
+// Idempotent POST via Idempotency-Key header:
+[HttpPost]
+public async Task&lt;IActionResult&gt; PlaceOrder(
+    PlaceOrderRequest req,
+    [FromHeader(Name="Idempotency-Key")] string idempotencyKey) {
+    var existing = await _cache.GetAsync(idempotencyKey);
+    if (existing != null) return Ok(existing); // return cached result, don't re-process
+    var order = await _orderService.PlaceOrderAsync(req);
+    await _cache.SetAsync(idempotencyKey, order, TimeSpan.FromHours(24));
+    return CreatedAtAction(nameof(GetOrder), new { id = order.Id }, order);
+}</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Status codes you must know perfectly</div>
+            <table class="dtable">
+              <tr><th>Code</th><th>Meaning</th><th>When to use</th></tr>
+              <tr><td>200 OK</td><td>Success with body</td><td>GET, successful PATCH/PUT</td></tr>
+              <tr><td>201 Created</td><td>Resource created</td><td>POST — include Location header</td></tr>
+              <tr><td>204 No Content</td><td>Success, no body</td><td>DELETE, PUT with no response needed</td></tr>
+              <tr><td>400 Bad Request</td><td>Invalid input</td><td>Validation failure, malformed JSON</td></tr>
+              <tr><td>401 Unauthorized</td><td>Not authenticated</td><td>Missing or invalid JWT token</td></tr>
+              <tr><td>403 Forbidden</td><td>Not authorised</td><td>Valid token but insufficient permissions</td></tr>
+              <tr><td>404 Not Found</td><td>Resource missing</td><td>GET/DELETE on non-existent resource</td></tr>
+              <tr><td>409 Conflict</td><td>State conflict</td><td>Duplicate order, optimistic concurrency failure</td></tr>
+              <tr><td>422 Unprocessable</td><td>Semantic validation failed</td><td>Structurally valid JSON but business rule violation</td></tr>
+              <tr><td>429 Too Many Requests</td><td>Rate limited</td><td>Client exceeded request quota</td></tr>
+            </table>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Versioning and pagination</div>
+<pre>// VERSIONING — URL path is most widely adopted
+[Route("api/v{version:apiVersion}/orders")]
+[ApiVersion("1.0")] [ApiVersion("2.0")]
+public class OrdersController : ControllerBase { ... }
+
+// PAGINATION — offset vs cursor
+// Offset: simple but O(n) — use for admin/static pages
+GET /api/orders?page=3&amp;pageSize=20
+
+// Cursor: O(log n) — use for real-time product/order listings
+GET /api/orders?cursor=eyJpZCI6MTAwfQ&amp;limit=20
+
+public record PagedResponse&lt;T&gt;(
+    IEnumerable&lt;T&gt; Items,
+    int TotalCount,    // for offset
+    string? NextCursor // for cursor — null means last page
+);
+
+// GLOBAL EXCEPTION MIDDLEWARE — RFC 7807 ProblemDetails
+app.UseExceptionHandler(errorApp =&gt; {
+    errorApp.Run(async context =&gt; {
+        context.Response.ContentType = "application/problem+json";
+        var problem = new ProblemDetails {
+            Status = 500, Title = "An unexpected error occurred.",
+            Instance = context.Request.Path
+        };
+        await context.Response.WriteAsJsonAsync(problem);
+    });
+});</pre>
+          </div>
+        </div>
+      </div>
+    </div><!-- /e3 -->
+
+    <!-- THU: JWT -->
+    <div id="w2d-e4" class="day-panel">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">JWT structure, authentication flow, refresh tokens</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">JWT structure — what each part does</div>
+<pre>// JWT = Base64Url(Header) . Base64Url(Payload) . Signature
+// IMPORTANT: the payload is ENCODED, not ENCRYPTED — anyone can decode it!
+
+// Header
+{ "alg": "HS256", "typ": "JWT" }
+// HS256 = symmetric (one secret) — good for single-service apps
+// RS256 = asymmetric (private/public key pair) — preferred for distributed systems
+
+// Payload — standard + custom claims
+{
+    "sub": "user-guid",          // subject (UserId)
+    "email": "shanish@test.com",
+    "role": "Customer",          // custom claim for authorisation
+    "customerId": "cust-guid",   // custom claim for data scoping
+    "iat": 1700000000,           // issued at (Unix timestamp)
+    "exp": 1700000900,           // expiry — 15 minutes from now
+    "iss": "https://myapp.com",  // issuer
+    "aud": "https://api.myapp.com" // audience
+}
+// NEVER put in JWT: passwords, card numbers, sensitive PII
+
+// ASP.NET Core validation
+builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
+    .AddJwtBearer(opts =&gt; {
+        opts.TokenValidationParameters = new TokenValidationParameters {
+            ValidateIssuerSigningKey = true,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(secret)),
+            ValidateIssuer = true, ValidIssuer = "https://myapp.com",
+            ValidateAudience = true, ValidAudience = "https://api.myapp.com",
+            ValidateLifetime = true, ClockSkew = TimeSpan.Zero
+        };
+    });</pre>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Refresh token rotation — secure token lifecycle</div>
+<pre>// ACCESS TOKEN — short-lived (15 min), stateless JWT
+// REFRESH TOKEN — long-lived (30 days), stored in DB + HttpOnly cookie
+
+// Flow: access token expires → client sends refresh token → server issues new pair
+public async Task&lt;AuthTokens&gt; RefreshAsync(string refreshToken) {
+    var stored = await _tokenRepo.GetAsync(refreshToken);
+    if (stored == null || stored.ExpiresAt &lt; DateTime.UtcNow)
+        throw new UnauthorizedException("Refresh token invalid or expired.");
+
+    // ROTATION — old refresh token is invalidated, new one issued
+    // If old token is reused (theft detected), revoke the entire token family
+    if (stored.IsUsed) {
+        await _tokenRepo.RevokeTokenFamilyAsync(stored.FamilyId); // detect theft
+        throw new SecurityException("Token reuse detected — all sessions revoked.");
+    }
+    stored.IsUsed = true;
+    await _tokenRepo.UpdateAsync(stored);
+
+    var newAccessToken  = _jwtService.GenerateAccessToken(stored.UserId);
+    var newRefreshToken = _jwtService.GenerateRefreshToken(stored.FamilyId); // same family
+    await _tokenRepo.SaveAsync(newRefreshToken);
+    return new AuthTokens(newAccessToken, newRefreshToken);
+}</pre>
+          </div>
+          <div class="warn-box"><div class="warn-lbl">Token revocation challenge</div><p>JWTs cannot be invalidated before expiry because the server has no record of issued tokens. Solutions: (1) Short expiry + refresh rotation (most common). (2) Redis blacklist for JTI claim. (3) Token versioning — store a tokenVersion integer on the user record, include in JWT claim, increment on logout/password change. Any token with an old version is rejected.</p></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">Azure Key Vault integration + claims-based authorisation</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">Managed Identity + Key Vault — no credentials in code</div>
+<pre>// Program.cs — pull secrets from Key Vault at startup
+builder.Configuration.AddAzureKeyVault(
+    new Uri("https://myapp-kv.vault.azure.net/"),
+    new DefaultAzureCredential() // uses Managed Identity in Azure, developer account locally
+);
+// JWT signing key is now just: builder.Configuration["JwtSigningKey"]
+// No secrets in appsettings.json, no hardcoded strings, no environment variables needed
+
+// Claims-based policy authorisation
+builder.Services.AddAuthorization(opts =&gt; {
+    opts.AddPolicy("AdminOnly", policy =&gt;
+        policy.RequireClaim("role", "Admin"));
+    opts.AddPolicy("VerifiedCustomer", policy =&gt;
+        policy.RequireClaim("emailVerified", "true")
+              .RequireClaim("role", "Customer"));
+});
+[Authorize(Policy = "AdminOnly")]
+[HttpDelete("/api/products/{id}")]
+public async Task&lt;IActionResult&gt; DeleteProduct(Guid id) { ... }</pre>
+          </div>
+        </div>
+      </div>
+    </div><!-- /e4 -->
+
+    <!-- FRI: Project stories -->
+    <div id="w2d-e5" class="day-panel">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">Project story prep — ELogR, e-commerce, health insurance</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <div class="subsection">
+            <div class="sub-title">ELogR — questions to prepare answers for</div>
+            <ul class="bullet-list">
+              <li><span class="dot d-teal"></span>"What was the hardest technical challenge?" → Handling merged table cells and conditional sections in Open XML SDK without corrupting the Word XML structure</li>
+              <li><span class="dot d-teal"></span>"Why did you choose Open XML SDK?" → No licensing cost, full control over document XML, no dependency on Word being installed on the server</li>
+              <li><span class="dot d-teal"></span>"How did you test document output?" → QA regression suite comparing generated documents against reference outputs. Byte-level comparison for structure, visual review for formatting.</li>
+              <li><span class="dot d-teal"></span>"How did you measure the 70% time reduction?" → Manual timing of the full report creation process before and after with the operations team. Baseline: 4 hours. After: 45 minutes.</li>
+            </ul>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">E-commerce — questions to prepare answers for</div>
+            <ul class="bullet-list">
+              <li><span class="dot d-blue"></span>"Why JWT over sessions?" → Stateless, scales horizontally without a shared session store across App Service instances</li>
+              <li><span class="dot d-blue"></span>"Why DTU model for Azure SQL?" → Client workload was predictable, DTU pricing was simpler. For unpredictable spikes we would choose vCore with serverless.</li>
+              <li><span class="dot d-blue"></span>"What did the 40% admin effort reduction mean specifically?" → Automated product bulk import, dynamic category management, and order status workflows that were previously manual CSV uploads and database edits</li>
+              <li><span class="dot d-blue"></span>"Describe your CI/CD pipeline stages" → Build → Unit tests → Publish artifact → Deploy to staging slot → Integration tests → Swap to production (zero downtime)</li>
+            </ul>
+          </div>
+          <div class="subsection">
+            <div class="sub-title">Health insurance — questions to prepare answers for</div>
+            <ul class="bullet-list">
+              <li><span class="dot d-purple"></span>"What made the SQL queries complex?" → Multi-table joins across member, policy, benefit, and claim tables with date-range calculations and nested aggregations for coverage validation</li>
+              <li><span class="dot d-purple"></span>"How did you ensure data integrity in concurrent claim submissions?" → Serializable transactions for claim budget deductions, optimistic concurrency for claim status updates</li>
+              <li><span class="dot d-purple"></span>"How did you ensure regulatory compliance?" → Immutable audit log table, every state change recorded with user, timestamp, and before/after values. No direct updates to claim records — only appends.</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div><!-- /e5 -->
+
+    <!-- SAT: Practice -->
+    <div id="w2d-e6" class="day-panel">
+      <div class="card">
+        <div class="card-head" onclick="toggleCard(this)">
+          <span class="card-title">SQL practice problems (2 hrs)</span>
+          <span class="chev">▼</span>
+        </div>
+        <div class="card-body">
+          <ul class="bullet-list">
+            <li><span class="dot d-teal"></span>Find top 3 best-selling products per category — DENSE_RANK() with PARTITION BY <span class="badge b-med">Medium</span></li>
+            <li><span class="dot d-teal"></span>Find customers who ordered in consecutive months — LAG() or self-join with DATEDIFF <span class="badge b-hard">Hard</span></li>
+            <li><span class="dot d-teal"></span>Detect duplicate orders within 5 minutes from same customer — DATEDIFF + self-join <span class="badge b-med">Medium</span></li>
+            <li><span class="dot d-teal"></span>Running total of daily revenue — SUM() OVER (ORDER BY date ROWS UNBOUNDED PRECEDING) <span class="badge b-easy">Easy</span></li>
+            <li><span class="dot d-teal"></span>Products never ordered — LEFT JOIN + IS NULL or NOT EXISTS <span class="badge b-easy">Easy</span></li>
+            <li><span class="dot d-teal"></span>Recursive CTE: product category hierarchy parent→child→grandchild <span class="badge b-hard">Hard</span></li>
+          </ul>
+          <div class="subsection" style="margin-top:14px">
+            <div class="sub-title">API design verbal questions (answer out loud — record yourself)</div>
+            <ul class="bullet-list">
+              <li><span class="dot d-blue"></span>"Design a REST API endpoint to place an order" — cover URL, method, request/response body, all relevant status codes</li>
+              <li><span class="dot d-blue"></span>"How do you handle partial failures in an order API?" — idempotency key, retry-safe POST design, compensating transactions</li>
+              <li><span class="dot d-blue"></span>"How do you version an API without breaking existing clients?" — URL versioning, deprecation notices, sunset headers</li>
+              <li><span class="dot d-blue"></span>"How would you secure a public product listing endpoint?" — rate limiting, no auth required but throttled, HTTPS, input sanitisation</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div><!-- /e6 -->
+
+  </div><!-- /w2-topics -->
+
+  <!-- W2 QUESTIONS -->
+  <div id="w2-questions" class="section">
+    <div class="cat-filter w2-active">
+      <button class="active" onclick="filterQ('w2','all',this)">All</button>
+      <button onclick="filterQ('w2','sql',this)">SQL</button>
+      <button onclick="filterQ('w2','sp',this)">SP &amp; Transactions</button>
+      <button onclick="filterQ('w2','api',this)">REST API</button>
+      <button onclick="filterQ('w2','jwt',this)">JWT &amp; Security</button>
+      <button onclick="filterQ('w2','ef',this)">EF Core</button>
+    </div>
+    <div id="w2-qlist">
+
+    <div class="q-item" data-week="w2" data-cat="sql">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is the difference between clustered and non-clustered index? When would you use a covering index?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">A clustered index defines the physical storage order of rows — one per table, usually the primary key. Non-clustered indexes are separate B-tree structures with pointers back to data rows. When a query selects columns not present in the non-clustered index, SQL Server performs a key lookup back to the clustered index for each row — expensive at scale. A covering index solves this by adding needed columns with INCLUDE, satisfying the entire query from the index without touching the base table. This directly applies to your 30% improvement story — key lookups were the bottleneck.</div>
+        <div class="q-hint">Always connect index questions to your resume: "I identified key lookup operations in the execution plan and added INCLUDE columns. This alone dropped the query cost by over 50% in the RAB application."</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="sql">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is a SARGable predicate? Give an example of a non-SARGable query and how to fix it.</span>
+        <div class="q-meta"><span class="badge b-hard">Hard</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">SARGable (Search ARGument ABLE) means the query optimizer can use an index seek for the predicate. Applying a function to an indexed column makes it non-SARGable and forces a table scan. Classic violation: <span class="inline-code">WHERE YEAR(CreatedAt) = 2024</span> — rewrite as <span class="inline-code">WHERE CreatedAt >= '2024-01-01' AND CreatedAt &lt; '2025-01-01'</span>. Other traps: <span class="inline-code">UPPER(Email) = '...'</span>, <span class="inline-code">Price * 1.1 > 100</span>. Rule: never apply functions to the indexed column side — move transformations to the value side.</div>
+        <div class="q-hint">Knowing the term "SARGable" immediately signals strong SQL proficiency. Most developers know to avoid functions on columns but don't know the technical term for why.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="sql">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">How would you find the second highest order total per customer in SQL Server?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">Use DENSE_RANK() — it handles ties correctly unlike ROW_NUMBER(): <br><br>WITH RankedOrders AS (SELECT CustomerId, TotalAmount, DENSE_RANK() OVER (PARTITION BY CustomerId ORDER BY TotalAmount DESC) AS Rnk FROM Orders) SELECT CustomerId, TotalAmount FROM RankedOrders WHERE Rnk = 2<br><br>Using ROW_NUMBER() instead would skip the second result if two orders have the same highest amount — a common mistake. RANK() would also work but produces gaps in numbering after ties.</div>
+        <div class="q-hint">Interviewers follow up with: "What is the difference between ROW_NUMBER, RANK, and DENSE_RANK?" — ROW_NUMBER: always unique sequential. RANK: gaps after ties (1,1,3). DENSE_RANK: no gaps (1,1,2).</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="sp">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is parameter sniffing in SQL Server? How does it cause problems and what are the fixes?</span>
+        <div class="q-meta"><span class="badge b-hard">Hard</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">When a stored procedure compiles for the first time, SQL Server builds a plan based on the parameter values at that moment. If data is skewed, this cached plan may be perfect for small datasets but catastrophic for large ones. Example: first call for a small region (100 rows) → Nested Loop plan cached. Next call for a large region (1M rows) → same Nested Loop plan used → devastating performance. Three fixes: (1) OPTION(RECOMPILE) — new plan every call, good for infrequent SPs with high variance. (2) OPTIMIZE FOR UNKNOWN — uses average statistics, ignores sniffed values. (3) Local variable technique — assign parameter to local variable; optimizer cannot sniff locals.</div>
+        <div class="q-hint">Knowing all three fixes and their trade-offs is the senior-level answer. RECOMPILE adds compilation cost — use it judiciously. OPTIMIZE FOR UNKNOWN may produce mediocre plans for everyone. Local variables are zero-cost but may miss optimal plans for well-distributed data.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="sp">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">Explain ACID properties with an example from an order processing system.</span>
+        <div class="q-meta"><span class="badge b-easy">Easy</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">Atomicity: deducting stock and inserting the order must both succeed or both fail — no partial state. Consistency: the database always moves between valid states — stock cannot go negative (enforced by CHECK constraint). Isolation: two customers buying the last item simultaneously must not both succeed — SERIALIZABLE isolation ensures their transactions appear sequential. Durability: once an order is committed, it survives a server crash — guaranteed by the SQL Server transaction log which is flushed to disk before COMMIT returns. In code: wrap stock deduction and order insert inside a single BEGIN TRANSACTION...COMMIT block.</div>
+        <div class="q-hint">Always use a concrete order processing scenario rather than abstract definitions. It shows you understand why ACID matters in your actual work, not just what the letters stand for.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="api">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is idempotency in REST APIs? Why does it matter for order placement?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">An idempotent operation produces the same result regardless of how many times it is called. GET, PUT, and DELETE are idempotent. POST is not by default. In order placement, if a client POSTs an order and the network times out, the client retries — but the first request may have already succeeded, creating a duplicate order. Solution: the client sends a unique Idempotency-Key header (GUID). The server stores processed keys in Redis with a 24-hour TTL. On retry, the server returns the original response without reprocessing. This pattern is used by Stripe, PayPal, and virtually all payment APIs.</div>
+        <div class="q-hint">Follow-up: "Where would you store idempotency keys?" → Redis is preferred over SQL for this — sub-millisecond lookup with automatic TTL expiry, no table bloat.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="api">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is the difference between 401 Unauthorised and 403 Forbidden?</span>
+        <div class="q-meta"><span class="badge b-easy">Easy</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">401 means the request lacks valid authentication credentials — the server does not know who you are. The client should authenticate and retry. 403 means authentication succeeded but the authenticated user lacks permission — the server knows who you are and refuses access. In e-commerce: accessing /api/admin/products without a JWT → 401. Accessing it with a valid customer JWT (not admin role) → 403.</div>
+        <div class="q-hint">Mnemonic: 401 = "Who are you?" · 403 = "I know who you are, but no." This distinction trips up many developers. Knowing it precisely signals attention to API design standards.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="api">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is the difference between offset pagination and cursor pagination? When would you use each?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">Offset pagination uses SKIP(n)/TAKE(m). Simple to implement but degrades at large offsets — SQL must count through all skipped rows even if none are returned. Also produces duplicates or skipped rows if data is inserted between pages. Cursor pagination uses a stable pointer (last OrderId seen): WHERE Id > @lastId ORDER BY Id LIMIT @pageSize. O(log n) regardless of depth, consistent with real-time data. Use cursor for product listings, order history, and any data that changes. Use offset for admin panels with static datasets where pagination depth is bounded.</div>
+        <div class="q-hint">Senior answer: mention that EF Core's Skip(n) translates to OFFSET n ROWS in SQL — the database must count through all n skipped rows. At page 500 with 20 items per page, that is counting 10,000 rows before returning 20.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="jwt">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">Is JWT payload data secure? What should and should not be stored in a JWT?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">No — the JWT payload is Base64Url encoded, not encrypted. Anyone with the token can decode and read the payload without the signing key. The signature only proves the token was not tampered with — it does not hide data. Store: UserId, Role, Email, CustomerId, Permissions, standard claims (sub, iat, exp, iss, aud). Never store: passwords, card numbers, sensitive PII, secrets of any kind. If you need to transmit sensitive encrypted data, use JWE (JSON Web Encryption) — but this is uncommon in standard web APIs.</div>
+        <div class="q-hint">Resume connection: "In my e-commerce project I stored UserId, Role, and CustomerId in JWT claims. Admin routes checked the Role claim via a policy. Payment card data never touched the token — it went through the payment gateway directly."</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="jwt">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">How do you invalidate a JWT before it expires? What are the trade-offs of each approach?</span>
+        <div class="q-meta"><span class="badge b-hard">Hard</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">JWTs are stateless — the server has no record of issued tokens, so direct invalidation is not possible. Three approaches: (1) Short expiry + refresh rotation — 15-minute access tokens limit damage window without server-side state. Simplest. (2) Redis blacklist — store revoked JTI claims, check on every request. Immediate revocation but adds latency and introduces server state. (3) Token versioning — store a tokenVersion integer per user in the database. Include in JWT claim. On logout or password change, increment the version. Any token with an older version is rejected. This is the most practical solution — minimal state (one integer per user), immediate revocation, no Redis dependency.</div>
+        <div class="q-hint">This question tests understanding of the statelessness trade-off. The expected answer at senior level demonstrates knowing the constraint and the three industry patterns — not just "use short expiry."</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="ef">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is the N+1 query problem in EF Core? How do you detect and fix it?</span>
+        <div class="q-meta"><span class="badge b-med">Medium</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">N+1 occurs when you load a collection (1 query) and then access a navigation property inside a loop, causing one additional query per item (N queries total). Loading 100 orders then accessing order.Customer.Name in a loop = 101 queries. Fix with eager loading: <span class="inline-code">_db.Orders.Include(o => o.Customer).ToListAsync()</span>. Alternative: projection with Select to load only needed columns without navigation properties — fastest approach for read-only queries. Detection: enable EF Core logging in development to see all SQL queries. Tools like MiniProfiler also surface N+1 clearly.</div>
+        <div class="q-hint">Advanced follow-up: "What is AsSplitQuery()?" → For collections with Include, EF Core 5+ can split the query into separate SQL statements instead of one large JOIN, avoiding Cartesian explosion when including multiple collections.</div>
+      </div>
+    </div>
+
+    <div class="q-item" data-week="w2" data-cat="ef">
+      <div class="q-head" onclick="toggleQ(this)">
+        <span class="q-text">What is the difference between tracked and no-tracking queries in EF Core?</span>
+        <div class="q-meta"><span class="badge b-easy">Easy</span><span class="chev">▼</span></div>
+      </div>
+      <div class="q-body">
+        <div class="q-section-label">Answer</div>
+        <div class="q-text-content">By default EF Core tracks every loaded entity in the DbContext ChangeTracker — it snapshots entity state to detect modifications for SaveChanges. This costs memory and CPU. For read-only scenarios (GET endpoints, reports, dashboards) use AsNoTracking() — it bypasses the ChangeTracker entirely, making queries 2–3x faster on large result sets. Rule: use tracking only when you intend to modify and save the entity. Use AsNoTracking() for all read-only queries. AsNoTrackingWithIdentityResolution() handles related entities without full tracking overhead when you need consistent object references in a query result.</div>
+        <div class="q-hint">Quick win: audit your GET endpoints and add AsNoTracking() everywhere you don't call SaveChanges on the result. This is a low-effort, high-impact performance improvement in any EF Core codebase.</div>
+      </div>
+    </div>
+
+    </div><!-- /w2-qlist -->
+  </div><!-- /w2-questions -->
+
+  <!-- W2 STAR -->
+  <div id="w2-star" class="section">
+    <div class="tip-box" style="margin-bottom:16px"><div class="tip-lbl">Week 2 STAR strategy</div><p>Your strongest quantified results are in Week 2 topics — 30% SQL improvement and 70% document generation reduction. For every number, prepare a measurement answer: "I measured this using SET STATISTICS TIME ON / manual timing with the operations team." Vague claims lose credibility at the senior level.</p></div>
+
+    <div class="star-card">
+      <div class="star-hd" onclick="toggleStar(this)">
+        <span class="star-title">Template 1 — "How did you improve SQL performance in your project?"</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="star-body">
+        <div class="star-step"><span class="star-lbl lbl-s">Situation</span><div class="star-fill">"At Cognine Technologies on the RAB application, our reporting dashboard queried across 3–4 large tables with millions of rows. Users reported load times of 8–10 seconds during peak hours, making the module difficult to use."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-t">Task</span><div class="star-fill">"I was assigned to investigate and resolve the performance issues without changing any business logic or the UI."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-a">Action</span><div class="star-fill">"I enabled SQL Server's actual execution plan on the three slowest queries and identified key lookup operations, full table scans on a date column, and N+1 query patterns. I added non-clustered covering indexes with INCLUDE columns to eliminate key lookups, rewrote the N+1 pattern as a single set-based stored procedure, and moved repeated scalar calculations into a SQL function to reduce application round-trips."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-r">Result</span><div class="star-fill">"Query execution time dropped 30%, reducing dashboard load from ~9 seconds to under 3 seconds. I measured improvement using SET STATISTICS TIME ON before and after each change. This eliminated the most-raised support ticket for the module."</div></div>
+      </div>
+    </div>
+
+    <div class="star-card">
+      <div class="star-hd" onclick="toggleStar(this)">
+        <span class="star-title">Template 2 — "Describe a security decision you made in an API project"</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="star-body">
+        <div class="star-step"><span class="star-lbl lbl-s">Situation</span><div class="star-fill">"In the e-commerce project, the initial design used session-based authentication. The API was an ASP.NET Core service consumed by an Angular SPA from a different origin, and it was expected to scale horizontally on Azure App Service."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-t">Task</span><div class="star-fill">"My task was to design the authentication system — choosing the right mechanism and ensuring secrets were managed securely from the start."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-a">Action</span><div class="star-fill">"I proposed JWT because it is stateless and works across multiple App Service instances without a shared session store. I structured tokens with UserId, CustomerId, and Role claims. For the signing key I used Azure Key Vault with Managed Identity — no credentials in code or config files. I configured short-lived access tokens (15 minutes) with refresh token rotation stored in HttpOnly cookies to reduce XSS risk."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-r">Result</span><div class="star-fill">"The authentication worked seamlessly across scaled instances with zero session-related bugs. The Key Vault pattern was adopted for all secrets in the project. During a security review, no exposed credentials were found in source control."</div></div>
+      </div>
+    </div>
+
+    <div class="star-card">
+      <div class="star-hd" onclick="toggleStar(this)">
+        <span class="star-title">Template 3 — "How did you design the API for a complex domain?"</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="star-body">
+        <div class="star-step"><span class="star-lbl lbl-s">Situation</span><div class="star-fill">"In the health insurance project at Access Meditech, we needed backend APIs for three distinct claim types — Pre-approved, Reimbursement, and Offline — each with different validation rules, approval workflows, and data shapes."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-t">Task</span><div class="star-fill">"I was responsible for designing the backend module structure and data access layer, ensuring claim processing was accurate, auditable, and safe under concurrent submissions."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-a">Action</span><div class="star-fill">"I used a shared abstract base for common claim fields and a separate workflow handler per claim type using the Strategy pattern. For concurrent submissions I used SERIALIZABLE transactions on budget reservation queries to prevent two agents from approving against the same budget simultaneously. I documented all endpoints with Swagger and explicit ProducesResponseType attributes for each status code."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-r">Result</span><div class="star-fill">"No data integrity issues under concurrent load in UAT. Swagger documentation reduced frontend-backend clarification meetings significantly. The module was delivered on schedule with minimal UAT defects."</div></div>
+      </div>
+    </div>
+
+    <div class="star-card">
+      <div class="star-hd" onclick="toggleStar(this)">
+        <span class="star-title">Template 4 — "Tell me about a production risk you caught before release"</span>
+        <span class="chev">▼</span>
+      </div>
+      <div class="star-body">
+        <div class="star-step"><span class="star-lbl lbl-s">Situation</span><div class="star-fill">"During code review for the e-commerce project, I noticed an order listing endpoint was calling ToList() before the Where filter — loading all orders into C# memory and then filtering."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-t">Task</span><div class="star-fill">"The endpoint worked fine in development with a small dataset, but I recognised this would cause severe performance degradation in production with real order volumes."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-a">Action</span><div class="star-fill">"I raised it in the pull request with a clear explanation — the IQueryable was being materialised too early, converting database-side SQL filtering into in-memory C# filtering. I rewrote the query to keep it as IQueryable until the final ToListAsync(), and added EF Core logging to the development environment so the whole team could see SQL queries during development."</div></div>
+        <div class="star-step"><span class="star-lbl lbl-r">Result</span><div class="star-fill">"The fix reduced the query from potentially loading the entire orders table to loading only the current customer's orders — from tens of thousands of rows down to typically under 50. The team adopted EF Core logging as a standard development practice for all subsequent sprints."</div></div>
+      </div>
+    </div>
+  </div><!-- /w2-star -->
+</div><!-- /week2 -->
+
+</div><!-- /app -->
+
+<script>
+var currentWeek = 1;
+
+function switchWeek(n) {
+  currentWeek = n;
+  document.getElementById('week1').classList.toggle('active', n === 1);
+  document.getElementById('week2').classList.toggle('active', n === 2);
+  document.getElementById('wbtn1').className = 'ws-btn' + (n===1?' active-w1':'');
+  document.getElementById('wbtn2').className = 'ws-btn' + (n===2?' active-w2':'');
+}
+
+function showSec(week, id, btn) {
+  var wb = document.getElementById('week'+week);
+  wb.querySelectorAll('.section').forEach(function(s){s.classList.remove('active')});
+  wb.querySelectorAll('.main-nav button').forEach(function(b){b.classList.remove('active')});
+  document.getElementById(week+'-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function showDay(prefix, id, btn) {
+  var parent = btn.closest('.day-tabs').parentElement;
+  parent.querySelectorAll('.day-panel').forEach(function(p){p.classList.remove('active')});
+  btn.closest('.day-tabs').querySelectorAll('button').forEach(function(b){b.classList.remove('active')});
+  document.getElementById(prefix+'-'+id).classList.add('active');
+  btn.classList.add('active');
+}
+
+function toggleCard(head) {
+  var body = head.nextElementSibling;
+  var chev = head.querySelector('.chev');
+  var isOpen = body.classList.toggle('open');
+  head.classList.toggle('open', isOpen);
+  chev.classList.toggle('open', isOpen);
+}
+
+function toggleQ(head) {
+  var body = head.nextElementSibling;
+  var chev = head.querySelector('.chev');
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function toggleStar(head) {
+  var body = head.nextElementSibling;
+  var chev = head.querySelector('.chev');
+  body.classList.toggle('open');
+  chev.classList.toggle('open');
+}
+
+function filterQ(week, cat, btn) {
+  var list = document.getElementById(week+'-qlist');
+  list.querySelectorAll('.cat-filter button').forEach(function(b){b.classList.remove('active')});
+  btn.classList.add('active');
+  list.parentElement.querySelectorAll('.q-item').forEach(function(q){
+    q.style.display = (cat==='all' || q.dataset.cat===cat) ? 'block' : 'none';
+  });
+}
+</script>
+</body>
+</html>
