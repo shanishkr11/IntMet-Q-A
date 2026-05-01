@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Week 4: Performance, Scalability & Leadership - Shanish Singh</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; line-height: 1.6; color: #333; max-width: 900px; margin: 20px auto; padding: 20px; background-color: #fcfcfc; }
+        .week-wrap { background: white; border-radius: 12px; padding: 35px; box-shadow: 0 5px 20px rgba(0,0,0,0.05); border-top: 8px solid #27ae60; }
+        h1 { color: #27ae60; border-bottom: 2px solid #eee; padding-bottom: 15px; text-align: center; }
+        .qa-block { margin-bottom: 30px; border-bottom: 1px solid #f0f0f0; padding-bottom: 20px; }
+        .category-pill { display: inline-block; background: #27ae60; color: white; font-size: 0.7rem; padding: 3px 12px; border-radius: 20px; text-transform: uppercase; margin-bottom: 10px; font-weight: bold; }
+        .q-line { font-weight: 700; color: #2c3e50; display: block; margin-bottom: 10px; font-size: 1.15rem; }
+        .a-line { color: #444; margin-left: 5px; }
+        .star-example { margin-top: 15px; background: #f1f9f4; border-left: 4px solid #27ae60; padding: 15px; font-style: normal; border-radius: 4px; font-size: 0.95rem; }
+        .star-label { color: #27ae60; font-weight: bold; margin-right: 5px; }
+    </style>
+</head>
+<body>
+
+<div class="week-wrap">
+    <h1>Week 4: Scalability, Quality & Soft Skills</h1>
+
+    <!-- Q1: SQL Scaling -->
+    <div class="qa-block">
+        <span class="category-pill">Azure SQL</span>
+        <span class="q-line">1. How do you handle database scaling in Azure for high-traffic applications?</span>
+        <div class="a-line">I leverage Azure SQL <strong>Auto-scaling</strong> and <strong>DTU/vCore adjustments</strong>. For high availability, I configure <strong>Failover Groups</strong> to ensure the database remains accessible during regional outages.</div>
+        <div class="star-example"><span class="star-label">Real-time Example:</span> In my E-commerce project, I implemented failover groups and auto-scaling to maintain performance during peak traffic periods.</div>
+    </div>
+
+    <!-- Q2: Unit Testing -->
+    <div class="qa-block">
+        <span class="category-pill">Testing</span>
+        <span class="q-line">2. What is the "Red-Green-Refactor" cycle in Unit Testing?</span>
+        <div class="a-line">It is a TDD (Test Driven Development) approach: write a failing test (Red), write the minimum code to pass it (Green), and then optimize the code (Refactor) while keeping the test passing.</div>
+        <div class="star-example"><span class="star-label">Real-time Example:</span> At Cognine, I collaborated with manual and automation testers to ensure every new form in the RAB application was backed by reliable unit tests.</div>
+    </div>
+
+    <!-- Q3: Performance Profiling -->
+    <div class="qa-block">
+        <span class="category-pill">Performance</span>
+        <span class="q-line">3. How do you identify bottlenecks in a .NET Core application?</span>
+        <div class="a-line">I use tools like <strong>Visual Studio Profiler</strong> or <strong>Application Insights</strong> to monitor CPU usage, memory leaks, and slow-running external API calls.</div>
+        <div class="star-example"><span class="star-label">Real-time Example:</span> By profiling the ELOGR project, I identified that the Word document generation was the primary bottleneck and optimized it using the Open XML SDK.</div>
+    </div>
+
+    <!-- Q4: Distributed Caching -->
+    <div class="qa-block">
+        <span class="category-pill">Azure</span>
+        <span class="q-line">4. When would you use "Redis Cache" over In-Memory caching?</span>
+        <div class="a-line"><strong>In-Memory cache</strong> is tied to a single server instance. <strong>Redis</strong> is a distributed cache that allows multiple instances of an Azure App Service to share the same cached data.</div>
+        <div class="star-example"><span class="star-label">Real-time Example:</span> For scalable web applications, I use distributed caching to store session data so users stay logged in even if the Azure App Service scales out to multiple instances[cite: 1].</div>
+    </div>
+
+    <!-- Q5: Behavioral / Conflict -->
+    <div class="qa-block">
+        <span class="category-pill">Soft Skills</span>
+        <span class="q-line">5. How do you handle technical disagreements within an Agile team?</span>
+        <div class="a-line">I focus on data-driven decisions, often creating a <strong>Proof of Concept (POC)</strong> to compare different approaches. I value clear communication and alignment with the project goals.</div>
+        <div class="star-example"><span class="star-label">Real-time Example:</span> During the implementation of the RAB application, I worked closely with my team to design bounded contexts that satisfied both backend efficiency and frontend usability[cite: 1].</div>
+    </div>
+
+    <!-- Q6: Open XML SDK Deep Dive -->
+    <div class="qa-block">
+        <span class="category-pill">Optimization</span>
+        <span class="q-line">6. Why is Open XML SDK better than Office Interop for server-side tasks?</span>
+        <div class="a-line">Office Interop requires Word to be installed on the server, which is slow and not thread-safe. <strong>Open XML SDK</strong> is a lightweight library that parses the XML structure directly, making it highly efficient for server environments.</div>
+        <div class="star-example"><span class="star-label">Real-time Example:</span> This technical choice allowed me to reduce report generation time by 70% in the ELOGR project[cite: 1].</div>
+    </div>
+
+    <!-- Q7: Async Performance -->
+    <div class="qa-block">
+        <span class="category-pill">C#</span>
+        <span class="q-line">7. What is "Thread Pool Starvation" and how can async/await prevent it?</span>
+        <div class="a-line">Starvation occurs when all threads are blocked waiting for I/O. Using <strong>async/await</strong> releases the thread back to the pool while waiting, allowing the server to handle more concurrent requests.</div>
+        <div class="star-example"><span class="star-label">Real-time Example:</span> I consistently apply asynchronous programming in .NET Core Web APIs to ensure the application remains responsive under heavy loads[cite: 1].</div>
+    </div>
+
+    <!-- Q8: Agile Lifecycle -->
+    <div class="qa-block">
+        <span class="category-pill">SDLC</span>
+        <span class="q-line">8. What is your role during a Sprint Retrospective?</span>
+        <div class="a-line">I participate by identifying what went well and what could be improved in our technical workflow, focusing on troubleshooting issues and refining the development process.</div>
+        <div class="star-example"><span class="star-label">Real-time Example:</span> With over five years of experience, I use these sessions to share insights on optimizing stored procedures or improving our CI/CD pipelines[cite: 1].</div>
+    </div>
+
+    <!-- Q9: Cloud Governance -->
+    <div class="qa-block">
+        <span class="category-pill">Azure</span>
+        <span class="q-line">9. How do you ensure cost-efficiency in Azure?</span>
+        <div class="a-line">I use <strong>Azure Cost Management</strong>, set up budget alerts, and utilize serverless options like <strong>Azure Functions</strong> or <strong>Logic Apps</strong> for tasks that don't need a 24/7 dedicated server.</div>
+        <div class="star-example"><span class="star-label">Real-time Example:</span> As an AZ-204 certified developer, I design solutions that balance high availability with cost-saving measures like DTU auto-scaling[cite: 1].</div>
+    </div>
+
+    <!-- Q10: Project Management -->
+    <div class="qa-block">
+        <span class="category-pill">Soft Skills</span>
+        <span class="q-line">10. Describe a time you had to manage time and priorities under a tight deadline.</span>
+        <div class="a-line">I break complex tasks into smaller, manageable sub-tasks and prioritize them based on core functionality, ensuring that a "Minimum Viable Product" is always ready for testing.</div>
+        <div class="star-example"><span class="star-label">Real-time Example:</span> While developing the E-commerce application dashboard, I prioritized secure JWT authentication first to ensure the security foundation was solid before adding secondary features[cite: 1].</div>
+    </div>
+
+</div>
+
+</body>
+</html>
