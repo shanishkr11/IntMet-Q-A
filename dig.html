@@ -1,0 +1,1704 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>.NET Interview Mastery Guide</title>
+<link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;600&family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,400&display=swap" rel="stylesheet"/>
+<style>
+:root {
+  --bg:         #0d1117;
+  --surface:    #161b22;
+  --surface2:   #1e2530;
+  --border:     #2a3240;
+  --l1:         #22c55e;
+  --l2:         #3b82f6;
+  --l3:         #f97316;
+  --l4:         #a855f7;
+  --l1-dim:     #16532d;
+  --l2-dim:     #1e3a6e;
+  --l3-dim:     #6b3210;
+  --l4-dim:     #4a1070;
+  --l1-soft:    #0f2a1a;
+  --l2-soft:    #0d1e3d;
+  --l3-soft:    #2e1800;
+  --l4-soft:    #200a36;
+  --q-bg:       #131922;
+  --a-bg:       #111a14;
+  --code-bg:    #0a0f1a;
+  --text:       #e2e8f0;
+  --muted:      #8b98b0;
+  --white:      #ffffff;
+  --sidebar-w:  260px;
+  --mono: 'JetBrains Mono', monospace;
+  --display: 'Syne', sans-serif;
+  --body: 'DM Sans', sans-serif;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 15px;
+  line-height: 1.7;
+  display: flex;
+  min-height: 100vh;
+}
+
+/* ─── SIDEBAR ─────────────────────────────────────────────── */
+.sidebar {
+  width: var(--sidebar-w);
+  min-height: 100vh;
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: fixed;
+  top: 0; left: 0;
+  display: flex;
+  flex-direction: column;
+  overflow-y: auto;
+  z-index: 100;
+}
+
+.sidebar-logo {
+  padding: 28px 20px 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.sidebar-logo h1 {
+  font-family: var(--display);
+  font-size: 22px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -0.5px;
+  line-height: 1.2;
+}
+
+.sidebar-logo h1 span { color: var(--l2); }
+.sidebar-logo p { font-size: 11px; color: var(--muted); margin-top: 4px; letter-spacing: 1px; text-transform: uppercase; }
+
+.sidebar-nav { padding: 12px 0; flex: 1; }
+
+.nav-level-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 1.5px;
+  text-transform: uppercase;
+  padding: 14px 20px 6px;
+  color: var(--muted);
+}
+
+.nav-item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 20px;
+  font-size: 13px;
+  color: var(--muted);
+  cursor: pointer;
+  text-decoration: none;
+  border-left: 2px solid transparent;
+  transition: all .18s ease;
+}
+
+.nav-item:hover { color: var(--text); background: rgba(255,255,255,.04); }
+.nav-item.active { color: var(--white); border-left-color: var(--accent); background: rgba(255,255,255,.05); }
+.nav-item .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+
+.nav-item[data-level="1"] .dot  { background: var(--l1); }
+.nav-item[data-level="2"] .dot  { background: var(--l2); }
+.nav-item[data-level="3"] .dot  { background: var(--l3); }
+.nav-item[data-level="4"] .dot  { background: var(--l4); }
+.nav-item[data-level="1"]       { --accent: var(--l1); }
+.nav-item[data-level="2"]       { --accent: var(--l2); }
+.nav-item[data-level="3"]       { --accent: var(--l3); }
+.nav-item[data-level="4"]       { --accent: var(--l4); }
+
+.sidebar-footer {
+  padding: 16px 20px;
+  border-top: 1px solid var(--border);
+  font-size: 11px;
+  color: var(--muted);
+}
+
+.progress-bar {
+  height: 3px;
+  background: var(--border);
+  border-radius: 4px;
+  margin-top: 8px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  background: linear-gradient(90deg, var(--l1), var(--l2), var(--l3), var(--l4));
+  width: 0%;
+  transition: width .3s ease;
+}
+
+/* ─── MAIN ─────────────────────────────────────────────────── */
+.main {
+  margin-left: var(--sidebar-w);
+  flex: 1;
+  padding: 0;
+}
+
+/* ─── HERO ─────────────────────────────────────────────────── */
+.hero {
+  background: linear-gradient(135deg, #0d1117 0%, #0f1d30 50%, #130a1e 100%);
+  padding: 80px 60px 70px;
+  border-bottom: 1px solid var(--border);
+  position: relative;
+  overflow: hidden;
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  top: -60px; right: -60px;
+  width: 400px; height: 400px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(59,130,246,.12) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero::after {
+  content: '';
+  position: absolute;
+  bottom: -80px; left: 20%;
+  width: 300px; height: 300px;
+  border-radius: 50%;
+  background: radial-gradient(circle, rgba(168,85,247,.08) 0%, transparent 70%);
+  pointer-events: none;
+}
+
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(59,130,246,.15);
+  border: 1px solid rgba(59,130,246,.3);
+  border-radius: 20px;
+  padding: 4px 12px;
+  font-size: 11px;
+  font-weight: 600;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--l2);
+  margin-bottom: 20px;
+}
+
+.hero h1 {
+  font-family: var(--display);
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 800;
+  letter-spacing: -2px;
+  line-height: 1.1;
+  color: var(--white);
+  margin-bottom: 16px;
+}
+
+.hero h1 .net { color: var(--l2); }
+.hero h1 .interview { color: var(--l1); }
+
+.hero p {
+  font-size: 17px;
+  color: var(--muted);
+  max-width: 560px;
+  margin-bottom: 36px;
+}
+
+.hero-stats {
+  display: flex;
+  gap: 32px;
+  flex-wrap: wrap;
+}
+
+.stat {
+  display: flex;
+  flex-direction: column;
+}
+
+.stat-num {
+  font-family: var(--display);
+  font-size: 30px;
+  font-weight: 800;
+  color: var(--white);
+  letter-spacing: -1px;
+}
+
+.stat-label { font-size: 12px; color: var(--muted); }
+
+.level-pills {
+  display: flex;
+  gap: 10px;
+  margin-top: 32px;
+  flex-wrap: wrap;
+}
+
+.pill {
+  padding: 6px 14px;
+  border-radius: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .3px;
+}
+.pill.l1 { background: var(--l1-soft); color: var(--l1); border: 1px solid var(--l1-dim); }
+.pill.l2 { background: var(--l2-soft); color: var(--l2); border: 1px solid var(--l2-dim); }
+.pill.l3 { background: var(--l3-soft); color: var(--l3); border: 1px solid var(--l3-dim); }
+.pill.l4 { background: var(--l4-soft); color: var(--l4); border: 1px solid var(--l4-dim); }
+
+/* ─── SEARCH ────────────────────────────────────────────────── */
+.search-bar {
+  padding: 20px 60px;
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 50;
+}
+
+.search-input {
+  width: 100%;
+  max-width: 540px;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 10px 16px 10px 42px;
+  color: var(--text);
+  font-family: var(--body);
+  font-size: 14px;
+  outline: none;
+  transition: border-color .2s;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='16' height='16' fill='%238b98b0' viewBox='0 0 16 16'%3E%3Cpath d='M11.742 10.344a6.5 6.5 0 1 0-1.397 1.398h-.001c.03.04.062.078.098.115l3.85 3.85a1 1 0 0 0 1.415-1.414l-3.85-3.85a1.007 1.007 0 0 0-.115-.099zM12 6.5a5.5 5.5 0 1 1-11 0 5.5 5.5 0 0 1 11 0z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: 14px center;
+}
+
+.search-input:focus { border-color: var(--l2); }
+.search-input::placeholder { color: var(--muted); }
+
+.search-hint { font-size: 12px; color: var(--muted); margin-top: 6px; }
+#match-count { color: var(--l2); font-weight: 600; }
+
+/* ─── CONTENT ───────────────────────────────────────────────── */
+.content { padding: 0 60px 80px; }
+
+/* ─── LEVEL SECTION ─────────────────────────────────────────── */
+.level-section { margin-top: 60px; }
+
+.level-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 28px;
+  border-radius: 12px;
+  margin-bottom: 8px;
+  position: relative;
+  overflow: hidden;
+}
+
+.level-header::before {
+  content: attr(data-label);
+  position: absolute;
+  right: 28px;
+  font-family: var(--display);
+  font-size: 80px;
+  font-weight: 800;
+  opacity: .06;
+  color: var(--white);
+  pointer-events: none;
+  top: 50%;
+  transform: translateY(-50%);
+}
+
+.lh-l1 { background: linear-gradient(135deg, var(--l1-dim), var(--l1-soft)); border: 1px solid #1e5a35; }
+.lh-l2 { background: linear-gradient(135deg, var(--l2-dim), var(--l2-soft)); border: 1px solid #1a3a6e; }
+.lh-l3 { background: linear-gradient(135deg, var(--l3-dim), var(--l3-soft)); border: 1px solid #6b3210; }
+.lh-l4 { background: linear-gradient(135deg, var(--l4-dim), var(--l4-soft)); border: 1px solid #4a1070; }
+
+.level-icon {
+  width: 44px; height: 44px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
+  flex-shrink: 0;
+}
+.lh-l1 .level-icon { background: rgba(34,197,94,.2); }
+.lh-l2 .level-icon { background: rgba(59,130,246,.2); }
+.lh-l3 .level-icon { background: rgba(249,115,22,.2); }
+.lh-l4 .level-icon { background: rgba(168,85,247,.2); }
+
+.level-title {
+  font-family: var(--display);
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--white);
+}
+
+.level-subtitle { font-size: 13px; color: var(--muted); margin-top: 2px; }
+
+.level-count {
+  margin-left: auto;
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+}
+.lh-l1 .level-count { background: rgba(34,197,94,.2); color: var(--l1); }
+.lh-l2 .level-count { background: rgba(59,130,246,.2); color: var(--l2); }
+.lh-l3 .level-count { background: rgba(249,115,22,.2); color: var(--l3); }
+.lh-l4 .level-count { background: rgba(168,85,247,.2); color: var(--l4); }
+
+/* ─── TOPIC ─────────────────────────────────────────────────── */
+.topic-group { margin-top: 32px; }
+
+.topic-label {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-family: var(--display);
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  color: var(--muted);
+  margin-bottom: 16px;
+  padding-left: 4px;
+}
+
+.topic-label::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* ─── Q&A CARD ──────────────────────────────────────────────── */
+.qa-card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  margin-bottom: 12px;
+  overflow: hidden;
+  transition: border-color .2s, box-shadow .2s;
+  animation: fadeUp .4s ease both;
+}
+
+.qa-card:hover { border-color: #3a4560; box-shadow: 0 4px 24px rgba(0,0,0,.3); }
+.qa-card.hidden { display: none; }
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(12px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+.qa-question {
+  display: flex;
+  align-items: flex-start;
+  gap: 14px;
+  padding: 18px 20px;
+  cursor: pointer;
+  user-select: none;
+}
+
+.q-num {
+  font-family: var(--mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 3px 8px;
+  border-radius: 5px;
+  flex-shrink: 0;
+  margin-top: 2px;
+}
+[data-level="1"] .q-num { background: var(--l1-soft); color: var(--l1); }
+[data-level="2"] .q-num { background: var(--l2-soft); color: var(--l2); }
+[data-level="3"] .q-num { background: var(--l3-soft); color: var(--l3); }
+[data-level="4"] .q-num { background: var(--l4-soft); color: var(--l4); }
+
+.q-text {
+  font-size: 15px;
+  font-weight: 500;
+  color: var(--text);
+  flex: 1;
+  line-height: 1.5;
+}
+
+.q-arrow {
+  width: 20px; height: 20px;
+  color: var(--muted);
+  flex-shrink: 0;
+  transition: transform .25s ease;
+  margin-top: 2px;
+}
+
+.qa-card.open .q-arrow { transform: rotate(180deg); }
+
+/* ─── ANSWER ─────────────────────────────────────────────────── */
+.qa-answer {
+  display: none;
+  border-top: 1px solid var(--border);
+  padding: 20px;
+  background: var(--bg);
+}
+
+.qa-card.open .qa-answer { display: block; }
+
+.answer-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  margin-bottom: 14px;
+}
+[data-level="1"] .answer-label { color: var(--l1); }
+[data-level="2"] .answer-label { color: var(--l2); }
+[data-level="3"] .answer-label { color: var(--l3); }
+[data-level="4"] .answer-label { color: var(--l4); }
+
+.answer-para {
+  color: #c8d4e4;
+  margin-bottom: 12px;
+  font-size: 14.5px;
+  line-height: 1.75;
+}
+
+.answer-bullet {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 8px;
+  font-size: 14.5px;
+  color: #c8d4e4;
+  line-height: 1.65;
+}
+
+.bullet-arrow {
+  flex-shrink: 0;
+  margin-top: 3px;
+  font-size: 12px;
+}
+[data-level="1"] .bullet-arrow { color: var(--l1); }
+[data-level="2"] .bullet-arrow { color: var(--l2); }
+[data-level="3"] .bullet-arrow { color: var(--l3); }
+[data-level="4"] .bullet-arrow { color: var(--l4); }
+
+.code-block {
+  background: var(--code-bg);
+  border: 1px solid #1e2a3d;
+  border-radius: 8px;
+  padding: 14px 16px;
+  margin: 12px 0;
+  overflow-x: auto;
+  border-left: 3px solid;
+}
+[data-level="1"] .code-block { border-left-color: var(--l1); }
+[data-level="2"] .code-block { border-left-color: var(--l2); }
+[data-level="3"] .code-block { border-left-color: var(--l3); }
+[data-level="4"] .code-block { border-left-color: var(--l4); }
+
+.code-block code {
+  font-family: var(--mono);
+  font-size: 12.5px;
+  line-height: 1.8;
+  color: #a8c4e8;
+  white-space: pre;
+}
+
+/* highlight some keywords */
+.kw { color: #f97583; }
+.kw2 { color: #79c0ff; }
+.str { color: #9ecbff; }
+.cm { color: #6a7f9c; font-style: italic; }
+
+/* ─── NOTE ───────────────────────────────────────────────────── */
+.note {
+  display: flex;
+  gap: 10px;
+  background: rgba(249,115,22,.07);
+  border: 1px solid rgba(249,115,22,.2);
+  border-radius: 7px;
+  padding: 10px 14px;
+  margin-top: 12px;
+  font-size: 13.5px;
+  color: #f0c090;
+  line-height: 1.6;
+}
+
+.note-icon { flex-shrink: 0; font-size: 14px; margin-top: 1px; }
+
+/* ─── NO RESULTS ─────────────────────────────────────────────── */
+.no-results {
+  text-align: center;
+  padding: 80px 0;
+  color: var(--muted);
+  display: none;
+}
+.no-results.show { display: block; }
+.no-results .nr-icon { font-size: 40px; margin-bottom: 12px; }
+.no-results p { font-size: 15px; }
+
+/* ─── SCROLLBAR ──────────────────────────────────────────────── */
+::-webkit-scrollbar { width: 6px; height: 6px; }
+::-webkit-scrollbar-track { background: var(--bg); }
+::-webkit-scrollbar-thumb { background: #2a3248; border-radius: 4px; }
+::-webkit-scrollbar-thumb:hover { background: #3a4568; }
+
+/* ─── HIGHLIGHT ──────────────────────────────────────────────── */
+mark { background: rgba(251,191,36,.25); color: var(--white); border-radius: 2px; }
+
+/* ─── RESPONSIVE ─────────────────────────────────────────────── */
+@media (max-width: 860px) {
+  :root { --sidebar-w: 0px; }
+  .sidebar { display: none; }
+  .hero, .search-bar, .content { padding-left: 20px; padding-right: 20px; }
+}
+</style>
+</head>
+<body>
+
+<!-- ═══ SIDEBAR ═══════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sidebar-logo">
+    <h1><span>.NET</span> Interview<br>Guide</h1>
+    <p>Senior Developer Edition</p>
+  </div>
+  <nav class="sidebar-nav">
+    <div class="nav-level-label">Level 1 — Basics</div>
+    <a class="nav-item" data-level="1" href="#basic-syntax"><span class="dot"></span>Basic Syntax</a>
+    <a class="nav-item" data-level="1" href="#types-operators"><span class="dot"></span>Types &amp; Operators</a>
+    <a class="nav-item" data-level="1" href="#functions-classes"><span class="dot"></span>Functions &amp; Classes</a>
+
+    <div class="nav-level-label">Level 2 — Web &amp; Desktop</div>
+    <a class="nav-item" data-level="2" href="#aspnet-core"><span class="dot"></span>ASP.NET Core MVC</a>
+    <a class="nav-item" data-level="2" href="#linq"><span class="dot"></span>LINQ &amp; Collections</a>
+    <a class="nav-item" data-level="2" href="#di"><span class="dot"></span>Dependency Injection</a>
+
+    <div class="nav-level-label">Level 3 — Architecture</div>
+    <a class="nav-item" data-level="3" href="#ef-core"><span class="dot"></span>Entity Framework Core</a>
+    <a class="nav-item" data-level="3" href="#async"><span class="dot"></span>Async Programming</a>
+    <a class="nav-item" data-level="3" href="#testing"><span class="dot"></span>Testing (xUnit/NUnit)</a>
+    <a class="nav-item" data-level="3" href="#clean-arch"><span class="dot"></span>Clean Architecture</a>
+    <a class="nav-item" data-level="3" href="#patterns"><span class="dot"></span>Design Patterns</a>
+
+    <div class="nav-level-label">Level 4 — Cloud &amp; Advanced</div>
+    <a class="nav-item" data-level="4" href="#microservices"><span class="dot"></span>Microservices</a>
+    <a class="nav-item" data-level="4" href="#azure"><span class="dot"></span>Azure Integration</a>
+    <a class="nav-item" data-level="4" href="#cicd"><span class="dot"></span>CI/CD Pipelines</a>
+    <a class="nav-item" data-level="4" href="#performance"><span class="dot"></span>Performance Tuning</a>
+    <a class="nav-item" data-level="4" href="#advanced-csharp"><span class="dot"></span>Advanced C#</a>
+  </nav>
+  <div class="sidebar-footer">
+    <div>Reading progress</div>
+    <div class="progress-bar"><div class="progress-fill" id="progress-fill"></div></div>
+  </div>
+</aside>
+
+<!-- ═══ MAIN ═══════════════════════════════════════════════════ -->
+<main class="main">
+
+  <!-- Hero -->
+  <section class="hero">
+    <div class="hero-badge">🎯 Interview Preparation</div>
+    <h1><span class="net">.NET</span> <span class="interview">Interview</span><br>Mastery Guide</h1>
+    <p>50 senior-level questions with production-grade answers, code examples, and pitfall warnings — covering all four pyramid levels.</p>
+    <div class="hero-stats">
+      <div class="stat"><span class="stat-num">50</span><span class="stat-label">Questions</span></div>
+      <div class="stat"><span class="stat-num">4</span><span class="stat-label">Levels</span></div>
+      <div class="stat"><span class="stat-num">14</span><span class="stat-label">Topics</span></div>
+      <div class="stat"><span class="stat-num">30+</span><span class="stat-label">Code Examples</span></div>
+    </div>
+    <div class="level-pills">
+      <span class="pill l1">🟢 L1 Foundational</span>
+      <span class="pill l2">🔵 L2 Web &amp; Desktop</span>
+      <span class="pill l3">🟠 L3 Architecture</span>
+      <span class="pill l4">🟣 L4 Cloud &amp; Advanced</span>
+    </div>
+  </section>
+
+  <!-- Search -->
+  <div class="search-bar">
+    <input class="search-input" id="search" type="text" placeholder="Search questions... (e.g. async, CQRS, Span)" autocomplete="off"/>
+    <div class="search-hint">Showing <span id="match-count">50</span> questions · Click any question to expand the answer</div>
+  </div>
+
+  <div class="content">
+    <div class="no-results" id="no-results">
+      <div class="nr-icon">🔍</div>
+      <p>No questions match your search. Try a different keyword.</p>
+    </div>
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     LEVEL 1 — FOUNDATIONAL
+════════════════════════════════════════════════════════════════════ -->
+<div class="level-section" id="level1">
+  <div class="level-header lh-l1" data-label="L1">
+    <div class="level-icon">🟢</div>
+    <div>
+      <div class="level-title">Level 1 — Foundational C# &amp; .NET Basics</div>
+      <div class="level-subtitle">Core language features every .NET developer must master</div>
+    </div>
+    <span class="level-count">9 Questions</span>
+  </div>
+
+  <!-- Basic Syntax -->
+  <div class="topic-group" id="basic-syntax">
+    <div class="topic-label">Basic Syntax</div>
+
+    <div class="qa-card" data-level="1">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q1</span>
+        <span class="q-text">What is the difference between value types and reference types in C#?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Value types store data directly on the stack (or inline inside an object on the heap). Reference types store a pointer to heap-allocated memory.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Value types:</strong> int, double, bool, struct, enum — copied on assignment. Changes to a copy don't affect the original.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Reference types:</strong> class, interface, delegate, string, array — assignment copies the reference, not the data. Both variables point to the same object.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Structs</strong> are value types — passed by value by default; use <code>ref</code>/<code>out</code>/<code>in</code> to pass by reference.</span></div>
+        <div class="note"><span class="note-icon">⚠️</span><span><strong>Why it matters:</strong> Reference-type aliasing is a common source of subtle mutation bugs. Choosing struct vs class directly affects GC pressure, memory layout, and performance in tight loops.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="1">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q2</span>
+        <span class="q-text">Explain boxing and unboxing. What are the performance implications?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Boxing converts a value type to <code>object</code> (heap allocation). Unboxing extracts the value type back from <code>object</code> with a runtime type-check.</p>
+        <div class="code-block"><code><span class="kw2">int</span> x = 42;
+<span class="kw2">object</span> boxed   = x;          <span class="cm">// Boxing   — new heap allocation</span>
+<span class="kw2">int</span>    unboxed = (<span class="kw2">int</span>)boxed;  <span class="cm">// Unboxing  — type-check + copy</span></code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Each boxing creates a new heap object → increased GC pressure.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Avoid in hot paths by using generics (<code>List&lt;int&gt;</code> vs <code>ArrayList</code>) or <code>Span&lt;T&gt;</code>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Common hidden boxing: using a value type as an interface, string formatting with <code>object</code> params pre-C#10.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="1">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q3</span>
+        <span class="q-text">What is the difference between const and readonly?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>const:</strong> Compile-time constant. Must be a primitive/string literal. Inlined at compile time into all consumers. Implicitly static.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>readonly:</strong> Runtime constant. Can be any type. Set only in declaration or constructor. Instance field.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>static readonly:</strong> One shared instance, set once at class initialization. Use for complex objects (e.g., <code>static readonly ImmutableList&lt;string&gt;</code>).</span></div>
+        <div class="note"><span class="note-icon">⚠️</span><span><strong>Pitfall:</strong> Changing a public <code>const</code> in a library requires recompilation of ALL consumers (value is baked in). <code>static readonly</code> avoids binary compatibility issues.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Types & Operators -->
+  <div class="topic-group" id="types-operators">
+    <div class="topic-label">Types &amp; Operators</div>
+
+    <div class="qa-card" data-level="1">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q4</span>
+        <span class="q-text">What are nullable value types and how do they work internally?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para"><code>int?</code> is syntactic sugar for <code>Nullable&lt;int&gt;</code> — a struct containing a <code>bool HasValue</code> and a <code>T Value</code> field.</p>
+        <div class="code-block"><code><span class="kw2">int</span>? x = <span class="kw">null</span>;
+<span class="kw">if</span> (x.HasValue) Console.WriteLine(x.Value);
+<span class="kw">int</span> safe = x ?? 0; <span class="cm">// null-coalescing fallback</span></code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Nullable reference types (C# 8+):</strong> compiler-level feature only — no runtime change. Enables static flow analysis to warn about possible null dereferences.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Enable with <code>#nullable enable</code> or in <code>.csproj</code> with <code>&lt;Nullable&gt;enable&lt;/Nullable&gt;</code>.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="1">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q5</span>
+        <span class="q-text">Explain the null-coalescing (??) and null-conditional (?.) operators.</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="code-block"><code><span class="kw2">string</span> name = user?.Name ?? <span class="str">"Guest"</span>;  <span class="cm">// safe nav + fallback</span>
+user?.Orders?.ForEach(o => Process(o));  <span class="cm">// chained null-conditional</span>
+count ??= 0;                             <span class="cm">// null-coalescing assignment (C# 8)</span></code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>?.</code> short-circuits the entire expression to <code>null</code> if the left side is null — prevents <code>NullReferenceException</code>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>??</code> returns the right-hand value when the left side is null.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>??=</code> assigns the right-hand value only if the variable is currently null — useful for lazy initialization.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="1">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q6</span>
+        <span class="q-text">What is the difference between == and .Equals() in C#?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>==</code> for value types: compares values. For reference types: compares references (memory address) unless overloaded.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>.Equals()</code> is a virtual method — can be overridden for value semantics (e.g., <code>string</code>, <code>DateTime</code>).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>string</code> special case: overloads <code>==</code> to compare content, so <code>"abc" == "abc"</code> is always <code>true</code>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>Object.ReferenceEquals(a, b)</code> always checks reference identity regardless of any overloads.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Functions & Classes -->
+  <div class="topic-group" id="functions-classes">
+    <div class="topic-label">Functions &amp; Classes</div>
+
+    <div class="qa-card" data-level="1">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q7</span>
+        <span class="q-text">What is the difference between abstract class and interface in C#?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Abstract class:</strong> can have state (fields), constructors, concrete methods, access modifiers. Single inheritance only.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Interface:</strong> historically only contracts; since C# 8 can have default method implementations. Multiple inheritance supported.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Use abstract class when classes share implementation or state (IS-A relationship).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Use interface for defining capabilities across unrelated types (CAN-DO relationship, e.g., <code>IDisposable</code>, <code>IComparable</code>).</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="1">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q8</span>
+        <span class="q-text">What are extension methods and when should you use them?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Extension methods add methods to existing types without modifying or subclassing them. Defined as static methods in a static class with <code>this</code> on the first parameter.</p>
+        <div class="code-block"><code><span class="kw">public static</span> <span class="kw2">string</span> Truncate(<span class="kw">this</span> <span class="kw2">string</span> s, <span class="kw2">int</span> max)
+    => s.Length &lt;= max ? s : s[..max] + <span class="str">"..."</span>;</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Good use: utilities on sealed types (<code>string</code>, <code>List&lt;T&gt;</code>), fluent builder APIs, and LINQ-style chaining.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Overuse pollutes IntelliSense. Keep extension methods close to the types they extend and in focused namespaces.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="1">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q9</span>
+        <span class="q-text">Explain method overloading vs. overriding.</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Overloading:</strong> same method name, different parameters. Resolved at compile time (static dispatch). No polymorphism.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Overriding:</strong> subclass redefines a <code>virtual</code>/<code>abstract</code> method. Resolved at runtime (dynamic dispatch via vtable). True polymorphism.</span></div>
+        <div class="code-block"><code><span class="cm">// virtual + override = runtime polymorphism</span>
+<span class="kw">public virtual</span>  <span class="kw2">string</span> GetLabel() => <span class="str">"Base"</span>;
+<span class="kw">public override</span> <span class="kw2">string</span> GetLabel() => <span class="str">"Derived"</span>;
+
+<span class="cm">// new = HIDING (not polymorphism — avoid)</span>
+<span class="kw">public new</span> <span class="kw2">string</span> GetLabel() => <span class="str">"Hidden"</span>;</code></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /level1 -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     LEVEL 2 — WEB & DESKTOP
+════════════════════════════════════════════════════════════════════ -->
+<div class="level-section" id="level2">
+  <div class="level-header lh-l2" data-label="L2">
+    <div class="level-icon">🔵</div>
+    <div>
+      <div class="level-title">Level 2 — Web &amp; Desktop Development</div>
+      <div class="level-subtitle">ASP.NET Core, LINQ, Dependency Injection &amp; more</div>
+    </div>
+    <span class="level-count">9 Questions</span>
+  </div>
+
+  <div class="topic-group" id="aspnet-core">
+    <div class="topic-label">ASP.NET Core MVC</div>
+
+    <div class="qa-card" data-level="2">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q10</span>
+        <span class="q-text">Explain the ASP.NET Core request pipeline and middleware.</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">The pipeline is a chain of middleware components. Each can inspect/modify the request, pass it to the next component, and process the response on the way back.</p>
+        <div class="code-block"><code>app.UseExceptionHandler();     <span class="cm">// outermost — catches everything</span>
+app.UseAuthentication();      <span class="cm">// must come before Authorization</span>
+app.UseAuthorization();
+app.UseResponseCaching();
+app.MapControllers();         <span class="cm">// terminal — handles the request</span></code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>Use()</code> passes to next. <code>Run()</code> is terminal (no next call). <code>Map()</code> branches on path prefix.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Order is critical: authentication must precede authorization. Exception handler must be outermost to catch errors from all downstream middleware.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="2">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q11</span>
+        <span class="q-text">What is the difference between IActionResult and ActionResult&lt;T&gt;?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>IActionResult</code>: non-generic, can return any HTTP result type.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>ActionResult&lt;T&gt;</code>: generic wrapper — return <code>T</code> directly (auto-wrapped in 200 OK) OR any <code>IActionResult</code> for error cases.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Enables Swagger/OpenAPI to automatically infer the success response schema.</span></div>
+        <div class="code-block"><code><span class="kw">public</span> ActionResult&lt;UserDto&gt; GetUser(<span class="kw2">int</span> id)
+    => user <span class="kw">is null</span> ? NotFound() : user; <span class="cm">// implicit cast to 200 OK</span></code></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="2">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q12</span>
+        <span class="q-text">How does model binding work in ASP.NET Core?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Model binding maps HTTP request data to action parameters automatically. Sources are tried in a defined order unless explicitly specified.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>[FromRoute]</code> — URL path segments (<code>/orders/{id}</code>).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>[FromQuery]</code> — query string (<code>?page=2&size=10</code>).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>[FromBody]</code> — deserializes JSON/XML body. Only one per action.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>[FromHeader]</code> — reads from HTTP headers.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Custom model binders implement <code>IModelBinder</code> for multi-source or complex scenarios.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="2">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q13</span>
+        <span class="q-text">What are Action Filters in ASP.NET Core and what are the filter types?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Filters inject code at specific stages of the MVC pipeline, implementing cross-cutting concerns without polluting action methods.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Authorization filters</strong> — run first. Short-circuit if unauthorized. Implement <code>IAuthorizationFilter</code>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Resource filters</strong> — run after auth, before model binding. Good for caching at the filter level.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Action filters</strong> — before/after action execution. Common for validation, logging.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Exception filters</strong> — handle unhandled exceptions from actions.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Result filters</strong> — before/after the IActionResult executes (response formatting).</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-group" id="linq">
+    <div class="topic-label">LINQ &amp; Collections</div>
+
+    <div class="qa-card" data-level="2">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q14</span>
+        <span class="q-text">What is the difference between IEnumerable&lt;T&gt; and IQueryable&lt;T&gt;?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>IEnumerable&lt;T&gt;</code>: in-memory LINQ. Data is loaded first; all operations run as C# delegates.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>IQueryable&lt;T&gt;</code>: builds an expression tree, translated to SQL by EF Core and executed on the database. Only necessary data is fetched.</span></div>
+        <div class="code-block"><code><span class="cm">// BAD: loads ALL orders, filters in-memory</span>
+var q = ctx.Orders.AsEnumerable().Where(o => o.Total > 100);
+
+<span class="cm">// GOOD: WHERE clause goes to SQL</span>
+var q = ctx.Orders.Where(o => o.Total > 100);</code></div>
+        <div class="note"><span class="note-icon">⚠️</span><span>Calling <code>.ToList()</code> or <code>.AsEnumerable()</code> too early converts <code>IQueryable</code> → <code>IEnumerable</code>. All remaining LINQ runs in-memory after loading every row.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="2">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q15</span>
+        <span class="q-text">Explain deferred execution in LINQ.</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">LINQ queries are not executed when defined — they are executed when enumerated (foreach, ToList(), Count(), First(), etc.).</p>
+        <div class="code-block"><code><span class="kw">var</span> query = list.Where(x => x.Age > 18); <span class="cm">// Not executed yet</span>
+list.Add(<span class="kw">new</span> Person { Age = 25 });       <span class="cm">// This person IS included below</span>
+<span class="kw">foreach</span> (<span class="kw">var</span> p <span class="kw">in</span> query) { }            <span class="cm">// Executes NOW against modified list</span></code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Use <code>.ToList()</code> to materialize immediately when you need a stable snapshot.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Multiple enumeration of the same <code>IEnumerable</code> query executes it multiple times — <code>ToList()</code> once and reuse.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="2">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q16</span>
+        <span class="q-text">What is the difference between Select and SelectMany?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>Select</code>: projects each element to a new form — 1:1 mapping. Result is <code>IEnumerable&lt;IEnumerable&lt;T&gt;&gt;</code> for nested collections.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>SelectMany</code>: flattens one level of nesting — 1:many mapping. Result is a single <code>IEnumerable&lt;T&gt;</code>.</span></div>
+        <div class="code-block"><code><span class="cm">// Select → nested: IEnumerable&lt;IEnumerable&lt;OrderItem&gt;&gt;</span>
+<span class="kw">var</span> nested = orders.Select(o => o.Items);
+
+<span class="cm">// SelectMany → flat: IEnumerable&lt;OrderItem&gt;</span>
+<span class="kw">var</span> flat = orders.SelectMany(o => o.Items);</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-group" id="di">
+    <div class="topic-label">Dependency Injection</div>
+
+    <div class="qa-card" data-level="2">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q17</span>
+        <span class="q-text">Explain the three DI lifetime scopes in ASP.NET Core.</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Transient</strong> (<code>AddTransient</code>): new instance on every injection. Best for lightweight, stateless services.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Scoped</strong> (<code>AddScoped</code>): one instance per HTTP request (per DI scope). Best for <code>DbContext</code>, unit-of-work, repositories.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Singleton</strong> (<code>AddSingleton</code>): one instance for the entire app lifetime. Must be thread-safe.</span></div>
+        <div class="note"><span class="note-icon">⚠️</span><span><strong>Captive dependency:</strong> injecting a Scoped service into a Singleton is a bug — the Scoped service lives too long and shares mutable state across requests. ASP.NET Core's DI validates this in Development mode.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="2">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q18</span>
+        <span class="q-text">What is the Service Locator anti-pattern and why should it be avoided?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Service Locator uses a global registry (<code>IServiceProvider</code>) to resolve dependencies at runtime inside classes, hiding them from the constructor.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Problem 1:</strong> Hidden dependencies — not visible in the constructor, making the class impossible to test in isolation.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Problem 2:</strong> Violates Dependency Inversion Principle — high-level module depends on the container.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Problem 3:</strong> Runtime errors instead of compile-time errors when a service is missing.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Correct approach:</strong> constructor injection always. Use <code>IServiceProvider</code> only in factories, middleware bootstrapping, or truly dynamic scenarios.</span></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /level2 -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     LEVEL 3 — ARCHITECTURE & DATA
+════════════════════════════════════════════════════════════════════ -->
+<div class="level-section" id="level3">
+  <div class="level-header lh-l3" data-label="L3">
+    <div class="level-icon">🟠</div>
+    <div>
+      <div class="level-title">Level 3 — Architecture &amp; Data</div>
+      <div class="level-subtitle">EF Core, Async, Testing, Clean Architecture &amp; Design Patterns</div>
+    </div>
+    <span class="level-count">16 Questions</span>
+  </div>
+
+  <div class="topic-group" id="ef-core">
+    <div class="topic-label">Entity Framework Core</div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q19</span>
+        <span class="q-text">Explain the difference between eager, lazy, and explicit loading in EF Core.</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Eager loading:</strong> <code>Include()</code> — loads related data in the same SQL query via JOIN. Best for known, required navigations.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Lazy loading:</strong> navigation loaded on first access via proxy. Requires <code>UseLazyLoadingProxies()</code>. High risk of N+1 queries.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Explicit loading:</strong> <code>context.Entry(order).Collection(o => o.Items).LoadAsync()</code> — manual, on demand. Predictable but verbose.</span></div>
+        <div class="code-block"><code><span class="cm">// Eager loading — one SQL JOIN query</span>
+<span class="kw">var</span> orders = ctx.Orders
+    .Include(o => o.Customer)
+    .Include(o => o.Items)
+    .ToListAsync();</code></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q20</span>
+        <span class="q-text">What is the N+1 query problem and how do you fix it?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">N+1 occurs when fetching N records triggers 1 query for the list plus N separate queries for each related entity.</p>
+        <div class="code-block"><code><span class="cm">// N+1: 1 query for orders + N queries for Customer</span>
+<span class="kw">var</span> orders = ctx.Orders.ToList();
+orders.ForEach(o => Console.Write(o.Customer.Name)); <span class="cm">// lazy load per order!</span>
+
+<span class="cm">// Fix: eager load with Include</span>
+<span class="kw">var</span> orders = ctx.Orders.Include(o => o.Customer).ToList();</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Also fix with projection: <code>Select(o => new { o.Id, CustomerName = o.Customer.Name })</code> — fetches only what you need.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Use <code>AsSplitQuery()</code> for multiple collection includes to avoid Cartesian explosion.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q21</span>
+        <span class="q-text">What are owned entities in EF Core and when do you use them?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Owned entities belong to another entity and have no independent identity. They map to the owner's table by default (no separate primary key).</p>
+        <div class="code-block"><code>modelBuilder.Entity&lt;Order&gt;().OwnsOne(o => o.ShippingAddress);
+<span class="cm">// ShippingAddress columns are embedded in the Orders table</span></code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Perfect for DDD Value Objects: <code>Address</code>, <code>Money</code>, <code>DateRange</code> — they have no separate lifecycle.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Owned entities cannot be queried independently (no <code>DbSet&lt;Address&gt;</code>).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Use <code>OwnsMany</code> for collections of value objects stored in a separate table.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-group" id="async">
+    <div class="topic-label">Asynchronous Programming</div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q22</span>
+        <span class="q-text">What is the difference between Task and ValueTask?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>Task</code>: a reference type — always allocates on the heap, even for already-completed operations.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>ValueTask</code>: a value type — avoids heap allocation when the result is available synchronously (cache hit, fast path).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Use <code>ValueTask</code> for high-frequency APIs where results are often synchronous (e.g., <code>IAsyncEnumerable</code>, cache reads).</span></div>
+        <div class="note"><span class="note-icon">⚠️</span><span><strong>Important:</strong> Never await a <code>ValueTask</code> more than once, and never store it in a field — unlike <code>Task</code>, it is not safe to reuse.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q23</span>
+        <span class="q-text">What is async void and why is it dangerous?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para"><code>async void</code> cannot be awaited. Exceptions thrown inside it propagate to the SynchronizationContext and crash the process.</p>
+        <div class="code-block"><code><span class="cm">// DANGEROUS — exception is unobservable by caller</span>
+<span class="kw">async void</span> LoadData() { <span class="kw">throw new</span> Exception(<span class="str">"Crash"</span>); }
+
+<span class="cm">// CORRECT — return Task so callers can await and handle</span>
+<span class="kw">async</span> Task LoadDataAsync() { <span class="kw">throw new</span> Exception(<span class="str">"Caught"</span>); }</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Only valid use: event handlers (required by <code>EventHandler</code> delegate signature).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>In all other cases, return <code>async Task</code>. Use Roslyn analyzer <strong>AsyncFixer</strong> to catch <code>async void</code> usage automatically.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q24</span>
+        <span class="q-text">What is ConfigureAwait(false) and when should you use it?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">By default, <code>await</code> resumes on the captured SynchronizationContext (UI thread / ASP.NET request context). <code>ConfigureAwait(false)</code> skips that restore step.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Use in <strong>library/infrastructure code</strong> to avoid deadlocks and reduce context-switching overhead.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Do <strong>NOT</strong> use in UI code or anywhere you need to update the UI after await — you must be back on the UI thread.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>ASP.NET Core has no SynchronizationContext, so <code>ConfigureAwait(false)</code> has negligible impact there — but it's still best practice for portable library code.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q25</span>
+        <span class="q-text">How do you handle cancellation in async methods?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="code-block"><code><span class="kw">public async</span> Task DoWorkAsync(CancellationToken ct = <span class="kw">default</span>)
+{
+    ct.ThrowIfCancellationRequested();         <span class="cm">// cooperative check</span>
+    <span class="kw">await</span> _repo.FetchAsync(ct);               <span class="cm">// propagate to IO</span>
+    <span class="kw">await</span> Task.Delay(1000, ct);               <span class="cm">// cancellable wait</span>
+}</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Always accept <code>CancellationToken</code> in public async APIs. Propagate it to every async call.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Link tokens: <code>CancellationTokenSource.CreateLinkedTokenSource(ct1, ct2)</code> for composite cancellation (request timeout + user cancel).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>ASP.NET Core automatically passes the HTTP request's CancellationToken as <code>HttpContext.RequestAborted</code>.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-group" id="testing">
+    <div class="topic-label">Testing (xUnit / NUnit)</div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q26</span>
+        <span class="q-text">What is the difference between unit, integration, and end-to-end tests?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Unit tests:</strong> one class/method in isolation. All dependencies mocked. Fast, deterministic. Run on every commit.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Integration tests:</strong> multiple real components together (controller + service + real DB). Slower. Cover actual interactions and wiring.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>E2E tests:</strong> entire system via its public interface (browser, HTTP). Slowest. Highest confidence. Run in CI.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Test Pyramid:</strong> many unit → fewer integration → minimal E2E. Inverting this ("ice cream cone") leads to slow, flaky test suites.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q27</span>
+        <span class="q-text">What is the AAA pattern in testing?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="code-block"><code><span class="cm">// Arrange — set up dependencies and input</span>
+<span class="kw">var</span> repo = <span class="kw">new</span> Mock&lt;IOrderRepository&gt;();
+repo.Setup(r => r.GetByIdAsync(1, default)).ReturnsAsync(order);
+<span class="kw">var</span> svc = <span class="kw">new</span> OrderService(repo.Object);
+
+<span class="cm">// Act — execute the unit under test</span>
+<span class="kw">var</span> result = <span class="kw">await</span> svc.GetOrderAsync(1);
+
+<span class="cm">// Assert — verify outcome</span>
+Assert.NotNull(result);
+Assert.Equal(<span class="str">"Pending"</span>, result.Status);</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Keep each test focused on <strong>one behavior</strong>. One Act, multiple Asserts on related properties is fine.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q28</span>
+        <span class="q-text">What is mocking and when should you use it?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Mocking replaces real dependencies with controlled fakes that return predefined values or verify call interactions.</p>
+        <div class="code-block"><code><span class="kw">var</span> mock = <span class="kw">new</span> Mock&lt;IOrderRepository&gt;();
+mock.Setup(r => r.GetByIdAsync(1, default)).ReturnsAsync(order);
+mock.Verify(r => r.SaveAsync(It.IsAny&lt;Order&gt;(), default), Times.Once);</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Use <strong>Moq</strong> or <strong>NSubstitute</strong> to mock interfaces in unit tests.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Don't mock types you don't own (e.g., <code>HttpClient</code> directly — wrap it behind an interface or use <code>IHttpClientFactory</code>).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Over-mocking leads to brittle tests that break on implementation changes. Test behavior, not implementation details.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-group" id="clean-arch">
+    <div class="topic-label">Clean Architecture</div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q29</span>
+        <span class="q-text">Explain the layers in Clean Architecture and their responsibilities.</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Domain:</strong> Entities, Value Objects, Domain Events, Aggregates. Zero external dependencies. Pure business rules.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Application:</strong> Use Cases (Commands/Queries via CQRS), DTOs, interfaces (IOrderRepository). Depends only on Domain.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Infrastructure:</strong> EF Core, file system, external APIs, email. Implements Application interfaces.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Presentation:</strong> Controllers, Minimal API, gRPC, CLI. Calls Application use cases. No business logic.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Dependency Rule:</strong> source code dependencies always point inward. Inner layers know nothing about outer layers.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q30</span>
+        <span class="q-text">What is the Dependency Rule and why is it the core of Clean Architecture?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">The Dependency Rule states that nothing in an inner layer can depend on anything in an outer layer. All dependencies point inward toward the Domain.</p>
+        <p class="answer-para">This is enforced via Dependency Inversion: Application defines <code>IOrderRepository</code>; Infrastructure provides <code>EfOrderRepository : IOrderRepository</code>. DI wires them at startup.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Benefit:</strong> Core business logic has zero framework/database dependencies — it is 100% unit-testable without spinning up a DB.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Practical check:</strong> if your Domain project references <code>Microsoft.EntityFrameworkCore</code>, you've violated the rule.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-group" id="patterns">
+    <div class="topic-label">C# Design Patterns</div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q31</span>
+        <span class="q-text">Explain the Repository pattern and its benefits and pitfalls.</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Repository abstracts data access behind an interface, decoupling business logic from the persistence technology.</p>
+        <div class="code-block"><code><span class="kw">public interface</span> IOrderRepository
+{
+    Task&lt;Order?&gt; GetByIdAsync(<span class="kw2">int</span> id, CancellationToken ct);
+    Task AddAsync(Order order, CancellationToken ct);
+    Task SaveChangesAsync(CancellationToken ct);
+}</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Benefits: Testable (mock the interface), swappable storage (replace EF with Dapper), consistent querying surface.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Anti-pattern:</strong> Generic <code>Repository&lt;T&gt;</code> that exposes <code>IQueryable&lt;T&gt;</code> — leaks EF abstractions and defeats the purpose.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q32</span>
+        <span class="q-text">What is the CQRS pattern?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">CQRS (Command Query Responsibility Segregation) separates read and write operations into distinct models — different handlers, possibly different data stores.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Commands:</strong> mutate state, return void or a minimal result (ID). E.g., <code>CreateOrderCommand</code>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Queries:</strong> read state, never mutate. E.g., <code>GetOrderByIdQuery</code>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>MediatR</strong> is the standard .NET library — <code>IRequest&lt;T&gt;</code> + <code>IRequestHandler&lt;TRequest, TResponse&gt;</code>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Benefit: Read models use fast, raw SQL (Dapper) while writes use full EF with domain logic. Each side scales independently.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q33</span>
+        <span class="q-text">Explain the Decorator pattern with a real-world .NET example.</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Decorator wraps an object to add behavior transparently, without modifying the original class — a clean application of the Open/Closed Principle.</p>
+        <div class="code-block"><code><span class="kw">public class</span> CachedOrderRepository : IOrderRepository
+{
+    <span class="kw">private readonly</span> IOrderRepository _inner;
+    <span class="kw">private readonly</span> IMemoryCache _cache;
+
+    <span class="kw">public async</span> Task&lt;Order?&gt; GetByIdAsync(<span class="kw2">int</span> id, CancellationToken ct)
+        => <span class="kw">await</span> _cache.GetOrCreateAsync($<span class="str">"order:{id}"</span>,
+               _ => _inner.GetByIdAsync(id, ct));
+}</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Register with <strong>Scrutor</strong>: <code>services.Decorate&lt;IOrderRepository, CachedOrderRepository&gt;()</code>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Stack multiple decorators: caching → logging → retry — all transparently composable.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="3">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q34</span>
+        <span class="q-text">What is the difference between Factory Method and Abstract Factory patterns?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Factory Method:</strong> defines an interface for creating one product. Subclasses decide the concrete class. Extends via inheritance.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Abstract Factory:</strong> creates families of related products without specifying concrete classes. Groups multiple factory methods. Extends via composition.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><em>Example Factory Method:</em> <code>INotificationFactory.Create()</code> → either <code>EmailNotification</code> or <code>SmsNotification</code>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><em>Example Abstract Factory:</em> <code>IUIFactory.CreateButton() + CreateDialog() + CreateInput()</code> — consistent UI kit per theme.</span></div>
+      </div>
+    </div>
+  </div>
+</div><!-- /level3 -->
+
+<!-- ═══════════════════════════════════════════════════════════════════
+     LEVEL 4 — CLOUD & ADVANCED
+════════════════════════════════════════════════════════════════════ -->
+<div class="level-section" id="level4">
+  <div class="level-header lh-l4" data-label="L4">
+    <div class="level-icon">🟣</div>
+    <div>
+      <div class="level-title">Level 4 — Cloud &amp; Advanced</div>
+      <div class="level-subtitle">Microservices, Azure, CI/CD, Performance &amp; Advanced C# Features</div>
+    </div>
+    <span class="level-count">16 Questions</span>
+  </div>
+
+  <div class="topic-group" id="microservices">
+    <div class="topic-label">Microservices Architecture</div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q35</span>
+        <span class="q-text">What are the key principles of microservices architecture?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Single Responsibility:</strong> each service owns exactly one business capability (Order Service, Payment Service, etc.).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Autonomous:</strong> independently deployable, with its own database (database-per-service). No shared schemas.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Resilient:</strong> failures in one service do not cascade. Circuit breakers, retries, and timeouts are mandatory.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Decentralized:</strong> each team owns their service end-to-end (code → deploy → operate).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Communication:</strong> synchronous via REST/gRPC, or asynchronous via messaging (Service Bus, Kafka, RabbitMQ).</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q36</span>
+        <span class="q-text">What is the API Gateway pattern?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">An API Gateway is the single entry point for all clients. It handles cross-cutting concerns and routes requests to downstream microservices.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Responsibilities: authentication, rate limiting, SSL termination, request routing, response aggregation, load balancing.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>.NET options: <strong>YARP</strong> (Microsoft's reverse proxy), <strong>Ocelot</strong>, <strong>Azure API Management</strong>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>BFF (Backend for Frontend):</strong> a variant where each client type (mobile, web, partner) has its own tailored gateway.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q37</span>
+        <span class="q-text">How do you handle distributed transactions in microservices?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">2-phase commit (2PC) is avoided — it creates tight coupling and availability problems. Use the Saga pattern instead.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Saga — Choreography:</strong> services publish events and react to each other's events. Simple but hard to trace/debug.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Saga — Orchestration:</strong> a central saga coordinator directs each step and handles failures. More complex but auditable. Use MassTransit Sagas in .NET.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Always design compensating transactions (rollback steps) for each step that can fail.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Embrace eventual consistency — data will be consistent, just not immediately.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q38</span>
+        <span class="q-text">What patterns do you use to make microservices resilient?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Circuit Breaker (Polly):</strong> stop calling a failing service. After N failures, open the circuit for a cool-down period.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Retry with exponential backoff + jitter:</strong> retry transient failures, delay longer between each attempt, add randomness to avoid thundering herd.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Timeout:</strong> never wait indefinitely — set explicit timeouts on all downstream calls.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Bulkhead:</strong> limit concurrent calls to a service so failures don't exhaust shared thread pools.</span></div>
+        <div class="code-block"><code>services.AddHttpClient&lt;IOrderClient&gt;()
+    .AddPolicyHandler(GetRetryPolicy())
+    .AddPolicyHandler(GetCircuitBreakerPolicy());</code></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-group" id="azure">
+    <div class="topic-label">Azure Integration</div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q39</span>
+        <span class="q-text">What is the difference between Azure Functions and Azure App Service?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Azure Functions:</strong> serverless, event-driven. Pay per execution. Scales to zero. Cold-start latency. Best for discrete triggered tasks (webhooks, timers, queue processing).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>App Service:</strong> always-on PaaS. Predictable cost and latency. Min-instance control. Best for long-running APIs and web apps with consistent traffic.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Azure Container Apps:</strong> serverless containers with KEDA-based autoscaling. Good middle ground for microservices requiring container control without cold-start overhead.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q40</span>
+        <span class="q-text">What is Azure Service Bus and when would you use it over a direct HTTP call?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Azure Service Bus is an enterprise message broker supporting queues (point-to-point) and topics/subscriptions (publish/subscribe).</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Use when: decoupling microservices, guaranteed delivery, ordering, dead-letter handling, fan-out to multiple consumers.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Queues:</strong> one sender, one receiver. <strong>Topics:</strong> one sender, multiple filtered subscribers.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Prefer HTTP when: synchronous response is required (request/response pattern), low latency is critical, simple point-to-point.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>In .NET, use <strong>MassTransit</strong> or the <code>Azure.Messaging.ServiceBus</code> SDK for clean, testable integration.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q41</span>
+        <span class="q-text">How do you integrate Azure Key Vault in a .NET application?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="code-block"><code>builder.Configuration.AddAzureKeyVault(
+    <span class="kw">new</span> Uri($<span class="str">"https://{vaultName}.vault.azure.net/"</span>),
+    <span class="kw">new</span> DefaultAzureCredential()); <span class="cm">// Managed Identity — no secrets in code!</span>
+
+<span class="cm">// Access secrets transparently via IConfiguration</span>
+<span class="kw">var</span> connStr = config[<span class="str">"ConnectionStrings--Default"</span>];</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>DefaultAzureCredential</strong> tries Managed Identity, environment variables, VS dev credentials — no passwords in config.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Secret rotation is transparent in App Service with Key Vault references.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Use separate vaults per environment (dev/staging/prod) with environment-specific access policies.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-group" id="cicd">
+    <div class="topic-label">CI/CD Pipelines</div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q42</span>
+        <span class="q-text">What is the difference between Continuous Integration, Delivery, and Deployment?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>CI (Continuous Integration):</strong> every push triggers an automated build + full test suite. Goal: catch integration bugs early.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Continuous Delivery:</strong> every passing build is auto-released to staging — always deployable. Manual gate before production.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Continuous Deployment:</strong> fully automated end-to-end — every passing build goes to production without human approval.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>In Azure DevOps: CI = Build Pipeline. CD = Release Pipeline with environment gates and approvals.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q43</span>
+        <span class="q-text">What is blue-green deployment and what problem does it solve?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Blue-green maintains two identical production environments (blue = live, green = new version). Deploy to green, test it, then switch traffic instantly.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Zero-downtime deployments:</strong> traffic switch is atomic at the load balancer/DNS level.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Instant rollback:</strong> flip traffic back to blue if something goes wrong — no re-deploy needed.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Azure implementation: <strong>Deployment Slots</strong> in App Service. Use <em>Swap Slots</em> to promote green → blue.</span></div>
+        <div class="note"><span class="note-icon">⚠️</span><span><strong>Challenge:</strong> Database migrations must be backward-compatible with both versions simultaneously during the transition window.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-group" id="performance">
+    <div class="topic-label">Performance Tuning</div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q44</span>
+        <span class="q-text">How do you use BenchmarkDotNet to measure performance?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="code-block"><code>[MemoryDiagnoser]
+[SimpleJob(RuntimeMoniker.Net80)]
+<span class="kw">public class</span> StringBenchmarks
+{
+    [Benchmark(Baseline = <span class="kw">true</span>)]
+    <span class="kw">public string</span> Concatenation() => <span class="str">"Hello"</span> + <span class="str">" "</span> + <span class="str">"World"</span>;
+
+    [Benchmark]
+    <span class="kw">public string</span> StringBuilder()
+    {
+        <span class="kw">var</span> sb = <span class="kw">new</span> System.Text.StringBuilder();
+        <span class="kw">return</span> sb.Append(<span class="str">"Hello"</span>).Append(<span class="str">" "</span>).Append(<span class="str">"World"</span>).ToString();
+    }
+}</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Always run in Release mode: <code>dotnet run -c Release</code>.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>[MemoryDiagnoser]</code> reports allocations per operation — critical for identifying GC pressure.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Set <code>Baseline = true</code> on one method to get ratio comparisons in the results table.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q45</span>
+        <span class="q-text">What is the difference between Span&lt;T&gt; and Memory&lt;T&gt;?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>Span&lt;T&gt;</code>: a <code>ref struct</code>. Stack-only — cannot be stored on the heap, used in async methods, or boxed. Extremely fast. Works with arrays, stack memory, and unmanaged memory.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>Memory&lt;T&gt;</code>: a regular struct. Can be stored on the heap and used across <code>await</code> boundaries.</span></div>
+        <div class="code-block"><code><span class="cm">// Span — zero allocation string slice (synchronous)</span>
+ReadOnlySpan&lt;<span class="kw2">char</span>&gt; slice = input.AsSpan(0, 10);
+
+<span class="cm">// Memory — async compatible slice</span>
+ReadOnlyMemory&lt;<span class="kw2">byte</span>&gt; mem = buffer.AsMemory(0, 256);
+<span class="kw">await</span> stream.WriteAsync(mem, ct);</code></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q46</span>
+        <span class="q-text">How does the .NET garbage collector work?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">The .NET GC is a generational, tracing collector with three generations:</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Gen 0:</strong> newly allocated objects. Collected very frequently. Usually milliseconds.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Gen 1:</strong> objects that survived Gen 0. Buffer between short and long-lived objects.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>Gen 2:</strong> long-lived objects (singletons, caches). Collected rarely but expensively. Full GC.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><strong>LOH (Large Object Heap):</strong> objects ≥ 85 KB. Always Gen 2. Rarely compacted — can cause fragmentation.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Tuning: use <code>ArrayPool&lt;T&gt;</code>/<code>ObjectPool&lt;T&gt;</code> to reuse large objects, enable <strong>Server GC</strong> in web apps via <code>gcServer=true</code>.</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="topic-group" id="advanced-csharp">
+    <div class="topic-label">Advanced C# Features</div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q47</span>
+        <span class="q-text">What are records in C# and how do they differ from classes?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Records are reference types with <strong>value-based equality</strong> — equality compares property values, not references.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Immutable by default with <code>init</code>-only properties. Compiler generates <code>Equals</code>, <code>GetHashCode</code>, <code>ToString</code>, and <code>Deconstruct</code>.</span></div>
+        <div class="code-block"><code><span class="kw">public record</span> OrderDto(<span class="kw2">int</span> Id, <span class="kw2">string</span> Status);
+
+<span class="kw">var</span> original = <span class="kw">new</span> OrderDto(1, <span class="str">"Pending"</span>);
+<span class="kw">var</span> updated  = original <span class="kw">with</span> { Status = <span class="str">"Shipped"</span> }; <span class="cm">// non-destructive mutation</span>
+Console.WriteLine(original == updated); <span class="cm">// false — value equality</span></code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span><code>record struct</code> (C# 10): value type record. Best for small immutable value objects (coordinates, money amounts).</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q48</span>
+        <span class="q-text">What is pattern matching in C# and what forms does it take?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Pattern matching allows branching on the shape and content of data, far beyond simple type checks.</p>
+        <div class="code-block"><code><span class="kw2">string</span> Describe(<span class="kw2">object</span> o) => o <span class="kw">switch</span>
+{
+    <span class="kw2">int</span> n <span class="kw">when</span> n &lt; 0        => <span class="str">"negative int"</span>,
+    <span class="kw2">int</span> n                  => $<span class="str">"positive {n}"</span>,
+    <span class="kw2">string</span> { Length: 0 }   => <span class="str">"empty string"</span>,
+    <span class="kw">not null</span>               => <span class="str">"something else"</span>,
+    <span class="kw">null</span>                   => <span class="str">"null"</span>
+};</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Patterns: type, declaration, constant, relational, logical (<code>and</code>/<code>or</code>/<code>not</code>), property, positional, list (C# 11).</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Switch expressions are exhaustive — the compiler warns if a case is unreachable or missing.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q49</span>
+        <span class="q-text">What are Source Generators and what problems do they solve?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para">Source Generators run at compile time and produce C# code added to the compilation — replacing runtime reflection.</p>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Real-world examples: <code>System.Text.Json</code> serialization (<code>[JsonSerializable]</code>), <code>[GeneratedRegex]</code>, gRPC stubs, DI registrations.</span></div>
+        <div class="code-block"><code>[GeneratedRegex(<span class="str">@"\d{4}-\d{2}-\d{2}"</span>)]
+<span class="kw">private static partial</span> Regex DatePattern(); <span class="cm">// compiled regex, zero reflection</span></code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Benefits: zero runtime overhead, AOT (Native AOT) compatible, generated code is visible in IDE.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Implement <code>IIncrementalGenerator</code> (preferred over <code>ISourceGenerator</code>) for IDE performance.</span></div>
+      </div>
+    </div>
+
+    <div class="qa-card" data-level="4">
+      <div class="qa-question" onclick="toggle(this)">
+        <span class="q-num">Q50</span>
+        <span class="q-text">What is unsafe code in C# and when is it appropriate?</span>
+        <svg class="q-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="qa-answer">
+        <div class="answer-label">✔ Answer</div>
+        <p class="answer-para"><code>unsafe</code> allows direct pointer manipulation, bypassing the CLR's type safety and garbage collector tracking.</p>
+        <div class="code-block"><code><span class="kw">unsafe void</span> XorBuffer(<span class="kw2">byte</span>* src, <span class="kw2">byte</span>* dst, <span class="kw2">int</span> len)
+{
+    <span class="kw">for</span> (<span class="kw2">int</span> i = 0; i &lt; len; i++) dst[i] = (<span class="kw2">byte</span>)(src[i] ^ 0xFF);
+}</code></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Valid use cases: native library interop (P/Invoke), high-performance image/audio processing, custom allocators.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>In most scenarios, <code>Span&lt;T&gt;</code>, <code>Memory&lt;T&gt;</code>, and <code>NativeMemory</code> achieve the same performance without unsafe code.</span></div>
+        <div class="answer-bullet"><span class="bullet-arrow">▸</span><span>Requires <code>&lt;AllowUnsafeBlocks&gt;true&lt;/AllowUnsafeBlocks&gt;</code> in <code>.csproj</code>. Treat as a last resort.</span></div>
+      </div>
+    </div>
+
+  </div>
+</div><!-- /level4 -->
+
+  </div><!-- /content -->
+</main>
+
+<script>
+// ─── Toggle Q&A ────────────────────────────────────────────────
+function toggle(el) {
+  const card = el.closest('.qa-card');
+  card.classList.toggle('open');
+}
+
+// ─── Expand all that match search ─────────────────────────────
+const searchEl = document.getElementById('search');
+const matchCount = document.getElementById('match-count');
+const noResults = document.getElementById('no-results');
+const allCards = document.querySelectorAll('.qa-card');
+const allSections = document.querySelectorAll('.level-section, .topic-group');
+
+searchEl.addEventListener('input', () => {
+  const q = searchEl.value.trim().toLowerCase();
+  let visible = 0;
+
+  allCards.forEach(card => {
+    const text = card.textContent.toLowerCase();
+    const show = !q || text.includes(q);
+    card.classList.toggle('hidden', !show);
+    if (show) visible++;
+    if (show && q) card.classList.add('open');
+    else if (!q) card.classList.remove('open');
+  });
+
+  matchCount.textContent = visible;
+  noResults.classList.toggle('show', visible === 0);
+
+  // hide empty topic groups
+  document.querySelectorAll('.topic-group').forEach(group => {
+    const anyVisible = [...group.querySelectorAll('.qa-card')].some(c => !c.classList.contains('hidden'));
+    group.style.display = anyVisible ? '' : 'none';
+  });
+  document.querySelectorAll('.level-section').forEach(sec => {
+    const anyVisible = [...sec.querySelectorAll('.qa-card')].some(c => !c.classList.contains('hidden'));
+    sec.style.display = anyVisible ? '' : 'none';
+  });
+});
+
+// ─── Reading progress ──────────────────────────────────────────
+const fill = document.getElementById('progress-fill');
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  const pct = total > 0 ? (window.scrollY / total) * 100 : 0;
+  fill.style.width = pct + '%';
+});
+
+// ─── Active sidebar link ───────────────────────────────────────
+const navLinks = document.querySelectorAll('.nav-item');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + id);
+      });
+    }
+  });
+}, { rootMargin: '-20% 0px -70% 0px' });
+
+document.querySelectorAll('[id]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
