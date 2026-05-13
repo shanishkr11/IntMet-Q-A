@@ -1,0 +1,2418 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>.NET Senior Interview — 6+ Years | E-Commerce Edition</title>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=Fira+Code:wght@400;500&family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,400&display=swap" rel="stylesheet"/>
+<style>
+/* ═══════════════════════════════════════════
+   ROOT & RESET
+═══════════════════════════════════════════ */
+:root{
+  --bg:       #07090f;
+  --bg2:      #0d1018;
+  --bg3:      #111520;
+  --surface:  #141926;
+  --surf2:    #1a2033;
+  --border:   #222840;
+  --border2:  #2d3555;
+  --text:     #c9d4f0;
+  --muted:    #6b7799;
+  --white:    #f0f4ff;
+  --di:       #00d2ff;   /* cyan   – DI */
+  --solid:    #06d6a0;   /* mint   – SOLID */
+  --api:      #ff9f1c;   /* amber  – API */
+  --async:    #c77dff;   /* violet – Async */
+  --di-dim:   #003d4d;
+  --solid-dim:#024a38;
+  --api-dim:  #4a2e00;
+  --async-dim:#2e0066;
+  --di-soft:  #00d2ff18;
+  --solid-soft:#06d6a018;
+  --api-soft: #ff9f1c18;
+  --async-soft:#c77dff18;
+  --code-bg:  #080b14;
+  --mono:     'IBM Plex Mono', monospace;
+  --code:     'Fira Code', monospace;
+  --body:     'Nunito Sans', sans-serif;
+  --sidebar-w:272px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+html{scroll-behavior:smooth;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:var(--body);
+  font-size:15px;
+  line-height:1.75;
+  display:flex;
+  min-height:100vh;
+  overflow-x:hidden;
+}
+
+/* grain overlay */
+body::before{
+  content:'';
+  position:fixed;inset:0;
+  background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 512 512' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");
+  pointer-events:none;z-index:0;opacity:.4;
+}
+
+/* ═══════════════════════════════════════════
+   SIDEBAR
+═══════════════════════════════════════════ */
+.sidebar{
+  width:var(--sidebar-w);
+  min-height:100vh;
+  background:var(--bg2);
+  border-right:1px solid var(--border);
+  position:fixed;top:0;left:0;
+  display:flex;flex-direction:column;
+  overflow-y:auto;z-index:200;
+  transition:transform .3s ease;
+}
+.sb-logo{
+  padding:28px 22px 20px;
+  border-bottom:1px solid var(--border);
+}
+.sb-logo h1{
+  font-family:var(--mono);
+  font-size:16px;font-weight:700;
+  color:var(--white);letter-spacing:-.3px;line-height:1.3;
+}
+.sb-logo h1 span{color:var(--di);}
+.sb-meta{
+  display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;
+}
+.badge{
+  font-size:10px;font-weight:700;letter-spacing:.8px;
+  text-transform:uppercase;padding:3px 8px;border-radius:4px;
+}
+.badge.exp{background:rgba(0,210,255,.15);color:var(--di);border:1px solid var(--di-dim);}
+.badge.lang{background:rgba(6,214,160,.12);color:var(--solid);border:1px solid var(--solid-dim);}
+
+.sb-nav{padding:10px 0;flex:1;}
+.sb-section{
+  font-size:10px;font-weight:700;letter-spacing:1.5px;
+  text-transform:uppercase;color:var(--muted);
+  padding:14px 22px 5px;
+}
+.sb-link{
+  display:flex;align-items:center;gap:10px;
+  padding:9px 22px;font-size:13px;
+  color:var(--muted);text-decoration:none;
+  border-left:2px solid transparent;
+  transition:all .15s ease;cursor:pointer;
+}
+.sb-link:hover{color:var(--text);background:rgba(255,255,255,.03);}
+.sb-link.active{color:var(--white);background:rgba(255,255,255,.04);}
+.sb-link[data-sec="di"].active    {border-left-color:var(--di);color:var(--di);}
+.sb-link[data-sec="solid"].active {border-left-color:var(--solid);color:var(--solid);}
+.sb-link[data-sec="api"].active   {border-left-color:var(--api);color:var(--api);}
+.sb-link[data-sec="async"].active {border-left-color:var(--async);color:var(--async);}
+.sb-dot{width:6px;height:6px;border-radius:50%;flex-shrink:0;}
+.di-dot{background:var(--di);}
+.solid-dot{background:var(--solid);}
+.api-dot{background:var(--api);}
+.async-dot{background:var(--async);}
+
+.sb-footer{
+  padding:16px 22px;border-top:1px solid var(--border);
+}
+.progress-wrap{
+  display:flex;justify-content:space-between;
+  font-size:11px;color:var(--muted);margin-bottom:8px;
+}
+.prog-bar{height:3px;background:var(--border);border-radius:4px;overflow:hidden;}
+.prog-fill{
+  height:100%;width:0%;transition:width .25s ease;
+  background:linear-gradient(90deg,var(--di),var(--solid),var(--api),var(--async));
+}
+
+/* ═══════════════════════════════════════════
+   MAIN
+═══════════════════════════════════════════ */
+.main{margin-left:var(--sidebar-w);flex:1;position:relative;z-index:1;}
+
+/* ═══════════════════════════════════════════
+   HERO
+═══════════════════════════════════════════ */
+.hero{
+  padding:70px 64px 60px;
+  background:linear-gradient(135deg,#07090f 0%,#0b0f20 60%,#0c0714 100%);
+  border-bottom:1px solid var(--border);
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:'';position:absolute;
+  top:-100px;right:-50px;
+  width:500px;height:500px;border-radius:50%;
+  background:radial-gradient(circle,rgba(0,210,255,.06) 0%,transparent 65%);
+  pointer-events:none;
+}
+.hero-eyebrow{
+  display:inline-flex;align-items:center;gap:8px;
+  background:rgba(0,210,255,.1);border:1px solid rgba(0,210,255,.25);
+  border-radius:20px;padding:5px 14px;
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:1px;text-transform:uppercase;color:var(--di);
+  margin-bottom:22px;
+}
+.hero h1{
+  font-family:var(--mono);
+  font-size:clamp(28px,4.5vw,50px);
+  font-weight:700;letter-spacing:-1.5px;line-height:1.1;
+  color:var(--white);margin-bottom:16px;
+}
+.hero h1 .hl-di{color:var(--di);}
+.hero h1 .hl-solid{color:var(--solid);}
+.hero h1 .hl-api{color:var(--api);}
+.hero h1 .hl-async{color:var(--async);}
+.hero-sub{
+  font-size:16px;color:var(--muted);max-width:600px;
+  margin-bottom:36px;line-height:1.7;
+}
+.hero-cards{display:flex;gap:14px;flex-wrap:wrap;}
+.hcard{
+  padding:14px 18px;border-radius:10px;min-width:130px;
+  border:1px solid;display:flex;flex-direction:column;gap:4px;
+}
+.hcard.c1{background:var(--di-soft);border-color:var(--di-dim);}
+.hcard.c2{background:var(--solid-soft);border-color:var(--solid-dim);}
+.hcard.c3{background:var(--api-soft);border-color:var(--api-dim);}
+.hcard.c4{background:var(--async-soft);border-color:var(--async-dim);}
+.hcard-num{
+  font-family:var(--mono);font-size:26px;font-weight:700;
+}
+.c1 .hcard-num{color:var(--di);}
+.c2 .hcard-num{color:var(--solid);}
+.c3 .hcard-num{color:var(--api);}
+.c4 .hcard-num{color:var(--async);}
+.hcard-label{font-size:12px;color:var(--muted);}
+
+/* ═══════════════════════════════════════════
+   SEARCH BAR
+═══════════════════════════════════════════ */
+.search-wrap{
+  padding:16px 64px;
+  background:var(--bg2);
+  border-bottom:1px solid var(--border);
+  position:sticky;top:0;z-index:100;
+  display:flex;align-items:center;gap:16px;
+  backdrop-filter:blur(12px);
+}
+.search-inner{position:relative;flex:1;max-width:500px;}
+.search-inner svg{
+  position:absolute;left:13px;top:50%;transform:translateY(-50%);
+  color:var(--muted);pointer-events:none;
+}
+.search-input{
+  width:100%;background:var(--bg3);
+  border:1px solid var(--border);border-radius:8px;
+  padding:10px 16px 10px 40px;
+  color:var(--text);font-family:var(--body);font-size:14px;
+  outline:none;transition:border-color .2s;
+}
+.search-input:focus{border-color:var(--di);}
+.search-input::placeholder{color:var(--muted);}
+.search-stat{font-size:12px;color:var(--muted);white-space:nowrap;}
+.search-stat strong{color:var(--di);}
+
+/* ═══════════════════════════════════════════
+   CONTENT AREA
+═══════════════════════════════════════════ */
+.content{padding:0 64px 100px;}
+
+/* ═══════════════════════════════════════════
+   SECTION HEADER
+═══════════════════════════════════════════ */
+.sec-block{margin-top:64px;}
+.sec-header{
+  display:flex;align-items:flex-start;gap:20px;
+  padding:28px 32px;border-radius:14px;
+  margin-bottom:6px;position:relative;overflow:hidden;
+}
+.sec-header::before{
+  content:attr(data-num);
+  position:absolute;right:28px;top:50%;transform:translateY(-50%);
+  font-family:var(--mono);font-size:100px;font-weight:700;
+  opacity:.05;color:var(--white);pointer-events:none;line-height:1;
+}
+.sh-di   {background:linear-gradient(135deg,var(--di-dim),#001820);border:1px solid #004455;}
+.sh-solid{background:linear-gradient(135deg,var(--solid-dim),#001a12);border:1px solid #025a40;}
+.sh-api  {background:linear-gradient(135deg,var(--api-dim),#1a0d00);border:1px solid #6b3800;}
+.sh-async{background:linear-gradient(135deg,var(--async-dim),#160028);border:1px solid #5a0099;}
+.sec-icon{
+  width:52px;height:52px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:24px;flex-shrink:0;
+}
+.sh-di .sec-icon   {background:rgba(0,210,255,.15);}
+.sh-solid .sec-icon{background:rgba(6,214,160,.15);}
+.sh-api .sec-icon  {background:rgba(255,159,28,.15);}
+.sh-async .sec-icon{background:rgba(199,125,255,.15);}
+.sec-title{
+  font-family:var(--mono);font-size:20px;font-weight:700;
+  color:var(--white);
+}
+.sh-di .sec-title   {color:var(--di);}
+.sh-solid .sec-title{color:var(--solid);}
+.sh-api .sec-title  {color:var(--api);}
+.sh-async .sec-title{color:var(--async);}
+.sec-desc{font-size:13px;color:var(--muted);margin-top:4px;max-width:600px;}
+.sec-qcount{
+  margin-left:auto;padding:5px 12px;border-radius:20px;
+  font-size:12px;font-weight:700;font-family:var(--mono);
+  white-space:nowrap;align-self:flex-start;
+}
+.sh-di .sec-qcount   {background:rgba(0,210,255,.15);color:var(--di);}
+.sh-solid .sec-qcount{background:rgba(6,214,160,.15);color:var(--solid);}
+.sh-api .sec-qcount  {background:rgba(255,159,28,.15);color:var(--api);}
+.sh-async .sec-qcount{background:rgba(199,125,255,.15);color:var(--async);}
+
+/* ═══════════════════════════════════════════
+   TOPIC GROUP
+═══════════════════════════════════════════ */
+.topic{margin-top:36px;}
+.topic-hdr{
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--mono);font-size:12px;font-weight:600;
+  letter-spacing:1.2px;text-transform:uppercase;
+  color:var(--muted);margin-bottom:14px;
+}
+.topic-hdr::after{content:'';flex:1;height:1px;background:var(--border);}
+.topic-hdr span{
+  padding:3px 10px;border-radius:4px;font-size:10px;font-weight:700;
+}
+
+/* ═══════════════════════════════════════════
+   Q&A CARD
+═══════════════════════════════════════════ */
+.qcard{
+  background:var(--surface);
+  border:1px solid var(--border);
+  border-radius:12px;
+  margin-bottom:14px;
+  overflow:hidden;
+  transition:border-color .2s,box-shadow .2s;
+}
+.qcard:hover{border-color:var(--border2);box-shadow:0 6px 32px rgba(0,0,0,.35);}
+.qcard.hidden{display:none;}
+
+.q-head{
+  display:flex;align-items:flex-start;gap:14px;
+  padding:18px 22px;cursor:pointer;user-select:none;
+}
+.q-tag{
+  font-family:var(--mono);font-size:10px;font-weight:700;
+  padding:4px 9px;border-radius:5px;flex-shrink:0;margin-top:1px;
+  letter-spacing:.5px;
+}
+[data-sec="di"]    .q-tag{background:var(--di-soft);color:var(--di);border:1px solid #005570;}
+[data-sec="solid"] .q-tag{background:var(--solid-soft);color:var(--solid);border:1px solid #025a40;}
+[data-sec="api"]   .q-tag{background:var(--api-soft);color:var(--api);border:1px solid #6b3800;}
+[data-sec="async"] .q-tag{background:var(--async-soft);color:var(--async);border:1px solid #5a0099;}
+
+.q-text{
+  font-size:15px;font-weight:600;
+  color:var(--text);flex:1;line-height:1.5;
+}
+.q-level{
+  font-size:10px;font-weight:700;letter-spacing:.5px;
+  text-transform:uppercase;padding:3px 8px;border-radius:4px;
+  flex-shrink:0;margin-top:2px;align-self:flex-start;
+  background:rgba(255,255,255,.05);color:var(--muted);
+}
+.q-chevron{
+  color:var(--muted);flex-shrink:0;margin-top:3px;
+  transition:transform .25s ease;
+}
+.qcard.open .q-chevron{transform:rotate(180deg);}
+
+/* ═══════════════════════════════════════════
+   ANSWER PANEL
+═══════════════════════════════════════════ */
+.a-panel{
+  display:none;
+  border-top:1px solid var(--border);
+  background:var(--bg);
+}
+.qcard.open .a-panel{display:block;}
+.a-inner{padding:24px 28px;}
+
+.a-label{
+  display:inline-flex;align-items:center;gap:6px;
+  font-family:var(--mono);font-size:10px;font-weight:700;
+  letter-spacing:1px;text-transform:uppercase;margin-bottom:18px;
+}
+[data-sec="di"]    .a-label{color:var(--di);}
+[data-sec="solid"] .a-label{color:var(--solid);}
+[data-sec="api"]   .a-label{color:var(--api);}
+[data-sec="async"] .a-label{color:var(--async);}
+
+.a-para{
+  color:var(--text);font-size:14.5px;line-height:1.8;
+  margin-bottom:14px;
+}
+.a-para strong{color:var(--white);}
+
+.a-bullets{list-style:none;margin-bottom:14px;}
+.a-bullets li{
+  display:flex;gap:10px;padding:5px 0;
+  font-size:14.5px;line-height:1.7;
+  border-bottom:1px solid rgba(255,255,255,.03);
+}
+.a-bullets li:last-child{border-bottom:none;}
+.a-bullet-arrow{flex-shrink:0;font-size:12px;margin-top:4px;}
+[data-sec="di"]    .a-bullet-arrow{color:var(--di);}
+[data-sec="solid"] .a-bullet-arrow{color:var(--solid);}
+[data-sec="api"]   .a-bullet-arrow{color:var(--api);}
+[data-sec="async"] .a-bullet-arrow{color:var(--async);}
+
+/* ═══════════════════════════════════════════
+   CODE BLOCK
+═══════════════════════════════════════════ */
+.code-wrap{
+  position:relative;margin:16px 0;
+  border-radius:10px;overflow:hidden;
+  border:1px solid #1a2240;
+}
+.code-bar{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:8px 16px;background:#0c1020;
+  border-bottom:1px solid #1a2240;
+}
+.code-lang{
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  color:var(--muted);letter-spacing:.8px;text-transform:uppercase;
+}
+.copy-btn{
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  color:var(--muted);background:none;border:1px solid var(--border);
+  border-radius:5px;padding:4px 10px;cursor:pointer;
+  transition:all .15s;
+}
+.copy-btn:hover{color:var(--white);border-color:var(--border2);}
+.copy-btn.copied{color:#06d6a0;border-color:#025a40;}
+pre{
+  background:var(--code-bg);
+  overflow-x:auto;padding:18px 20px;margin:0;
+  border-left:3px solid transparent;
+}
+[data-sec="di"]    pre{border-left-color:var(--di);}
+[data-sec="solid"] pre{border-left-color:var(--solid);}
+[data-sec="api"]   pre{border-left-color:var(--api);}
+[data-sec="async"] pre{border-left-color:var(--async);}
+code{
+  font-family:var(--code);font-size:13px;
+  line-height:1.9;color:#a8c4e8;
+}
+/* syntax tokens */
+.kw  {color:#f97583;}  /* keywords */
+.kw2 {color:#79c0ff;}  /* types */
+.kw3 {color:#ffab70;}  /* attributes/decorators */
+.str {color:#9ecbff;}  /* strings */
+.cm  {color:#4d6080;font-style:italic;}  /* comments */
+.num {color:#79d4c8;}  /* numbers */
+.cls {color:#e3b341;}  /* class names */
+.mth {color:#b392f0;}  /* method names */
+.ifc {color:#06d6a0;}  /* interfaces */
+
+/* ═══════════════════════════════════════════
+   CALLOUTS
+═══════════════════════════════════════════ */
+.callout{
+  display:flex;gap:12px;border-radius:8px;
+  padding:14px 18px;margin:14px 0;
+  font-size:14px;line-height:1.7;
+}
+.callout-warn{
+  background:rgba(255,159,28,.08);
+  border:1px solid rgba(255,159,28,.25);color:#f0c060;
+}
+.callout-info{
+  background:rgba(0,210,255,.07);
+  border:1px solid rgba(0,210,255,.2);color:#80e0ff;
+}
+.callout-tip{
+  background:rgba(6,214,160,.07);
+  border:1px solid rgba(6,214,160,.2);color:#80f0d0;
+}
+.callout-danger{
+  background:rgba(239,71,111,.07);
+  border:1px solid rgba(239,71,111,.2);color:#f0a0b0;
+}
+.callout-icon{flex-shrink:0;font-size:16px;margin-top:1px;}
+
+/* ═══════════════════════════════════════════
+   TABLE
+═══════════════════════════════════════════ */
+.tbl-wrap{overflow-x:auto;margin:16px 0;}
+table{
+  width:100%;border-collapse:collapse;
+  font-size:13.5px;
+}
+th{
+  background:var(--surf2);color:var(--white);
+  font-family:var(--mono);font-size:11px;font-weight:600;
+  letter-spacing:.5px;text-transform:uppercase;
+  padding:10px 16px;text-align:left;
+  border-bottom:2px solid var(--border);
+}
+td{
+  padding:10px 16px;border-bottom:1px solid var(--border);
+  color:var(--text);vertical-align:top;
+}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:rgba(255,255,255,.02);}
+
+/* ═══════════════════════════════════════════
+   VISUAL DIAGRAM (ASCII-art style)
+═══════════════════════════════════════════ */
+.diagram{
+  background:var(--code-bg);
+  border:1px solid var(--border);
+  border-radius:10px;
+  padding:24px;
+  margin:16px 0;
+  overflow-x:auto;
+}
+.diagram pre{
+  border:none;padding:0;background:transparent;
+  font-family:var(--code);font-size:12.5px;
+  color:#8da0c0;line-height:1.8;
+}
+.diagram pre .hl{color:var(--di);}
+.diagram pre .hl2{color:var(--solid);}
+.diagram pre .hl3{color:var(--api);}
+.diagram pre .hl4{color:var(--async);}
+
+/* ═══════════════════════════════════════════
+   NO RESULTS
+═══════════════════════════════════════════ */
+.no-results{
+  text-align:center;padding:80px 0;color:var(--muted);display:none;
+}
+.no-results.show{display:block;}
+.nr-emoji{font-size:48px;margin-bottom:16px;}
+
+/* ═══════════════════════════════════════════
+   SCROLLBAR
+═══════════════════════════════════════════ */
+::-webkit-scrollbar{width:6px;height:6px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:#1e2840;border-radius:4px;}
+::-webkit-scrollbar-thumb:hover{background:#2d3a58;}
+
+mark{background:rgba(255,220,80,.2);color:var(--white);border-radius:2px;}
+
+@media(max-width:900px){
+  :root{--sidebar-w:0px;}
+  .sidebar{transform:translateX(-100%);}
+  .hero,.search-wrap,.content{padding-left:20px;padding-right:20px;}
+}
+</style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════
+     SIDEBAR
+═══════════════════════════════════════════════ -->
+<aside class="sidebar">
+  <div class="sb-logo">
+    <h1><span>// .NET</span> Senior<br>Interview Guide</h1>
+    <div class="sb-meta">
+      <span class="badge exp">6+ YOE</span>
+      <span class="badge lang">C# ASP.NET</span>
+    </div>
+  </div>
+  <nav class="sb-nav">
+    <div class="sb-section">Topics</div>
+    <a class="sb-link" data-sec="di" href="#di-section"><span class="sb-dot di-dot"></span>Dependency Injection</a>
+    <a class="sb-link" data-sec="di" href="#di-lifetimes"><span class="sb-dot di-dot"></span>Service Lifetimes</a>
+    <a class="sb-link" data-sec="di" href="#di-patterns"><span class="sb-dot di-dot"></span>Registration Patterns</a>
+    <a class="sb-link" data-sec="di" href="#di-payment"><span class="sb-dot di-dot"></span>Payment Gateway DI</a>
+    <a class="sb-link" data-sec="di" href="#di-decorator"><span class="sb-dot di-dot"></span>Decorator &amp; Testing</a>
+
+    <div class="sb-section">SOLID Principles</div>
+    <a class="sb-link" data-sec="solid" href="#solid-section"><span class="sb-dot solid-dot"></span>Overview</a>
+    <a class="sb-link" data-sec="solid" href="#srp"><span class="sb-dot solid-dot"></span>S — Single Responsibility</a>
+    <a class="sb-link" data-sec="solid" href="#ocp"><span class="sb-dot solid-dot"></span>O — Open/Closed</a>
+    <a class="sb-link" data-sec="solid" href="#lsp"><span class="sb-dot solid-dot"></span>L — Liskov Substitution</a>
+    <a class="sb-link" data-sec="solid" href="#isp"><span class="sb-dot solid-dot"></span>I — Interface Segregation</a>
+    <a class="sb-link" data-sec="solid" href="#dip"><span class="sb-dot solid-dot"></span>D — Dependency Inversion</a>
+
+    <div class="sb-section">Scalable Web APIs</div>
+    <a class="sb-link" data-sec="api" href="#api-section"><span class="sb-dot api-dot"></span>Clean Architecture</a>
+    <a class="sb-link" data-sec="api" href="#api-cqrs"><span class="sb-dot api-dot"></span>CQRS + MediatR</a>
+    <a class="sb-link" data-sec="api" href="#api-cache"><span class="sb-dot api-dot"></span>Caching Strategy</a>
+    <a class="sb-link" data-sec="api" href="#api-rate"><span class="sb-dot api-dot"></span>Rate Limiting &amp; Versioning</a>
+    <a class="sb-link" data-sec="api" href="#api-perf"><span class="sb-dot api-dot"></span>Performance &amp; Health</a>
+
+    <div class="sb-section">Async / Await Internals</div>
+    <a class="sb-link" data-sec="async" href="#async-section"><span class="sb-dot async-dot"></span>State Machine</a>
+    <a class="sb-link" data-sec="async" href="#async-context"><span class="sb-dot async-dot"></span>Thread Pool &amp; Context</a>
+    <a class="sb-link" data-sec="async" href="#async-pitfalls"><span class="sb-dot async-dot"></span>Deadlocks &amp; Pitfalls</a>
+    <a class="sb-link" data-sec="async" href="#async-advanced"><span class="sb-dot async-dot"></span>ValueTask &amp; Advanced</a>
+  </nav>
+  <div class="sb-footer">
+    <div class="progress-wrap">
+      <span>Reading progress</span>
+      <span id="prog-pct">0%</span>
+    </div>
+    <div class="prog-bar"><div class="prog-fill" id="prog-fill"></div></div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════════════════════════
+     MAIN
+═══════════════════════════════════════════════ -->
+<main class="main">
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-eyebrow">⚡ 6+ Years Experience Level</div>
+  <h1>
+    <span class="hl-di">DI</span> · <span class="hl-solid">SOLID</span> · <span class="hl-api">Scalable APIs</span><br>
+    <span class="hl-async">Async Internals</span> — E-Commerce Edition
+  </h1>
+  <p class="hero-sub">
+    Production-grade interview answers for senior .NET full-stack roles. Every concept grounded in a real e-commerce domain with code that ships.
+  </p>
+  <div class="hero-cards">
+    <div class="hcard c1"><span class="hcard-num">DI</span><span class="hcard-label">Dependency Injection<br>E-Commerce Patterns</span></div>
+    <div class="hcard c2"><span class="hcard-num">S·O·L·I·D</span><span class="hcard-label">All 5 Principles<br>Real Examples</span></div>
+    <div class="hcard c3"><span class="hcard-num">API</span><span class="hcard-label">Scalable Web APIs<br>CQRS + Caching</span></div>
+    <div class="hcard c4"><span class="hcard-num">⚙</span><span class="hcard-label">Async Internals<br>State Machine</span></div>
+  </div>
+</section>
+
+<!-- SEARCH -->
+<div class="search-wrap">
+  <div class="search-inner">
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+    <input class="search-input" id="search" type="text" placeholder="Search topics, patterns, keywords…" autocomplete="off"/>
+  </div>
+  <div class="search-stat">Showing <strong id="vis-count">all</strong> topics</div>
+</div>
+
+<div class="content">
+<div class="no-results" id="no-results">
+  <div class="nr-emoji">🔍</div>
+  <p>No results for that search. Try a different keyword.</p>
+</div>
+
+<!-- ══════════════════════════════════════════════════════
+  SECTION 1 — DEPENDENCY INJECTION
+══════════════════════════════════════════════════════ -->
+<div class="sec-block" id="di-section" data-sec="di">
+  <div class="sec-header sh-di" data-num="01">
+    <div class="sec-icon">💉</div>
+    <div>
+      <div class="sec-title">Dependency Injection in ASP.NET Core</div>
+      <div class="sec-desc">E-commerce implementation — CartService, PaymentGateway, ProductRepository and beyond.</div>
+    </div>
+    <span class="sec-qcount">4 Deep Answers</span>
+  </div>
+
+  <!-- TOPIC: Lifetimes -->
+  <div class="topic" id="di-lifetimes">
+    <div class="topic-hdr"><span class="sb-dot di-dot"></span>Service Lifetimes with E-Commerce Examples</div>
+
+    <div class="qcard" data-sec="di">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">DI-01</span>
+        <span class="q-text">Explain the three DI lifetimes with real e-commerce service examples and the captive dependency problem.</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <p class="a-para">In an e-commerce platform, choosing the wrong lifetime causes either <strong>data leaks between requests</strong> (Singleton used wrongly) or <strong>performance waste</strong> (Transient for heavy services).</p>
+
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Program.cs</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ─── SINGLETON: one instance for app lifetime ───────────────────────────────</span>
+<span class="cm">// ✅ Use for: stateless, thread-safe, expensive-to-create services</span>
+builder.Services.<span class="mth">AddSingleton</span>&lt;<span class="ifc">ICurrencyConverter</span>, <span class="cls">ExchangeRateCurrencyConverter</span>&gt;();
+builder.Services.<span class="mth">AddSingleton</span>&lt;<span class="ifc">IProductCatalogCache</span>, <span class="cls">InMemoryProductCatalogCache</span>&gt;();
+builder.Services.<span class="mth">AddSingleton</span>&lt;<span class="ifc">IPricingEngine</span>, <span class="cls">RuleBasedPricingEngine</span>&gt;();
+
+<span class="cm">// ─── SCOPED: one instance per HTTP request ──────────────────────────────────</span>
+<span class="cm">// ✅ Use for: DbContext, repositories, cart/order services, unit of work</span>
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="cls">ECommerceDbContext</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IShoppingCartService</span>, <span class="cls">ShoppingCartService</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IOrderRepository</span>, <span class="cls">EfOrderRepository</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IUnitOfWork</span>, <span class="cls">EfUnitOfWork</span>&gt;();
+
+<span class="cm">// ─── TRANSIENT: new instance every injection ────────────────────────────────</span>
+<span class="cm">// ✅ Use for: lightweight, stateless, short-lived operations</span>
+builder.Services.<span class="mth">AddTransient</span>&lt;<span class="ifc">IOrderEmailService</span>, <span class="cls">SmtpOrderEmailService</span>&gt;();
+builder.Services.<span class="mth">AddTransient</span>&lt;<span class="ifc">IInvoiceGenerator</span>, <span class="cls">PdfInvoiceGenerator</span>&gt;();
+builder.Services.<span class="mth">AddTransient</span>&lt;<span class="ifc">IStockNotifier</span>, <span class="cls">LowStockNotifier</span>&gt;();</code></pre>
+          </div>
+
+          <p class="a-para"><strong>Captive Dependency</strong> — the most common senior mistake:</p>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Captive Dependency Bug</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ❌ BUG: Singleton holds a reference to Scoped service</span>
+<span class="cm">//    ShoppingCartService is Scoped (per-request),</span>
+<span class="cm">//    but ProductRecommendationEngine is Singleton.</span>
+<span class="cm">//    Result: same ShoppingCartService instance shared across ALL requests!</span>
+<span class="kw">public class</span> <span class="cls">ProductRecommendationEngine</span>  <span class="cm">// Singleton</span>
+{
+    <span class="kw">private readonly</span> <span class="ifc">IShoppingCartService</span> _cart; <span class="cm">// Scoped — CAPTURED FOREVER</span>
+    <span class="kw">public</span> <span class="cls">ProductRecommendationEngine</span>(<span class="ifc">IShoppingCartService</span> cart) => _cart = cart;
+}
+
+<span class="cm">// ✅ FIX 1: Inject IServiceScopeFactory and resolve per-use</span>
+<span class="kw">public class</span> <span class="cls">ProductRecommendationEngine</span>
+{
+    <span class="kw">private readonly</span> IServiceScopeFactory _scopeFactory;
+    <span class="kw">public</span> <span class="cls">ProductRecommendationEngine</span>(IServiceScopeFactory scopeFactory)
+        => _scopeFactory = scopeFactory;
+
+    <span class="kw">public async</span> Task&lt;IEnumerable&lt;<span class="cls">Product</span>&gt;&gt; <span class="mth">GetRecommendationsAsync</span>(<span class="kw2">string</span> userId)
+    {
+        <span class="kw">await using var</span> scope = _scopeFactory.<span class="mth">CreateAsyncScope</span>();
+        <span class="kw">var</span> cart = scope.ServiceProvider.<span class="mth">GetRequiredService</span>&lt;<span class="ifc">IShoppingCartService</span>&gt;();
+        <span class="kw">return await</span> cart.<span class="mth">GetRecommendationsAsync</span>(userId);
+    }
+}
+
+<span class="cm">// ✅ FIX 2: Make both Singleton (if service can be stateless)</span>
+<span class="cm">// ✅ FIX 3: ASP.NET Core validates scope violations in Development:</span>
+builder.Services.<span class="mth">Configure</span>&lt;<span class="cls">ServiceProviderOptions</span>&gt;(o =>
+{
+    o.ValidateScopes = <span class="kw">true</span>;   <span class="cm">// catch captive deps at startup</span>
+    o.ValidateOnBuild = <span class="kw">true</span>;  <span class="cm">// fail fast — don't wait for first request</span>
+});</code></pre>
+          </div>
+
+          <div class="tbl-wrap">
+            <table>
+              <tr><th>Lifetime</th><th>E-Commerce Service</th><th>Why</th></tr>
+              <tr><td><code>Singleton</code></td><td>PricingEngine, CurrencyConverter, MemoryCatalogCache</td><td>Thread-safe, expensive to init, no per-request state</td></tr>
+              <tr><td><code>Scoped</code></td><td>DbContext, CartService, OrderRepository, UnitOfWork</td><td>Request-bound state, EF change tracker per request</td></tr>
+              <tr><td><code>Transient</code></td><td>EmailService, InvoiceGenerator, StockNotifier</td><td>Stateless, lightweight, safe to create repeatedly</td></tr>
+            </table>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPIC: Registration Patterns -->
+  <div class="topic" id="di-patterns">
+    <div class="topic-hdr"><span class="sb-dot di-dot"></span>Registration Patterns &amp; Options</div>
+
+    <div class="qcard" data-sec="di">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">DI-02</span>
+        <span class="q-text">How do you register complex services in an e-commerce app — factory, Options pattern, and multiple implementations?</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Options Pattern — Strongly Typed Config</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// 1. Strongly-typed config classes per domain</span>
+<span class="kw">public class</span> <span class="cls">StripeOptions</span>
+{
+    <span class="kw">public const string</span> Section = <span class="str">"Stripe"</span>;
+    <span class="kw">public string</span> ApiKey { <span class="kw">get; set</span>; } = <span class="kw">string</span>.Empty;
+    <span class="kw">public string</span> WebhookSecret { <span class="kw">get; set</span>; } = <span class="kw">string</span>.Empty;
+}
+
+<span class="kw">public class</span> <span class="cls">EmailOptions</span>
+{
+    <span class="kw">public const string</span> Section = <span class="str">"Email"</span>;
+    <span class="kw">public string</span> SmtpHost { <span class="kw">get; set</span>; } = <span class="str">"localhost"</span>;
+    <span class="kw">public int</span>    SmtpPort { <span class="kw">get; set</span>; } = 587;
+    <span class="kw">public string</span> SenderAddress { <span class="kw">get; set</span>; } = <span class="kw">string</span>.Empty;
+}
+
+<span class="cm">// 2. Register with validation</span>
+builder.Services
+    .<span class="mth">AddOptions</span>&lt;<span class="cls">StripeOptions</span>&gt;()
+    .<span class="mth">BindConfiguration</span>(<span class="cls">StripeOptions</span>.Section)
+    .<span class="mth">ValidateDataAnnotations</span>()
+    .<span class="mth">ValidateOnStart</span>();   <span class="cm">// fail at startup if config is invalid</span>
+
+builder.Services
+    .<span class="mth">AddOptions</span>&lt;<span class="cls">EmailOptions</span>&gt;()
+    .<span class="mth">BindConfiguration</span>(<span class="cls">EmailOptions</span>.Section)
+    .<span class="mth">Validate</span>(o => !<span class="kw">string</span>.<span class="mth">IsNullOrEmpty</span>(o.SmtpHost), <span class="str">"SmtpHost is required"</span>)
+    .<span class="mth">ValidateOnStart</span>();
+
+<span class="cm">// 3. Consume via IOptions / IOptionsSnapshot</span>
+<span class="kw">public class</span> <span class="cls">StripePaymentGateway</span>
+{
+    <span class="kw">private readonly</span> <span class="cls">StripeOptions</span> _options;
+
+    <span class="kw">public</span> <span class="cls">StripePaymentGateway</span>(IOptions&lt;<span class="cls">StripeOptions</span>&gt; options)
+        => _options = options.Value;
+    <span class="cm">// IOptionsSnapshot refreshes per-request (Scoped)</span>
+    <span class="cm">// IOptionsMonitor reacts to config changes at runtime (Singleton)</span>
+}</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Factory Registration — Shipping Providers</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// Register multiple IShippingProvider implementations</span>
+<span class="cm">// .NET 8: Keyed services (no third-party needed)</span>
+builder.Services.<span class="mth">AddKeyedScoped</span>&lt;<span class="ifc">IShippingProvider</span>, <span class="cls">FedExShippingProvider</span>&gt;(<span class="str">"fedex"</span>);
+builder.Services.<span class="mth">AddKeyedScoped</span>&lt;<span class="ifc">IShippingProvider</span>, <span class="cls">DhlShippingProvider</span>&gt;(<span class="str">"dhl"</span>);
+builder.Services.<span class="mth">AddKeyedScoped</span>&lt;<span class="ifc">IShippingProvider</span>, <span class="cls">LocalCourierProvider</span>&gt;(<span class="str">"local"</span>);
+
+<span class="cm">// Consume with [FromKeyedServices] or IKeyedServiceProvider</span>
+<span class="kw">public class</span> <span class="cls">ShippingService</span>
+{
+    <span class="kw">private readonly</span> IKeyedServiceProvider _provider;
+    <span class="kw">public</span> <span class="cls">ShippingService</span>(IKeyedServiceProvider provider) => _provider = provider;
+
+    <span class="kw">public async</span> Task&lt;<span class="cls">ShippingLabel</span>&gt; <span class="mth">CreateLabelAsync</span>(<span class="cls">Order</span> order)
+    {
+        <span class="kw">var</span> key = order.ShippingType <span class="kw">switch</span>
+        {
+            <span class="cls">ShippingType</span>.Express  => <span class="str">"fedex"</span>,
+            <span class="cls">ShippingType</span>.Standard => <span class="str">"dhl"</span>,
+            _                     => <span class="str">"local"</span>
+        };
+        <span class="kw">var</span> provider = _provider.<span class="mth">GetRequiredKeyedService</span>&lt;<span class="ifc">IShippingProvider</span>&gt;(key);
+        <span class="kw">return await</span> provider.<span class="mth">CreateLabelAsync</span>(order);
+    }
+}
+
+<span class="cm">// Controller injection with [FromKeyedServices]</span>
+[<span class="kw3">HttpPost</span>(<span class="str">"ship"</span>)]
+<span class="kw">public async</span> Task&lt;IActionResult&gt; <span class="mth">Ship</span>(
+    [<span class="kw3">FromKeyedServices</span>(<span class="str">"fedex"</span>)] <span class="ifc">IShippingProvider</span> fedEx) { ... }</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPIC: Payment Gateway DI -->
+  <div class="topic" id="di-payment">
+    <div class="topic-hdr"><span class="sb-dot di-dot"></span>Payment Gateway — Factory &amp; Strategy with DI</div>
+
+    <div class="qcard" data-sec="di">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">DI-03</span>
+        <span class="q-text">How would you design a pluggable payment gateway system (Stripe, PayPal, COD) using DI and the Strategy pattern?</span>
+        <span class="q-level">Senior / Arch</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <p class="a-para">This combines <strong>DI + Strategy + Factory patterns</strong>. New payment methods are added by implementing one interface and registering — zero changes to existing code (Open/Closed).</p>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Domain Contracts</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// Domain contracts (Application layer)</span>
+<span class="kw">public interface</span> <span class="ifc">IPaymentGateway</span>
+{
+    <span class="kw2">string</span> ProviderKey { <span class="kw">get</span>; }   <span class="cm">// "stripe" | "paypal" | "cod"</span>
+    Task&lt;<span class="cls">PaymentResult</span>&gt; <span class="mth">ChargeAsync</span>(<span class="cls">PaymentRequest</span> request, CancellationToken ct);
+    Task&lt;<span class="cls">RefundResult</span>&gt;  <span class="mth">RefundAsync</span>(<span class="kw2">string</span> transactionId, <span class="kw2">decimal</span> amount, CancellationToken ct);
+}
+
+<span class="kw">public record</span> <span class="cls">PaymentRequest</span>(<span class="kw2">decimal</span> Amount, <span class="kw2">string</span> Currency, <span class="kw2">string</span> CustomerId, <span class="kw2">string</span> OrderId);
+<span class="kw">public record</span> <span class="cls">PaymentResult</span>(<span class="kw2">bool</span> Success, <span class="kw2">string</span> TransactionId, <span class="kw2">string?</span> Error);
+
+<span class="cm">// Concrete implementations (Infrastructure layer)</span>
+<span class="kw">public class</span> <span class="cls">StripePaymentGateway</span> : <span class="ifc">IPaymentGateway</span>
+{
+    <span class="kw">public string</span> ProviderKey => <span class="str">"stripe"</span>;
+    <span class="kw">private readonly</span> <span class="cls">StripeOptions</span> _opts;
+    <span class="kw">public</span> <span class="cls">StripePaymentGateway</span>(IOptions&lt;<span class="cls">StripeOptions</span>&gt; opts) => _opts = opts.Value;
+
+    <span class="kw">public async</span> Task&lt;<span class="cls">PaymentResult</span>&gt; <span class="mth">ChargeAsync</span>(<span class="cls">PaymentRequest</span> req, CancellationToken ct)
+    {
+        <span class="cm">// Stripe SDK call here</span>
+        <span class="kw">var</span> charge = <span class="kw">await new</span> <span class="cls">ChargeService</span>().<span class="mth">CreateAsync</span>(<span class="kw">new</span> <span class="cls">ChargeCreateOptions</span>
+        {
+            Amount   = (<span class="kw2">long</span>)(req.Amount * 100),
+            Currency = req.Currency,
+            Customer = req.CustomerId,
+        }, cancellationToken: ct);
+        <span class="kw">return new</span> <span class="cls">PaymentResult</span>(charge.Status == <span class="str">"succeeded"</span>, charge.Id, <span class="kw">null</span>);
+    }
+    <span class="kw">public async</span> Task&lt;<span class="cls">RefundResult</span>&gt; <span class="mth">RefundAsync</span>(<span class="kw2">string</span> txId, <span class="kw2">decimal</span> amt, CancellationToken ct) { <span class="cm">/*...*/</span> }
+}
+
+<span class="kw">public class</span> <span class="cls">PayPalPaymentGateway</span> : <span class="ifc">IPaymentGateway</span>  { <span class="kw">public string</span> ProviderKey => <span class="str">"paypal"</span>; <span class="cm">/*...*/</span> }
+<span class="kw">public class</span> <span class="cls">CashOnDeliveryGateway</span> : <span class="ifc">IPaymentGateway</span> { <span class="kw">public string</span> ProviderKey => <span class="str">"cod"</span>;    <span class="cm">/*...*/</span> }</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Factory &amp; Registration</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// Factory resolves correct gateway at runtime</span>
+<span class="kw">public interface</span> <span class="ifc">IPaymentGatewayFactory</span>
+{
+    <span class="ifc">IPaymentGateway</span> <span class="mth">GetGateway</span>(<span class="kw2">string</span> providerKey);
+}
+
+<span class="kw">public class</span> <span class="cls">PaymentGatewayFactory</span> : <span class="ifc">IPaymentGatewayFactory</span>
+{
+    <span class="kw">private readonly</span> IReadOnlyDictionary&lt;<span class="kw2">string</span>, <span class="ifc">IPaymentGateway</span>&gt; _gateways;
+
+    <span class="kw">public</span> <span class="cls">PaymentGatewayFactory</span>(IEnumerable&lt;<span class="ifc">IPaymentGateway</span>&gt; gateways)
+        => _gateways = gateways.<span class="mth">ToDictionary</span>(g => g.ProviderKey);
+
+    <span class="kw">public</span> <span class="ifc">IPaymentGateway</span> <span class="mth">GetGateway</span>(<span class="kw2">string</span> providerKey)
+        => _gateways.<span class="mth">TryGetValue</span>(providerKey, <span class="kw">out var</span> gw)
+            ? gw
+            : <span class="kw">throw new</span> <span class="cls">NotSupportedException</span>($<span class="str">"Payment provider '{providerKey}' not registered."</span>);
+}
+
+<span class="cm">// Registration — add a new gateway = one line. Zero other changes.</span>
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IPaymentGateway</span>, <span class="cls">StripePaymentGateway</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IPaymentGateway</span>, <span class="cls">PayPalPaymentGateway</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IPaymentGateway</span>, <span class="cls">CashOnDeliveryGateway</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IPaymentGatewayFactory</span>, <span class="cls">PaymentGatewayFactory</span>&gt;();
+
+<span class="cm">// OrderService consumes the factory</span>
+<span class="kw">public class</span> <span class="cls">OrderPaymentService</span>
+{
+    <span class="kw">private readonly</span> <span class="ifc">IPaymentGatewayFactory</span> _factory;
+    <span class="kw">public</span> <span class="cls">OrderPaymentService</span>(<span class="ifc">IPaymentGatewayFactory</span> factory) => _factory = factory;
+
+    <span class="kw">public async</span> Task&lt;<span class="cls">PaymentResult</span>&gt; <span class="mth">ProcessAsync</span>(<span class="cls">Order</span> order, CancellationToken ct)
+    {
+        <span class="kw">var</span> gateway = _factory.<span class="mth">GetGateway</span>(order.PaymentProvider); <span class="cm">// "stripe"/"paypal"/"cod"</span>
+        <span class="kw">return await</span> gateway.<span class="mth">ChargeAsync</span>(<span class="kw">new</span> <span class="cls">PaymentRequest</span>(
+            order.Total, <span class="str">"USD"</span>, order.CustomerId, order.Id.<span class="mth">ToString</span>()), ct);
+    }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOPIC: Decorator & Testing -->
+  <div class="topic" id="di-decorator">
+    <div class="topic-hdr"><span class="sb-dot di-dot"></span>Decorator Pattern &amp; DI Testing</div>
+
+    <div class="qcard" data-sec="di">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">DI-04</span>
+        <span class="q-text">How do you layer caching on a ProductRepository using Decorator without touching the original class? How do you unit test DI-wired services?</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Decorator — Caching Product Repository</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="kw">public interface</span> <span class="ifc">IProductRepository</span>
+{
+    Task&lt;<span class="cls">Product</span>?&gt; <span class="mth">GetByIdAsync</span>(<span class="cls">Guid</span> productId, CancellationToken ct);
+    Task&lt;IReadOnlyList&lt;<span class="cls">Product</span>&gt;&gt; <span class="mth">GetByCategoryAsync</span>(<span class="kw2">string</span> category, CancellationToken ct);
+}
+
+<span class="cm">// Base EF implementation</span>
+<span class="kw">public class</span> <span class="cls">EfProductRepository</span> : <span class="ifc">IProductRepository</span>
+{
+    <span class="kw">private readonly</span> <span class="cls">ECommerceDbContext</span> _ctx;
+    <span class="kw">public</span> <span class="cls">EfProductRepository</span>(<span class="cls">ECommerceDbContext</span> ctx) => _ctx = ctx;
+
+    <span class="kw">public</span> Task&lt;<span class="cls">Product</span>?&gt; <span class="mth">GetByIdAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct)
+        => _ctx.Products.<span class="mth">AsNoTracking</span>().<span class="mth">FirstOrDefaultAsync</span>(p => p.Id == id, ct);
+
+    <span class="kw">public</span> Task&lt;IReadOnlyList&lt;<span class="cls">Product</span>&gt;&gt; <span class="mth">GetByCategoryAsync</span>(<span class="kw2">string</span> cat, CancellationToken ct)
+        => _ctx.Products.<span class="mth">Where</span>(p => p.Category == cat).<span class="mth">AsNoTracking</span>()
+               .<span class="mth">ToListAsync</span>(ct).<span class="mth">ContinueWith</span>(t => (IReadOnlyList&lt;<span class="cls">Product</span>&gt;)t.Result);
+}
+
+<span class="cm">// Decorator adds Redis caching — EfProductRepository is UNTOUCHED</span>
+<span class="kw">public class</span> <span class="cls">CachedProductRepository</span> : <span class="ifc">IProductRepository</span>
+{
+    <span class="kw">private readonly</span> <span class="ifc">IProductRepository</span>    _inner;
+    <span class="kw">private readonly</span> IDistributedCache       _cache;
+    <span class="kw">private readonly</span> ILogger&lt;<span class="cls">CachedProductRepository</span>&gt; _logger;
+    <span class="kw">private static readonly</span> TimeSpan _ttl = TimeSpan.<span class="mth">FromMinutes</span>(10);
+
+    <span class="kw">public</span> <span class="cls">CachedProductRepository</span>(
+        <span class="ifc">IProductRepository</span> inner,
+        IDistributedCache cache,
+        ILogger&lt;<span class="cls">CachedProductRepository</span>&gt; logger)
+        => (_inner, _cache, _logger) = (inner, cache, logger);
+
+    <span class="kw">public async</span> Task&lt;<span class="cls">Product</span>?&gt; <span class="mth">GetByIdAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct)
+    {
+        <span class="kw">var</span> key  = $<span class="str">"product:{id}"</span>;
+        <span class="kw">var</span> json = <span class="kw">await</span> _cache.<span class="mth">GetStringAsync</span>(key, ct);
+
+        <span class="kw">if</span> (json <span class="kw">is not null</span>)
+            <span class="kw">return</span> JsonSerializer.<span class="mth">Deserialize</span>&lt;<span class="cls">Product</span>&gt;(json);
+
+        <span class="kw">var</span> product = <span class="kw">await</span> _inner.<span class="mth">GetByIdAsync</span>(id, ct);
+        <span class="kw">if</span> (product <span class="kw">is not null</span>)
+            <span class="kw">await</span> _cache.<span class="mth">SetStringAsync</span>(key, JsonSerializer.<span class="mth">Serialize</span>(product),
+                <span class="kw">new</span> <span class="cls">DistributedCacheEntryOptions</span> { AbsoluteExpirationRelativeToNow = _ttl }, ct);
+
+        <span class="kw">return</span> product;
+    }
+
+    <span class="kw">public</span> Task&lt;IReadOnlyList&lt;<span class="cls">Product</span>&gt;&gt; <span class="mth">GetByCategoryAsync</span>(<span class="kw2">string</span> cat, CancellationToken ct)
+        => _inner.<span class="mth">GetByCategoryAsync</span>(cat, ct); <span class="cm">// delegate — category lists cached at API layer</span>
+}
+
+<span class="cm">// Registration — ONE line wraps EF with cache (Scrutor library)</span>
+<span class="cm">// Install: dotnet add package Scrutor</span>
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IProductRepository</span>, <span class="cls">EfProductRepository</span>&gt;();
+builder.Services.<span class="mth">Decorate</span>&lt;<span class="ifc">IProductRepository</span>, <span class="cls">CachedProductRepository</span>&gt;();</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Unit Testing with Moq</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="kw">public class</span> <span class="cls">OrderServiceTests</span>
+{
+    <span class="kw">private readonly</span> Mock&lt;<span class="ifc">IOrderRepository</span>&gt;  _repoMock = <span class="kw">new</span>();
+    <span class="kw">private readonly</span> Mock&lt;<span class="ifc">IPaymentGatewayFactory</span>&gt; _paymentMock = <span class="kw">new</span>();
+    <span class="kw">private readonly</span> Mock&lt;<span class="ifc">IOrderEmailService</span>&gt; _emailMock = <span class="kw">new</span>();
+
+    [<span class="kw3">Fact</span>]
+    <span class="kw">public async</span> Task <span class="mth">CreateOrder_WithValidData_PersistsAndSendsEmail</span>()
+    {
+        <span class="cm">// Arrange</span>
+        <span class="kw">var</span> gateway = <span class="kw">new</span> Mock&lt;<span class="ifc">IPaymentGateway</span>&gt;();
+        gateway.<span class="mth">Setup</span>(g => g.<span class="mth">ChargeAsync</span>(It.<span class="mth">IsAny</span>&lt;<span class="cls">PaymentRequest</span>&gt;(), <span class="kw">default</span>))
+               .<span class="mth">ReturnsAsync</span>(<span class="kw">new</span> <span class="cls">PaymentResult</span>(<span class="kw">true</span>, <span class="str">"txn_123"</span>, <span class="kw">null</span>));
+
+        _paymentMock.<span class="mth">Setup</span>(f => f.<span class="mth">GetGateway</span>(<span class="str">"stripe"</span>)).<span class="mth">Returns</span>(gateway.Object);
+
+        <span class="kw">var</span> svc = <span class="kw">new</span> <span class="cls">OrderService</span>(_repoMock.Object, _paymentMock.Object, _emailMock.Object);
+
+        <span class="cm">// Act</span>
+        <span class="kw">var</span> result = <span class="kw">await</span> svc.<span class="mth">CreateOrderAsync</span>(<span class="kw">new</span> <span class="cls">CreateOrderDto</span> { PaymentProvider = <span class="str">"stripe"</span> });
+
+        <span class="cm">// Assert</span>
+        _repoMock.<span class="mth">Verify</span>(r => r.<span class="mth">AddAsync</span>(It.<span class="mth">IsAny</span>&lt;<span class="cls">Order</span>&gt;(), <span class="kw">default</span>), Times.Once);
+        _emailMock.<span class="mth">Verify</span>(e => e.<span class="mth">SendOrderConfirmationAsync</span>(It.<span class="mth">IsAny</span>&lt;<span class="cls">Order</span>&gt;(), <span class="kw">default</span>), Times.Once);
+        Assert.<span class="mth">True</span>(result.IsSuccess);
+    }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /DI section -->
+
+<!-- ══════════════════════════════════════════════════════
+  SECTION 2 — SOLID
+══════════════════════════════════════════════════════ -->
+<div class="sec-block" id="solid-section" data-sec="solid">
+  <div class="sec-header sh-solid" data-num="02">
+    <div class="sec-icon">🏗️</div>
+    <div>
+      <div class="sec-title">SOLID Principles in E-Commerce ASP.NET Core</div>
+      <div class="sec-desc">Each principle with a concrete e-commerce problem it solves and production code.</div>
+    </div>
+    <span class="sec-qcount">5 Principles</span>
+  </div>
+
+  <!-- SRP -->
+  <div class="topic" id="srp">
+    <div class="topic-hdr"><span class="sb-dot solid-dot"></span>S — Single Responsibility Principle</div>
+    <div class="qcard" data-sec="solid">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">SRP</span>
+        <span class="q-text">How does SRP apply to order processing in an e-commerce API? Show the before/after split.</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <p class="a-para">SRP means each class has <strong>exactly one reason to change</strong>. An "OrderService" that validates, persists, emails, and generates invoices has four reasons to change.</p>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · ❌ Before — God Class</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ❌ OrderService has 5+ responsibilities — every business change touches this class</span>
+<span class="kw">public class</span> <span class="cls">OrderService</span>
+{
+    <span class="kw">public async</span> Task <span class="mth">PlaceOrderAsync</span>(<span class="cls">CreateOrderDto</span> dto)
+    {
+        <span class="cm">// 1. Validates the order (validation logic)</span>
+        <span class="kw">if</span> (dto.Items.<span class="mth">Count</span> == 0) <span class="kw">throw new</span> <span class="cls">Exception</span>(<span class="str">"No items"</span>);
+
+        <span class="cm">// 2. Applies discounts (pricing logic)</span>
+        <span class="kw">var</span> total = dto.Items.<span class="mth">Sum</span>(i => i.Price * i.Qty) * 0.9m;
+
+        <span class="cm">// 3. Saves to DB (persistence logic)</span>
+        _ctx.Orders.<span class="mth">Add</span>(<span class="kw">new</span> <span class="cls">Order</span> { Total = total });
+        <span class="kw">await</span> _ctx.<span class="mth">SaveChangesAsync</span>();
+
+        <span class="cm">// 4. Sends confirmation email (communication logic)</span>
+        <span class="kw">await</span> _smtp.<span class="mth">SendAsync</span>(dto.CustomerEmail, <span class="str">"Order confirmed"</span>);
+
+        <span class="cm">// 5. Generates invoice PDF (document logic)</span>
+        <span class="kw">var</span> pdf = <span class="mth">GenerateInvoice</span>(total);
+    }
+}</code></pre>
+          </div>
+
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · ✅ After — Each Class Has One Job</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// Each class has ONE reason to change</span>
+<span class="kw">public class</span> <span class="cls">OrderValidator</span>          <span class="cm">// changes only when validation rules change</span>
+{
+    <span class="kw">public</span> <span class="cls">ValidationResult</span> <span class="mth">Validate</span>(<span class="cls">CreateOrderDto</span> dto)
+    {
+        <span class="kw">var</span> errors = <span class="kw">new</span> List&lt;<span class="kw2">string</span>&gt;();
+        <span class="kw">if</span> (!dto.Items.<span class="mth">Any</span>())             errors.<span class="mth">Add</span>(<span class="str">"Cart is empty"</span>);
+        <span class="kw">if</span> (dto.ShippingAddress <span class="kw">is null</span>)  errors.<span class="mth">Add</span>(<span class="str">"Shipping address required"</span>);
+        <span class="kw">return new</span> <span class="cls">ValidationResult</span>(errors);
+    }
+}
+
+<span class="kw">public class</span> <span class="cls">OrderPricingCalculator</span>  <span class="cm">// changes only when pricing/discount rules change</span>
+{
+    <span class="kw">private readonly</span> <span class="ifc">IDiscountStrategy</span> _discount;
+    <span class="kw">public</span> <span class="cls">OrderPricingCalculator</span>(<span class="ifc">IDiscountStrategy</span> discount) => _discount = discount;
+    <span class="kw">public</span> <span class="cls">PricingSummary</span> <span class="mth">Calculate</span>(IEnumerable&lt;<span class="cls">OrderItem</span>&gt; items) =>
+        _discount.<span class="mth">Apply</span>(items.<span class="mth">Sum</span>(i => i.UnitPrice * i.Quantity));
+}
+
+<span class="kw">public class</span> <span class="cls">OrderRepository</span>        <span class="cm">// changes only when persistence layer changes</span>
+{
+    <span class="kw">private readonly</span> <span class="cls">ECommerceDbContext</span> _ctx;
+    <span class="kw">public async</span> Task&lt;<span class="cls">Order</span>&gt; <span class="mth">SaveAsync</span>(<span class="cls">Order</span> order, CancellationToken ct)
+    {
+        _ctx.Orders.<span class="mth">Add</span>(order);
+        <span class="kw">await</span> _ctx.<span class="mth">SaveChangesAsync</span>(ct);
+        <span class="kw">return</span> order;
+    }
+}
+
+<span class="kw">public class</span> <span class="cls">OrderEmailNotifier</span>     <span class="cm">// changes only when email templates/SMTP changes</span>
+{
+    <span class="kw">public</span> Task <span class="mth">SendConfirmationAsync</span>(<span class="cls">Order</span> o, CancellationToken ct) => <span class="cm">/*...*/</span>;
+}
+
+<span class="kw">public class</span> <span class="cls">InvoiceGenerator</span>       <span class="cm">// changes only when invoice format changes</span>
+{
+    <span class="kw">public</span> Task&lt;<span class="kw2">byte</span>[]&gt; <span class="mth">GeneratePdfAsync</span>(<span class="cls">Order</span> order, CancellationToken ct) => <span class="cm">/*...*/</span>;
+}
+
+<span class="cm">// Orchestrator (Application Use Case) — only reason to change: business flow changes</span>
+<span class="kw">public class</span> <span class="cls">PlaceOrderCommandHandler</span> : IRequestHandler&lt;<span class="cls">PlaceOrderCommand</span>, <span class="cls">OrderDto</span>&gt;
+{
+    <span class="kw">public async</span> Task&lt;<span class="cls">OrderDto</span>&gt; <span class="mth">Handle</span>(<span class="cls">PlaceOrderCommand</span> cmd, CancellationToken ct)
+    {
+        <span class="kw">var</span> validation = _validator.<span class="mth">Validate</span>(cmd.Dto);
+        <span class="kw">if</span> (!validation.IsValid) <span class="kw">throw new</span> <span class="cls">ValidationException</span>(validation.Errors);
+
+        <span class="kw">var</span> pricing = _calculator.<span class="mth">Calculate</span>(cmd.Dto.Items);
+        <span class="kw">var</span> order   = <span class="cls">Order</span>.<span class="mth">Create</span>(cmd.Dto, pricing);
+        order = <span class="kw">await</span> _repo.<span class="mth">SaveAsync</span>(order, ct);
+
+        <span class="kw">await</span> _emailer.<span class="mth">SendConfirmationAsync</span>(order, ct);
+        <span class="kw">return</span> order.<span class="mth">ToDto</span>();
+    }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- OCP -->
+  <div class="topic" id="ocp">
+    <div class="topic-hdr"><span class="sb-dot solid-dot"></span>O — Open/Closed Principle</div>
+    <div class="qcard" data-sec="solid">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">OCP</span>
+        <span class="q-text">How do you add new discount types (seasonal, loyalty, coupon) without modifying existing code?</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <p class="a-para">OCP: open for extension, closed for modification. Use the <strong>Strategy pattern</strong>. Each new discount = one new class. Zero changes to OrderPricingCalculator or any existing code.</p>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Discount Strategy with Pipeline</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// Contract — never changes</span>
+<span class="kw">public interface</span> <span class="ifc">IDiscountStrategy</span>
+{
+    <span class="kw">int</span> Priority { <span class="kw">get</span>; }   <span class="cm">// lower = applied first</span>
+    <span class="kw">bool</span> <span class="mth">IsApplicable</span>(<span class="cls">Cart</span> cart);
+    <span class="kw">decimal</span> <span class="mth">Apply</span>(<span class="kw">decimal</span> subtotal, <span class="cls">Cart</span> cart);
+}
+
+<span class="cm">// Strategy 1: Loyalty discount (10% for Gold/Platinum members)</span>
+<span class="kw">public class</span> <span class="cls">LoyaltyDiscountStrategy</span> : <span class="ifc">IDiscountStrategy</span>
+{
+    <span class="kw">public int</span> Priority => 1;
+    <span class="kw">public bool</span> <span class="mth">IsApplicable</span>(<span class="cls">Cart</span> cart) => cart.CustomerTier <span class="kw">is</span> <span class="cls">Tier</span>.Gold <span class="kw">or</span> <span class="cls">Tier</span>.Platinum;
+    <span class="kw">public decimal</span> <span class="mth">Apply</span>(<span class="kw">decimal</span> subtotal, <span class="cls">Cart</span> cart)
+        => subtotal * (cart.CustomerTier == <span class="cls">Tier</span>.Platinum ? 0.85m : 0.90m);
+}
+
+<span class="cm">// Strategy 2: Seasonal discount (20% sale events)</span>
+<span class="kw">public class</span> <span class="cls">SeasonalDiscountStrategy</span> : <span class="ifc">IDiscountStrategy</span>
+{
+    <span class="kw">private readonly</span> <span class="ifc">ISeasonalSaleService</span> _sale;
+    <span class="kw">public int</span> Priority => 2;
+    <span class="kw">public bool</span> <span class="mth">IsApplicable</span>(<span class="cls">Cart</span> cart) => _sale.<span class="mth">IsActiveSale</span>();
+    <span class="kw">public decimal</span> <span class="mth">Apply</span>(<span class="kw">decimal</span> subtotal, <span class="cls">Cart</span> cart) => subtotal * _sale.DiscountFactor;
+}
+
+<span class="cm">// Strategy 3: Coupon code discount</span>
+<span class="kw">public class</span> <span class="cls">CouponDiscountStrategy</span> : <span class="ifc">IDiscountStrategy</span>
+{
+    <span class="kw">private readonly</span> <span class="ifc">ICouponRepository</span> _coupons;
+    <span class="kw">public int</span> Priority => 3;
+    <span class="kw">public bool</span> <span class="mth">IsApplicable</span>(<span class="cls">Cart</span> cart) => !<span class="kw">string</span>.<span class="mth">IsNullOrEmpty</span>(cart.CouponCode);
+    <span class="kw">public decimal</span> <span class="mth">Apply</span>(<span class="kw">decimal</span> subtotal, <span class="cls">Cart</span> cart)
+    {
+        <span class="kw">var</span> coupon = _coupons.<span class="mth">GetValid</span>(cart.CouponCode);
+        <span class="kw">return</span> coupon?.Type == <span class="cls">CouponType</span>.Percentage
+            ? subtotal * (1 - coupon.Value / 100)
+            : <span class="kw">Math</span>.<span class="mth">Max</span>(0, subtotal - (coupon?.Value ?? 0));
+    }
+}
+
+<span class="cm">// Pipeline applies all applicable strategies in priority order</span>
+<span class="kw">public class</span> <span class="cls">DiscountPipeline</span>
+{
+    <span class="kw">private readonly</span> IEnumerable&lt;<span class="ifc">IDiscountStrategy</span>&gt; _strategies;
+    <span class="kw">public</span> <span class="cls">DiscountPipeline</span>(IEnumerable&lt;<span class="ifc">IDiscountStrategy</span>&gt; strategies) => _strategies = strategies;
+
+    <span class="kw">public decimal</span> <span class="mth">Calculate</span>(<span class="kw">decimal</span> subtotal, <span class="cls">Cart</span> cart)
+        => _strategies
+            .<span class="mth">Where</span>(s => s.<span class="mth">IsApplicable</span>(cart))
+            .<span class="mth">OrderBy</span>(s => s.Priority)
+            .<span class="mth">Aggregate</span>(subtotal, (price, strategy) => strategy.<span class="mth">Apply</span>(price, cart));
+}
+
+<span class="cm">// Registration — add BulkDiscount in future = just this line</span>
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IDiscountStrategy</span>, <span class="cls">LoyaltyDiscountStrategy</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IDiscountStrategy</span>, <span class="cls">SeasonalDiscountStrategy</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IDiscountStrategy</span>, <span class="cls">CouponDiscountStrategy</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="cls">DiscountPipeline</span>&gt;(); <span class="cm">// DI injects all IDiscountStrategy instances</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- LSP -->
+  <div class="topic" id="lsp">
+    <div class="topic-hdr"><span class="sb-dot solid-dot"></span>L — Liskov Substitution Principle</div>
+    <div class="qcard" data-sec="solid">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">LSP</span>
+        <span class="q-text">How do you ensure Stripe, PayPal and COD are truly interchangeable without breaking LSP? What's an LSP violation in e-commerce?</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <p class="a-para">LSP: any implementation should be substitutable for its base type without altering program correctness. Violations occur when a subtype throws where the base doesn't, ignores parameters, or changes the semantics of a method.</p>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · LSP Violation vs Correct Design</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ❌ LSP VIOLATION — COD gateway throws on Refund (not in base contract)</span>
+<span class="kw">public class</span> <span class="cls">CashOnDeliveryGateway</span> : <span class="ifc">IPaymentGateway</span>
+{
+    <span class="kw">public</span> Task&lt;<span class="cls">RefundResult</span>&gt; <span class="mth">RefundAsync</span>(<span class="kw2">string</span> txId, <span class="kw">decimal</span> amt, CancellationToken ct)
+        => <span class="kw">throw new</span> <span class="cls">NotSupportedException</span>(<span class="str">"COD does not support refunds!"</span>);
+        <span class="cm">// Consumer code breaks when this gateway is injected</span>
+}
+
+<span class="cm">// ✅ FIX 1: Segregate refundable capability into separate interface</span>
+<span class="kw">public interface</span> <span class="ifc">IPaymentGateway</span>
+{
+    <span class="kw">string</span> ProviderKey { <span class="kw">get</span>; }
+    Task&lt;<span class="cls">PaymentResult</span>&gt; <span class="mth">ChargeAsync</span>(<span class="cls">PaymentRequest</span> req, CancellationToken ct);
+}
+
+<span class="kw">public interface</span> <span class="ifc">IRefundablePaymentGateway</span> : <span class="ifc">IPaymentGateway</span>   <span class="cm">// ISP + LSP</span>
+{
+    Task&lt;<span class="cls">RefundResult</span>&gt; <span class="mth">RefundAsync</span>(<span class="kw2">string</span> transactionId, <span class="kw">decimal</span> amount, CancellationToken ct);
+}
+
+<span class="cm">// Stripe and PayPal implement the full contract</span>
+<span class="kw">public class</span> <span class="cls">StripePaymentGateway</span> : <span class="ifc">IRefundablePaymentGateway</span>
+{
+    <span class="kw">public string</span> ProviderKey => <span class="str">"stripe"</span>;
+    <span class="kw">public</span> Task&lt;<span class="cls">PaymentResult</span>&gt; <span class="mth">ChargeAsync</span>(<span class="cls">PaymentRequest</span> req, CancellationToken ct) => <span class="cm">/*...*/</span>;
+    <span class="kw">public</span> Task&lt;<span class="cls">RefundResult</span>&gt;  <span class="mth">RefundAsync</span>(<span class="kw2">string</span> txId, <span class="kw">decimal</span> amt, CancellationToken ct) => <span class="cm">/*...*/</span>;
+}
+
+<span class="cm">// COD only implements the base — no refund capability, no violation</span>
+<span class="kw">public class</span> <span class="cls">CashOnDeliveryGateway</span> : <span class="ifc">IPaymentGateway</span>
+{
+    <span class="kw">public string</span> ProviderKey => <span class="str">"cod"</span>;
+    <span class="kw">public</span> Task&lt;<span class="cls">PaymentResult</span>&gt; <span class="mth">ChargeAsync</span>(<span class="cls">PaymentRequest</span> req, CancellationToken ct)
+        => Task.<span class="mth">FromResult</span>(<span class="kw">new</span> <span class="cls">PaymentResult</span>(<span class="kw">true</span>, $<span class="str">"COD-{req.OrderId}"</span>, <span class="kw">null</span>));
+        <span class="cm">// No exception — always succeeds as per COD semantics</span>
+}
+
+<span class="cm">// Refund service safely checks capability at runtime</span>
+<span class="kw">public class</span> <span class="cls">RefundService</span>
+{
+    <span class="kw">public async</span> Task&lt;<span class="cls">RefundResult</span>&gt; <span class="mth">IssueRefundAsync</span>(<span class="cls">Order</span> order, CancellationToken ct)
+    {
+        <span class="kw">var</span> gateway = _factory.<span class="mth">GetGateway</span>(order.PaymentProvider);
+        <span class="kw">if</span> (gateway <span class="kw">is not</span> <span class="ifc">IRefundablePaymentGateway</span> refundable)
+            <span class="kw">return</span> <span class="cls">RefundResult</span>.<span class="mth">NotSupported</span>(<span class="str">"Manual refund required for this payment method"</span>);
+
+        <span class="kw">return await</span> refundable.<span class="mth">RefundAsync</span>(order.TransactionId, order.Total, ct);
+    }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ISP -->
+  <div class="topic" id="isp">
+    <div class="topic-hdr"><span class="sb-dot solid-dot"></span>I — Interface Segregation Principle</div>
+    <div class="qcard" data-sec="solid">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">ISP</span>
+        <span class="q-text">How should you split a fat IProductRepository into focused interfaces for an e-commerce system?</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <p class="a-para">ISP: don't force clients to depend on methods they don't use. A product catalog, order service, and inventory service all need different product operations.</p>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Segregated Product Interfaces</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ❌ BAD: Fat interface — every consumer depends on all methods</span>
+<span class="kw">public interface</span> <span class="ifc">IProductRepository</span>
+{
+    Task&lt;<span class="cls">Product</span>?&gt;              <span class="mth">GetByIdAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct);
+    Task&lt;IReadOnlyList&lt;<span class="cls">Product</span>&gt;&gt; <span class="mth">SearchAsync</span>(<span class="kw2">string</span> query, CancellationToken ct);
+    Task                         <span class="mth">AddAsync</span>(<span class="cls">Product</span> p, CancellationToken ct);
+    Task                         <span class="mth">UpdateAsync</span>(<span class="cls">Product</span> p, CancellationToken ct);
+    Task                         <span class="mth">DeleteAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct);
+    Task&lt;<span class="kw2">int</span>&gt;                    <span class="mth">GetStockLevelAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct);
+    Task                         <span class="mth">AdjustStockAsync</span>(<span class="cls">Guid</span> id, <span class="kw2">int</span> delta, CancellationToken ct);
+    Task&lt;IReadOnlyList&lt;<span class="cls">Review</span>&gt;&gt; <span class="mth">GetReviewsAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct);
+}
+<span class="cm">// ProductCatalogService depends on this but only needs GetById + Search</span>
+<span class="cm">// InventoryService depends on this but only needs GetStock + AdjustStock</span>
+
+<span class="cm">// ✅ GOOD: Segregated interfaces by concern</span>
+<span class="kw">public interface</span> <span class="ifc">IProductReader</span>
+{
+    Task&lt;<span class="cls">Product</span>?&gt;              <span class="mth">GetByIdAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct);
+    Task&lt;IReadOnlyList&lt;<span class="cls">Product</span>&gt;&gt; <span class="mth">GetByCategoryAsync</span>(<span class="kw2">string</span> cat, CancellationToken ct);
+}
+
+<span class="kw">public interface</span> <span class="ifc">IProductSearcher</span>
+{
+    Task&lt;PagedResult&lt;<span class="cls">Product</span>&gt;&gt; <span class="mth">SearchAsync</span>(<span class="cls">ProductSearchQuery</span> query, CancellationToken ct);
+}
+
+<span class="kw">public interface</span> <span class="ifc">IProductWriter</span>
+{
+    Task <span class="mth">AddAsync</span>(<span class="cls">Product</span> product, CancellationToken ct);
+    Task <span class="mth">UpdateAsync</span>(<span class="cls">Product</span> product, CancellationToken ct);
+    Task <span class="mth">DeleteAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct);
+}
+
+<span class="kw">public interface</span> <span class="ifc">IInventoryManager</span>
+{
+    Task&lt;<span class="kw2">int</span>&gt; <span class="mth">GetStockAsync</span>(<span class="cls">Guid</span> productId, CancellationToken ct);
+    Task      <span class="mth">AdjustStockAsync</span>(<span class="cls">Guid</span> productId, <span class="kw2">int</span> delta, CancellationToken ct);
+    Task&lt;<span class="kw2">bool</span>&gt; <span class="mth">IsInStockAsync</span>(<span class="cls">Guid</span> productId, <span class="kw2">int</span> requiredQty, CancellationToken ct);
+}
+
+<span class="cm">// One class implements all (EF can do everything)</span>
+<span class="kw">public class</span> <span class="cls">EfProductRepository</span> : <span class="ifc">IProductReader</span>, <span class="ifc">IProductWriter</span>, <span class="ifc">IProductSearcher</span>, <span class="ifc">IInventoryManager</span>
+{ <span class="cm">/* implementations... */</span> }
+
+<span class="cm">// Registration — each consumer injects only what it needs</span>
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="cls">EfProductRepository</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IProductReader</span>&gt;(sp => sp.<span class="mth">GetRequiredService</span>&lt;<span class="cls">EfProductRepository</span>&gt;());
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IProductWriter</span>&gt;(sp => sp.<span class="mth">GetRequiredService</span>&lt;<span class="cls">EfProductRepository</span>&gt;());
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IProductSearcher</span>&gt;(sp => sp.<span class="mth">GetRequiredService</span>&lt;<span class="cls">EfProductRepository</span>&gt;());
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IInventoryManager</span>&gt;(sp => sp.<span class="mth">GetRequiredService</span>&lt;<span class="cls">EfProductRepository</span>&gt;());
+
+<span class="cm">// CartService only needs IProductReader — no write methods polluting its contract</span>
+<span class="kw">public class</span> <span class="cls">ShoppingCartService</span>
+{
+    <span class="kw">public</span> <span class="cls">ShoppingCartService</span>(<span class="ifc">IProductReader</span> products, <span class="ifc">IInventoryManager</span> inventory)
+    { <span class="cm">/* clean, minimal dependency surface */</span> }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- DIP -->
+  <div class="topic" id="dip">
+    <div class="topic-hdr"><span class="sb-dot solid-dot"></span>D — Dependency Inversion Principle</div>
+    <div class="qcard" data-sec="solid">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">DIP</span>
+        <span class="q-text">Show the complete DIP flow in an e-commerce checkout — from controller to database — with Clean Architecture layers.</span>
+        <span class="q-level">Senior / Arch</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <p class="a-para">DIP: high-level modules (business logic) should not depend on low-level modules (database, email). Both depend on abstractions. The <strong>Application layer defines interfaces; Infrastructure implements them</strong>.</p>
+          <div class="diagram">
+<pre>
+┌─────────────────────────────────────────────────────────────────┐
+│  <span class="hl">PRESENTATION</span>                                                    │
+│  CheckoutController  ──►  PlaceOrderCommand (MediatR)           │
+└────────────────────────────┬────────────────────────────────────┘
+                             │  depends on
+┌────────────────────────────▼────────────────────────────────────┐
+│  <span class="hl2">APPLICATION</span>  (owns the interfaces — dependency flows IN)        │
+│  PlaceOrderCommandHandler                                        │
+│  ├── IOrderRepository     (interface defined HERE)              │
+│  ├── IPaymentGateway      (interface defined HERE)              │
+│  └── IOrderEmailService   (interface defined HERE)              │
+└────────────────────────────┬────────────────────────────────────┘
+                             │  implemented by
+┌────────────────────────────▼────────────────────────────────────┐
+│  <span class="hl3">INFRASTRUCTURE</span>  (depends on Application, not the other way)    │
+│  EfOrderRepository  implements  IOrderRepository                │
+│  StripeGateway      implements  IPaymentGateway                 │
+│  SmtpEmailService   implements  IOrderEmailService              │
+└─────────────────────────────────────────────────────────────────┘
+  Rule: Application project has ZERO reference to Infrastructure
+</pre>
+          </div>
+
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Full Checkout Flow with DIP</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ── APPLICATION LAYER ─────────────────────────────────────────────────────</span>
+<span class="cm">// Interfaces defined HERE — Application has zero EF/Stripe/SMTP references</span>
+<span class="kw">public interface</span> <span class="ifc">IOrderRepository</span>
+{
+    Task <span class="mth">AddAsync</span>(<span class="cls">Order</span> order, CancellationToken ct);
+    Task&lt;<span class="cls">Order</span>?&gt; <span class="mth">GetByIdAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct);
+}
+
+<span class="kw">public interface</span> <span class="ifc">IUnitOfWork</span>    { Task <span class="mth">CommitAsync</span>(CancellationToken ct); }
+<span class="kw">public interface</span> <span class="ifc">IPaymentGateway</span> { Task&lt;<span class="cls">PaymentResult</span>&gt; <span class="mth">ChargeAsync</span>(<span class="cls">PaymentRequest</span> r, CancellationToken ct); }
+<span class="kw">public interface</span> <span class="ifc">IEmailService</span>   { Task <span class="mth">SendOrderConfirmationAsync</span>(<span class="cls">Order</span> o, CancellationToken ct); }
+
+<span class="cm">// Use case — 100% unit-testable, no DB/network</span>
+<span class="kw">public class</span> <span class="cls">PlaceOrderCommandHandler</span> : IRequestHandler&lt;<span class="cls">PlaceOrderCommand</span>, <span class="cls">Guid</span>&gt;
+{
+    <span class="kw">private readonly</span> <span class="ifc">IOrderRepository</span> _orders;
+    <span class="kw">private readonly</span> <span class="ifc">IUnitOfWork</span>       _uow;
+    <span class="kw">private readonly</span> <span class="ifc">IPaymentGateway</span>   _payment;
+    <span class="kw">private readonly</span> <span class="ifc">IEmailService</span>     _email;
+
+    <span class="kw">public</span> <span class="cls">PlaceOrderCommandHandler</span>(
+        <span class="ifc">IOrderRepository</span> orders, <span class="ifc">IUnitOfWork</span> uow,
+        <span class="ifc">IPaymentGateway</span> payment, <span class="ifc">IEmailService</span> email)
+        => (_orders, _uow, _payment, _email) = (orders, uow, payment, email);
+
+    <span class="kw">public async</span> Task&lt;<span class="cls">Guid</span>&gt; <span class="mth">Handle</span>(<span class="cls">PlaceOrderCommand</span> cmd, CancellationToken ct)
+    {
+        <span class="kw">var</span> order   = <span class="cls">Order</span>.<span class="mth">Create</span>(cmd);
+        <span class="kw">var</span> payment = <span class="kw">await</span> _payment.<span class="mth">ChargeAsync</span>(order.<span class="mth">ToPaymentRequest</span>(), ct);
+
+        <span class="kw">if</span> (!payment.Success)
+            <span class="kw">throw new</span> <span class="cls">PaymentFailedException</span>(payment.Error);
+
+        order.<span class="mth">MarkPaid</span>(payment.TransactionId);
+        <span class="kw">await</span> _orders.<span class="mth">AddAsync</span>(order, ct);
+        <span class="kw">await</span> _uow.<span class="mth">CommitAsync</span>(ct);
+        <span class="kw">await</span> _email.<span class="mth">SendOrderConfirmationAsync</span>(order, ct);
+        <span class="kw">return</span> order.Id;
+    }
+}
+
+<span class="cm">// ── INFRASTRUCTURE LAYER ──────────────────────────────────────────────────</span>
+<span class="cm">// Depends on Application — NOT the other way around</span>
+<span class="kw">public class</span> <span class="cls">EfOrderRepository</span> : <span class="ifc">IOrderRepository</span>
+{
+    <span class="kw">private readonly</span> <span class="cls">ECommerceDbContext</span> _ctx;
+    <span class="kw">public</span> <span class="cls">EfOrderRepository</span>(<span class="cls">ECommerceDbContext</span> ctx) => _ctx = ctx;
+    <span class="kw">public async</span> Task <span class="mth">AddAsync</span>(<span class="cls">Order</span> o, CancellationToken ct) { _ctx.Orders.<span class="mth">Add</span>(o); }
+    <span class="kw">public</span> Task&lt;<span class="cls">Order</span>?&gt; <span class="mth">GetByIdAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct)
+        => _ctx.Orders.<span class="mth">FirstOrDefaultAsync</span>(o => o.Id == id, ct);
+}
+
+<span class="kw">public class</span> <span class="cls">EfUnitOfWork</span> : <span class="ifc">IUnitOfWork</span>
+{
+    <span class="kw">private readonly</span> <span class="cls">ECommerceDbContext</span> _ctx;
+    <span class="kw">public</span> Task <span class="mth">CommitAsync</span>(CancellationToken ct) => _ctx.<span class="mth">SaveChangesAsync</span>(ct);
+}
+
+<span class="cm">// ── COMPOSITION ROOT (Program.cs) ─────────────────────────────────────────</span>
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IOrderRepository</span>, <span class="cls">EfOrderRepository</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IUnitOfWork</span>, <span class="cls">EfUnitOfWork</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IPaymentGateway</span>, <span class="cls">StripePaymentGateway</span>&gt;();
+builder.Services.<span class="mth">AddScoped</span>&lt;<span class="ifc">IEmailService</span>, <span class="cls">SmtpEmailService</span>&gt;();</code></pre>
+          </div>
+          <div class="callout callout-tip"><span class="callout-icon">✅</span><span><strong>Quick check:</strong> Open your Application project's .csproj. If it references <code>Microsoft.EntityFrameworkCore</code>, <code>MailKit</code>, or <code>Stripe</code> — you've violated DIP. Application must reference only Domain.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /SOLID section -->
+
+<!-- ══════════════════════════════════════════════════════
+  SECTION 3 — SCALABLE WEB APIs
+══════════════════════════════════════════════════════ -->
+<div class="sec-block" id="api-section" data-sec="api">
+  <div class="sec-header sh-api" data-num="03">
+    <div class="sec-icon">🚀</div>
+    <div>
+      <div class="sec-title">Scalable Web APIs in ASP.NET Core</div>
+      <div class="sec-desc">CQRS, caching, rate limiting, pagination, versioning, health checks — production patterns.</div>
+    </div>
+    <span class="sec-qcount">5 Deep Answers</span>
+  </div>
+
+  <!-- Clean Arch + CQRS -->
+  <div class="topic" id="api-cqrs">
+    <div class="topic-hdr"><span class="sb-dot api-dot"></span>Clean Architecture + CQRS + MediatR</div>
+    <div class="qcard" data-sec="api">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">API-01</span>
+        <span class="q-text">How do you implement CQRS with MediatR in an e-commerce API? Show a full query and command with pipeline behaviors.</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Query + Command + Pipeline Behaviors</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ─── QUERY — reads don't need EF change tracking ─────────────────────────</span>
+<span class="kw">public record</span> <span class="cls">GetProductsQuery</span>(<span class="kw2">string</span>? Category, <span class="kw2">int</span> Page, <span class="kw2">int</span> PageSize)
+    : IRequest&lt;PagedResult&lt;<span class="cls">ProductDto</span>&gt;&gt;;
+
+<span class="kw">public class</span> <span class="cls">GetProductsQueryHandler</span> : IRequestHandler&lt;<span class="cls">GetProductsQuery</span>, PagedResult&lt;<span class="cls">ProductDto</span>&gt;&gt;
+{
+    <span class="kw">private readonly</span> <span class="cls">ECommerceDbContext</span> _ctx;  <span class="cm">// Query side — direct EF, no repo overhead</span>
+
+    <span class="kw">public async</span> Task&lt;PagedResult&lt;<span class="cls">ProductDto</span>&gt;&gt; <span class="mth">Handle</span>(<span class="cls">GetProductsQuery</span> q, CancellationToken ct)
+    {
+        <span class="kw">var</span> query = _ctx.Products.<span class="mth">AsNoTracking</span>()
+            .<span class="mth">Where</span>(p => p.IsActive && (q.Category == <span class="kw">null</span> || p.Category == q.Category));
+
+        <span class="kw">var</span> total = <span class="kw">await</span> query.<span class="mth">CountAsync</span>(ct);
+        <span class="kw">var</span> items = <span class="kw">await</span> query
+            .<span class="mth">OrderBy</span>(p => p.Name)
+            .<span class="mth">Skip</span>((q.Page - 1) * q.PageSize).<span class="mth">Take</span>(q.PageSize)
+            .<span class="mth">Select</span>(p => <span class="kw">new</span> <span class="cls">ProductDto</span>(p.Id, p.Name, p.Price, p.Category, p.StockLevel))
+            .<span class="mth">ToListAsync</span>(ct);
+
+        <span class="kw">return new</span> <span class="cls">PagedResult</span>&lt;<span class="cls">ProductDto</span>&gt;(items, total, q.Page, q.PageSize);
+    }
+}
+
+<span class="cm">// ─── COMMAND — writes go through domain model ─────────────────────────────</span>
+<span class="kw">public record</span> <span class="cls">PlaceOrderCommand</span>(<span class="kw2">string</span> CustomerId, List&lt;<span class="cls">OrderItemDto</span>&gt; Items, <span class="kw2">string</span> PaymentProvider)
+    : IRequest&lt;<span class="cls">PlaceOrderResult</span>&gt;;
+
+<span class="kw">public class</span> <span class="cls">PlaceOrderCommandHandler</span> : IRequestHandler&lt;<span class="cls">PlaceOrderCommand</span>, <span class="cls">PlaceOrderResult</span>&gt;
+{
+    <span class="kw">public async</span> Task&lt;<span class="cls">PlaceOrderResult</span>&gt; <span class="mth">Handle</span>(<span class="cls">PlaceOrderCommand</span> cmd, CancellationToken ct)
+    {
+        <span class="kw">var</span> order = <span class="cls">Order</span>.<span class="mth">Create</span>(cmd.CustomerId, cmd.Items);
+        <span class="kw">await</span> _orders.<span class="mth">AddAsync</span>(order, ct);
+        <span class="kw">var</span> payment = <span class="kw">await</span> _paymentFactory
+            .<span class="mth">GetGateway</span>(cmd.PaymentProvider)
+            .<span class="mth">ChargeAsync</span>(order.<span class="mth">ToPaymentRequest</span>(), ct);
+
+        <span class="kw">if</span> (!payment.Success) <span class="kw">throw new</span> <span class="cls">PaymentFailedException</span>(payment.Error);
+
+        order.<span class="mth">MarkPaid</span>(payment.TransactionId);
+        <span class="kw">await</span> _uow.<span class="mth">CommitAsync</span>(ct);
+        <span class="kw">return new</span> <span class="cls">PlaceOrderResult</span>(order.Id, payment.TransactionId);
+    }
+}
+
+<span class="cm">// ─── PIPELINE BEHAVIORS (cross-cutting concerns) ──────────────────────────</span>
+<span class="cm">// 1. Validation behavior — runs before every command handler</span>
+<span class="kw">public class</span> <span class="cls">ValidationBehavior</span>&lt;TRequest, TResponse&gt; : IPipelineBehavior&lt;TRequest, TResponse&gt;
+    <span class="kw">where</span> TRequest : notnull
+{
+    <span class="kw">private readonly</span> IEnumerable&lt;IValidator&lt;TRequest&gt;&gt; _validators;
+
+    <span class="kw">public async</span> Task&lt;TResponse&gt; <span class="mth">Handle</span>(TRequest request, RequestHandlerDelegate&lt;TResponse&gt; next, CancellationToken ct)
+    {
+        <span class="kw">var</span> ctx = <span class="kw">new</span> <span class="cls">ValidationContext</span>&lt;TRequest&gt;(request);
+        <span class="kw">var</span> failures = _validators
+            .<span class="mth">Select</span>(v => v.<span class="mth">Validate</span>(ctx))
+            .<span class="mth">SelectMany</span>(r => r.Errors)
+            .<span class="mth">Where</span>(f => f != <span class="kw">null</span>).<span class="mth">ToList</span>();
+
+        <span class="kw">if</span> (failures.<span class="mth">Count</span> != 0) <span class="kw">throw new</span> <span class="cls">ValidationException</span>(failures);
+        <span class="kw">return await</span> <span class="mth">next</span>();
+    }
+}
+
+<span class="cm">// 2. Logging behavior — logs before/after every request</span>
+<span class="kw">public class</span> <span class="cls">LoggingBehavior</span>&lt;TRequest, TResponse&gt; : IPipelineBehavior&lt;TRequest, TResponse&gt;
+{
+    <span class="kw">public async</span> Task&lt;TResponse&gt; <span class="mth">Handle</span>(TRequest request, RequestHandlerDelegate&lt;TResponse&gt; next, CancellationToken ct)
+    {
+        _logger.<span class="mth">LogInformation</span>(<span class="str">"Handling {Name}: {@Request}"</span>, <span class="kw">typeof</span>(TRequest).Name, request);
+        <span class="kw">var</span> sw = Stopwatch.<span class="mth">StartNew</span>();
+        <span class="kw">var</span> result = <span class="kw">await</span> <span class="mth">next</span>();
+        _logger.<span class="mth">LogInformation</span>(<span class="str">"Handled {Name} in {Elapsed}ms"</span>, <span class="kw">typeof</span>(TRequest).Name, sw.<span class="mth">ElapsedMilliseconds</span>());
+        <span class="kw">return</span> result;
+    }
+}
+
+<span class="cm">// Registration</span>
+builder.Services.<span class="mth">AddMediatR</span>(cfg => cfg.<span class="mth">RegisterServicesFromAssembly</span>(<span class="kw">typeof</span>(<span class="cls">Program</span>).Assembly));
+builder.Services.<span class="mth">AddTransient</span>(<span class="kw">typeof</span>(IPipelineBehavior&lt;,&gt;), <span class="kw">typeof</span>(<span class="cls">ValidationBehavior</span>&lt;,&gt;));
+builder.Services.<span class="mth">AddTransient</span>(<span class="kw">typeof</span>(IPipelineBehavior&lt;,&gt;), <span class="kw">typeof</span>(<span class="cls">LoggingBehavior</span>&lt;,&gt;));
+
+<span class="cm">// Thin controller</span>
+[<span class="kw3">ApiController</span>, <span class="kw3">Route</span>(<span class="str">"api/v{version:apiVersion}/orders"</span>)]
+<span class="kw">public class</span> <span class="cls">OrdersController</span> : <span class="cls">ControllerBase</span>
+{
+    [<span class="kw3">HttpPost</span>]
+    <span class="kw">public async</span> Task&lt;ActionResult&lt;<span class="cls">PlaceOrderResult</span>&gt;&gt; <span class="mth">PlaceOrder</span>(
+        <span class="cls">PlaceOrderCommand</span> cmd, ISender mediator, CancellationToken ct)
+    {
+        <span class="kw">var</span> result = <span class="kw">await</span> mediator.<span class="mth">Send</span>(cmd, ct);
+        <span class="kw">return</span> <span class="mth">CreatedAtAction</span>(<span class="kw">nameof</span>(<span class="mth">GetById</span>), <span class="kw">new</span> { id = result.OrderId }, result);
+    }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Caching -->
+  <div class="topic" id="api-cache">
+    <div class="topic-hdr"><span class="sb-dot api-dot"></span>Multi-Layer Caching Strategy</div>
+    <div class="qcard" data-sec="api">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">API-02</span>
+        <span class="q-text">Describe a production caching strategy for a high-traffic product catalog — in-memory, distributed Redis, and output cache.</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <div class="diagram">
+<pre>
+  Request
+     │
+     ▼
+  ┌──────────────────────────────────────────┐
+  │  <span class="hl">Layer 1: Output Cache</span> (CDN / ASP.NET)    │  hit → return immediately (ms)
+  └──────────────────────┬───────────────────┘
+                         │ miss
+                         ▼
+  ┌──────────────────────────────────────────┐
+  │  <span class="hl2">Layer 2: Redis</span> (IDistributedCache)       │  hit → 1–5ms round trip
+  └──────────────────────┬───────────────────┘
+                         │ miss
+                         ▼
+  ┌──────────────────────────────────────────┐
+  │  <span class="hl3">Layer 3: SQL Server</span> (EF Core query)      │  20–200ms
+  └──────────────────────────────────────────┘
+</pre>
+          </div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Complete Caching Setup</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ─── Setup ────────────────────────────────────────────────────────────────</span>
+<span class="cm">// Layer 1: Output Cache (ASP.NET Core 7+)</span>
+builder.Services.<span class="mth">AddOutputCache</span>(opt =>
+{
+    opt.<span class="mth">AddBasePolicy</span>(b => b.<span class="mth">Expire</span>(TimeSpan.<span class="mth">FromSeconds</span>(30)));
+    opt.<span class="mth">AddPolicy</span>(<span class="str">"products"</span>, p => p
+        .<span class="mth">Expire</span>(TimeSpan.<span class="mth">FromMinutes</span>(5))
+        .<span class="mth">SetVaryByQuery</span>(<span class="str">"category"</span>, <span class="str">"page"</span>, <span class="str">"pageSize"</span>)
+        .<span class="mth">Tag</span>(<span class="str">"products"</span>));
+    opt.<span class="mth">AddPolicy</span>(<span class="str">"product-detail"</span>, p => p
+        .<span class="mth">Expire</span>(TimeSpan.<span class="mth">FromMinutes</span>(10))
+        .<span class="mth">Tag</span>(<span class="str">"products"</span>));
+});
+
+<span class="cm">// Layer 2: Redis distributed cache</span>
+builder.Services.<span class="mth">AddStackExchangeRedisCache</span>(opt => {
+    opt.Configuration = builder.Configuration[<span class="str">"Redis:ConnectionString"</span>];
+    opt.InstanceName  = <span class="str">"ecommerce:"</span>;
+});
+
+<span class="cm">// ─── Cache-aside pattern in query handler ─────────────────────────────────</span>
+<span class="kw">public class</span> <span class="cls">GetProductsQueryHandler</span> : IRequestHandler&lt;<span class="cls">GetProductsQuery</span>, PagedResult&lt;<span class="cls">ProductDto</span>&gt;&gt;
+{
+    <span class="kw">private readonly</span> <span class="cls">ECommerceDbContext</span> _ctx;
+    <span class="kw">private readonly</span> IDistributedCache   _cache;
+
+    <span class="kw">public async</span> Task&lt;PagedResult&lt;<span class="cls">ProductDto</span>&gt;&gt; <span class="mth">Handle</span>(<span class="cls">GetProductsQuery</span> q, CancellationToken ct)
+    {
+        <span class="kw">var</span> key  = $<span class="str">"products:cat={q.Category}:p={q.Page}:sz={q.PageSize}"</span>;
+        <span class="kw">var</span> json = <span class="kw">await</span> _cache.<span class="mth">GetStringAsync</span>(key, ct);
+        <span class="kw">if</span> (json <span class="kw">is not null</span>)
+            <span class="kw">return</span> JsonSerializer.<span class="mth">Deserialize</span>&lt;PagedResult&lt;<span class="cls">ProductDto</span>&gt;&gt;(json)!;
+
+        <span class="kw">var</span> result = <span class="kw">await</span> <span class="mth">QueryDatabaseAsync</span>(q, ct);
+
+        <span class="kw">await</span> _cache.<span class="mth">SetStringAsync</span>(key, JsonSerializer.<span class="mth">Serialize</span>(result),
+            <span class="kw">new</span> <span class="cls">DistributedCacheEntryOptions</span>
+            {
+                AbsoluteExpirationRelativeToNow = TimeSpan.<span class="mth">FromMinutes</span>(5),
+                SlidingExpiration               = TimeSpan.<span class="mth">FromMinutes</span>(1)
+            }, ct);
+
+        <span class="kw">return</span> result;
+    }
+}
+
+<span class="cm">// ─── Controller with Output Cache ─────────────────────────────────────────</span>
+[<span class="kw3">HttpGet</span>]
+[<span class="kw3">OutputCache</span>(PolicyName = <span class="str">"products"</span>)]
+<span class="kw">public async</span> Task&lt;ActionResult&lt;PagedResult&lt;<span class="cls">ProductDto</span>&gt;&gt;&gt; <span class="mth">GetProducts</span>(
+    [<span class="kw3">FromQuery</span>] <span class="cls">GetProductsQuery</span> query, ISender mediator, CancellationToken ct)
+    => <span class="mth">Ok</span>(<span class="kw">await</span> mediator.<span class="mth">Send</span>(query, ct));
+
+<span class="cm">// ─── Cache invalidation on product update ─────────────────────────────────</span>
+<span class="kw">public class</span> <span class="cls">UpdateProductCommandHandler</span> : IRequestHandler&lt;<span class="cls">UpdateProductCommand</span>&gt;
+{
+    <span class="kw">private readonly</span> IOutputCacheStore _outputCache;
+    <span class="kw">private readonly</span> IDistributedCache _redisCache;
+
+    <span class="kw">public async</span> Task <span class="mth">Handle</span>(<span class="cls">UpdateProductCommand</span> cmd, CancellationToken ct)
+    {
+        <span class="kw">await</span> _repo.<span class="mth">UpdateAsync</span>(cmd.Product, ct);
+        <span class="kw">await</span> _uow.<span class="mth">CommitAsync</span>(ct);
+
+        <span class="cm">// Invalidate both cache layers</span>
+        <span class="kw">await</span> _outputCache.<span class="mth">EvictByTagAsync</span>(<span class="str">"products"</span>, ct);
+        <span class="kw">await</span> _redisCache.<span class="mth">RemoveAsync</span>($<span class="str">"product:{cmd.Product.Id}"</span>, ct);
+    }
+}</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Rate Limiting & Versioning -->
+  <div class="topic" id="api-rate">
+    <div class="topic-hdr"><span class="sb-dot api-dot"></span>Rate Limiting, Pagination &amp; API Versioning</div>
+    <div class="qcard" data-sec="api">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">API-03</span>
+        <span class="q-text">How do you implement rate limiting, cursor-based pagination, and API versioning in a production ASP.NET Core API?</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Rate Limiting (ASP.NET Core 7+)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code>builder.Services.<span class="mth">AddRateLimiter</span>(opt =>
+{
+    <span class="cm">// Per-user fixed window: 100 requests/min</span>
+    opt.<span class="mth">AddPolicy</span>(<span class="str">"per-user"</span>, ctx =>
+        RateLimitPartition.<span class="mth">GetFixedWindowLimiter</span>(
+            ctx.User.Identity?.Name ?? ctx.Connection.RemoteIpAddress?.ToString(),
+            _ => <span class="kw">new</span> <span class="cls">FixedWindowRateLimiterOptions</span>
+            {
+                Window           = TimeSpan.<span class="mth">FromMinutes</span>(1),
+                PermitLimit      = 100,
+                QueueLimit       = 5,
+                QueueProcessingOrder = QueueProcessingOrder.OldestFirst
+            }));
+
+    <span class="cm">// Global concurrency limiter for expensive endpoints (product search)</span>
+    opt.<span class="mth">AddConcurrencyLimiter</span>(<span class="str">"search"</span>, o => { o.PermitLimit = 20; o.QueueLimit = 10; });
+
+    <span class="cm">// Token bucket for burst-tolerant APIs</span>
+    opt.<span class="mth">AddPolicy</span>(<span class="str">"checkout"</span>, ctx =>
+        RateLimitPartition.<span class="mth">GetTokenBucketLimiter</span>(
+            ctx.User.Identity?.Name,
+            _ => <span class="kw">new</span> <span class="cls">TokenBucketRateLimiterOptions</span>
+            {
+                TokenLimit          = 10,
+                ReplenishmentPeriod = TimeSpan.<span class="mth">FromSeconds</span>(30),
+                TokensPerPeriod     = 5
+            }));
+
+    opt.RejectionStatusCode = StatusCodes.Status429TooManyRequests;
+    opt.OnRejected = <span class="kw">async</span> (ctx, ct) =>
+    {
+        ctx.HttpContext.Response.Headers[<span class="str">"Retry-After"</span>] = <span class="str">"60"</span>;
+        <span class="kw">await</span> ctx.HttpContext.Response.<span class="mth">WriteAsJsonAsync</span>(
+            <span class="kw">new</span> { error = <span class="str">"Rate limit exceeded. Please slow down."</span> }, ct);
+    };
+});
+
+[<span class="kw3">HttpGet</span>(<span class="str">"search"</span>), <span class="kw3">EnableRateLimiting</span>(<span class="str">"search"</span>)]
+<span class="kw">public</span> Task&lt;IActionResult&gt; <span class="mth">Search</span>([<span class="kw3">FromQuery</span>] <span class="kw2">string</span> q) => <span class="cm">/*...*/</span>;
+
+[<span class="kw3">HttpPost</span>(<span class="str">"checkout"</span>), <span class="kw3">EnableRateLimiting</span>(<span class="str">"checkout"</span>)]
+<span class="kw">public</span> Task&lt;IActionResult&gt; <span class="mth">Checkout</span>([<span class="kw3">FromBody</span>] <span class="cls">CheckoutDto</span> dto) => <span class="cm">/*...*/</span>;</code></pre>
+          </div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Cursor-based Pagination (scales better than OFFSET)</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// Cursor pagination — no OFFSET, consistent on inserts, O(log n) with index</span>
+<span class="kw">public record</span> <span class="cls">CursorPage</span>&lt;T&gt;(IReadOnlyList&lt;T&gt; Items, <span class="kw2">string</span>? NextCursor, <span class="kw2">bool</span> HasMore);
+
+<span class="kw">public async</span> Task&lt;<span class="cls">CursorPage</span>&lt;<span class="cls">OrderDto</span>&gt;&gt; <span class="mth">GetOrdersPagedAsync</span>(
+    <span class="kw2">string</span> customerId, <span class="cls">Guid</span>? cursor, <span class="kw2">int</span> pageSize, CancellationToken ct)
+{
+    <span class="kw">var</span> query = _ctx.Orders
+        .<span class="mth">AsNoTracking</span>()
+        .<span class="mth">Where</span>(o => o.CustomerId == customerId)
+        .<span class="mth">OrderByDescending</span>(o => o.CreatedAt).<span class="mth">ThenBy</span>(o => o.Id);
+
+    <span class="kw">if</span> (cursor.HasValue)
+    {
+        <span class="kw">var</span> cursorOrder = <span class="kw">await</span> _ctx.Orders.<span class="mth">FindAsync</span>(cursor.Value, ct);
+        query = query.<span class="mth">Where</span>(o => o.CreatedAt &lt; cursorOrder!.CreatedAt
+                              || (o.CreatedAt == cursorOrder.CreatedAt && o.Id > cursor.Value));
+    }
+
+    <span class="kw">var</span> items = <span class="kw">await</span> query.<span class="mth">Take</span>(pageSize + 1)  <span class="cm">// take one extra to check HasMore</span>
+        .<span class="mth">Select</span>(o => <span class="kw">new</span> <span class="cls">OrderDto</span>(o.Id, o.Total, o.Status, o.CreatedAt))
+        .<span class="mth">ToListAsync</span>(ct);
+
+    <span class="kw">var</span> hasMore   = items.<span class="mth">Count</span> > pageSize;
+    <span class="kw">var</span> pageItems = items.<span class="mth">Take</span>(pageSize).<span class="mth">ToList</span>();
+    <span class="kw">var</span> nextCursor = hasMore ? pageItems.<span class="mth">Last</span>().Id.<span class="mth">ToString</span>() : <span class="kw">null</span>;
+    <span class="kw">return new</span> <span class="cls">CursorPage</span>&lt;<span class="cls">OrderDto</span>&gt;(pageItems, nextCursor, hasMore);
+}</code></pre>
+          </div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · API Versioning</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// dotnet add package Asp.Versioning.Mvc</span>
+builder.Services.<span class="mth">AddApiVersioning</span>(opt =>
+{
+    opt.DefaultApiVersion       = <span class="kw">new</span> <span class="cls">ApiVersion</span>(1, 0);
+    opt.AssumeDefaultVersionWhenUnspecified = <span class="kw">true</span>;
+    opt.ReportApiVersions       = <span class="kw">true</span>;   <span class="cm">// adds api-supported-versions header</span>
+    opt.ApiVersionReader = ApiVersionReader.<span class="mth">Combine</span>(
+        <span class="kw">new</span> <span class="cls">UrlSegmentApiVersionReader</span>(),         <span class="cm">// /api/v1/products</span>
+        <span class="kw">new</span> <span class="cls">HeaderApiVersionReader</span>(<span class="str">"x-api-version"</span>), <span class="cm">// Header: x-api-version: 2</span>
+        <span class="kw">new</span> <span class="cls">QueryStringApiVersionReader</span>(<span class="str">"api-version"</span>) <span class="cm">// ?api-version=2</span>
+    );
+}).<span class="mth">AddApiExplorer</span>(opt =>
+{
+    opt.GroupNameFormat           = <span class="str">"'v'VVV"</span>;
+    opt.SubstituteApiVersionInUrl = <span class="kw">true</span>;
+});
+
+<span class="cm">// V1 controller</span>
+[<span class="kw3">ApiController</span>, <span class="kw3">Route</span>(<span class="str">"api/v{version:apiVersion}/products"</span>)]
+[<span class="kw3">ApiVersion</span>(<span class="str">"1.0"</span>)]
+<span class="kw">public class</span> <span class="cls">ProductsV1Controller</span> : <span class="cls">ControllerBase</span> { <span class="cm">/* v1 DTOs */</span> }
+
+<span class="cm">// V2 controller — same route, richer response</span>
+[<span class="kw3">ApiController</span>, <span class="kw3">Route</span>(<span class="str">"api/v{version:apiVersion}/products"</span>)]
+[<span class="kw3">ApiVersion</span>(<span class="str">"2.0"</span>)]
+<span class="kw">public class</span> <span class="cls">ProductsV2Controller</span> : <span class="cls">ControllerBase</span> { <span class="cm">/* v2 DTOs with reviews, images */</span> }</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Performance & Health -->
+  <div class="topic" id="api-perf">
+    <div class="topic-hdr"><span class="sb-dot api-dot"></span>Performance, Background Jobs &amp; Health Checks</div>
+    <div class="qcard" data-sec="api">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">API-04</span>
+        <span class="q-text">How do you handle background jobs (stock sync, email queue) and add health checks in an e-commerce API?</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Background Service + Channel Queue</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// Typed background queue using System.Threading.Channels (no external libs)</span>
+<span class="kw">public interface</span> <span class="ifc">IBackgroundTaskQueue</span>
+{
+    Task <span class="mth">EnqueueAsync</span>(Func&lt;IServiceProvider, CancellationToken, Task&gt; task);
+    Task&lt;Func&lt;IServiceProvider, CancellationToken, Task&gt;&gt; <span class="mth">DequeueAsync</span>(CancellationToken ct);
+}
+
+<span class="kw">public class</span> <span class="cls">BackgroundTaskQueue</span> : <span class="ifc">IBackgroundTaskQueue</span>
+{
+    <span class="kw">private readonly</span> Channel&lt;Func&lt;IServiceProvider, CancellationToken, Task&gt;&gt; _channel
+        = Channel.<span class="mth">CreateBounded</span>&lt;Func&lt;IServiceProvider, CancellationToken, Task&gt;&gt;(100);
+
+    <span class="kw">public</span> Task <span class="mth">EnqueueAsync</span>(Func&lt;IServiceProvider, CancellationToken, Task&gt; task)
+        => _channel.Writer.<span class="mth">WriteAsync</span>(task).AsTask();
+
+    <span class="kw">public</span> Task&lt;Func&lt;IServiceProvider, CancellationToken, Task&gt;&gt; <span class="mth">DequeueAsync</span>(CancellationToken ct)
+        => _channel.Reader.<span class="mth">ReadAsync</span>(ct).AsTask();
+}
+
+<span class="cm">// Background worker — runs in a separate thread pool thread</span>
+<span class="kw">public class</span> <span class="cls">QueuedHostedService</span> : <span class="cls">BackgroundService</span>
+{
+    <span class="kw">private readonly</span> <span class="ifc">IBackgroundTaskQueue</span> _queue;
+    <span class="kw">private readonly</span> IServiceScopeFactory    _scopeFactory;
+
+    <span class="kw">protected override async</span> Task <span class="mth">ExecuteAsync</span>(CancellationToken ct)
+    {
+        <span class="kw">while</span> (!ct.IsCancellationRequested)
+        {
+            <span class="kw">var</span> task = <span class="kw">await</span> _queue.<span class="mth">DequeueAsync</span>(ct);
+            <span class="kw">await using var</span> scope = _scopeFactory.<span class="mth">CreateAsyncScope</span>();
+            <span class="kw">try</span>   { <span class="kw">await</span> task(scope.ServiceProvider, ct); }
+            <span class="kw">catch</span> (<span class="cls">Exception</span> ex) { _logger.<span class="mth">LogError</span>(ex, <span class="str">"Background task failed"</span>); }
+        }
+    }
+}
+
+<span class="cm">// After placing an order: queue email without blocking the HTTP response</span>
+<span class="kw">await</span> _queue.<span class="mth">EnqueueAsync</span>(async (sp, ct) =>
+{
+    <span class="kw">var</span> emailSvc = sp.<span class="mth">GetRequiredService</span>&lt;<span class="ifc">IOrderEmailService</span>&gt;();
+    <span class="kw">await</span> emailSvc.<span class="mth">SendConfirmationAsync</span>(orderId, ct);
+});
+
+<span class="cm">// Registration</span>
+builder.Services.<span class="mth">AddSingleton</span>&lt;<span class="ifc">IBackgroundTaskQueue</span>, <span class="cls">BackgroundTaskQueue</span>&gt;();
+builder.Services.<span class="mth">AddHostedService</span>&lt;<span class="cls">QueuedHostedService</span>&gt;();</code></pre>
+          </div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Health Checks</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code>builder.Services.<span class="mth">AddHealthChecks</span>()
+    .<span class="mth">AddSqlServer</span>(connStr,    name: <span class="str">"sql-server"</span>,    tags: [ <span class="str">"db"</span>, <span class="str">"critical"</span> ])
+    .<span class="mth">AddRedis</span>(redisConn,     name: <span class="str">"redis"</span>,          tags: [ <span class="str">"cache"</span> ])
+    .<span class="mth">AddUrlGroup</span>(<span class="kw">new</span> Uri(<span class="str">"https://api.stripe.com/v1/balance"</span>),
+                              name: <span class="str">"stripe-api"</span>,    tags: [ <span class="str">"payment"</span> ])
+    .<span class="mth">AddCheck</span>&lt;<span class="cls">DiskSpaceHealthCheck</span>&gt;(name: <span class="str">"disk-space"</span>, tags: [ <span class="str">"infra"</span> ]);
+
+<span class="cm">// Separate endpoints for liveness vs readiness (Kubernetes pattern)</span>
+app.<span class="mth">MapHealthChecks</span>(<span class="str">"/health/live"</span>, <span class="kw">new</span> <span class="cls">HealthCheckOptions</span>
+{
+    Predicate = _ => <span class="kw">false</span>  <span class="cm">// fast — only confirms app is alive</span>
+});
+
+app.<span class="mth">MapHealthChecks</span>(<span class="str">"/health/ready"</span>, <span class="kw">new</span> <span class="cls">HealthCheckOptions</span>
+{
+    Predicate = hc => hc.Tags.<span class="mth">Contains</span>(<span class="str">"critical"</span>),  <span class="cm">// DB + Redis must be up</span>
+    ResponseWriter = UIResponseWriter.<span class="mth">WriteHealthCheckUIResponse</span>
+});
+
+app.<span class="mth">MapHealthChecks</span>(<span class="str">"/health/detail"</span>, <span class="kw">new</span> <span class="cls">HealthCheckOptions</span>
+{
+    ResponseWriter = UIResponseWriter.<span class="mth">WriteHealthCheckUIResponse</span>  <span class="cm">// full JSON report</span>
+}).<span class="mth">RequireAuthorization</span>(<span class="str">"internal"</span>);  <span class="cm">// only for internal monitoring systems</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div><!-- /API section -->
+
+<!-- ══════════════════════════════════════════════════════
+  SECTION 4 — ASYNC/AWAIT INTERNALS
+══════════════════════════════════════════════════════ -->
+<div class="sec-block" id="async-section" data-sec="async">
+  <div class="sec-header sh-async" data-num="04">
+    <div class="sec-icon">⚙️</div>
+    <div>
+      <div class="sec-title">How Async / Await Works Internally</div>
+      <div class="sec-desc">State machines, thread pool, SynchronizationContext, deadlocks, ValueTask — the deep internals.</div>
+    </div>
+    <span class="sec-qcount">4 Deep Answers</span>
+  </div>
+
+  <!-- State Machine -->
+  <div class="topic" id="async-context">
+    <div class="topic-hdr"><span class="sb-dot async-dot"></span>State Machine — What the Compiler Generates</div>
+    <div class="qcard" data-sec="async">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">ASYNC-01</span>
+        <span class="q-text">What does the compiler actually generate when you write async/await? Explain the state machine, MoveNext, and how continuations work.</span>
+        <span class="q-level">Senior / Principal</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <p class="a-para">The compiler transforms every <code>async</code> method into a struct implementing <code>IAsyncStateMachine</code>. Each <code>await</code> point becomes a state number. <code>MoveNext()</code> is the actual method body — it's called once per state transition.</p>
+
+          <div class="diagram">
+<pre>
+  <span class="hl">Your code:</span>
+  async Task&lt;Order&gt; GetOrderAsync(int id) {
+      var order  = await _repo.GetByIdAsync(id);   // state 0 → 1
+      var items  = await _items.GetAsync(order.Id); // state 1 → 2
+      return order;                                 // state 2 = done
+  }
+
+  <span class="hl2">What compiler generates (simplified):</span>
+  struct GetOrderAsyncStateMachine : IAsyncStateMachine {
+      int _state = -1;   // -1 = not started
+      Order _order;
+      TaskAwaiter&lt;Order&gt; _awaiter0;
+      TaskAwaiter&lt;List&lt;Item&gt;&gt; _awaiter1;
+
+      void MoveNext() {
+          switch (_state) {
+              case -1:  // first call
+                  _awaiter0 = _repo.GetByIdAsync(id).GetAwaiter();
+                  if (!_awaiter0.IsCompleted) {
+                      _state = 0;
+                      _awaiter0.OnCompleted(MoveNext); // register continuation
+                      return;                          // ← THREAD RELEASED HERE
+                  }
+                  goto case 0;
+
+              case 0:   // resumed after GetByIdAsync completed
+                  _order = _awaiter0.GetResult();
+                  _awaiter1 = _items.GetAsync(_order.Id).GetAwaiter();
+                  if (!_awaiter1.IsCompleted) {
+                      _state = 1;
+                      _awaiter1.OnCompleted(MoveNext);
+                      return;                          // ← THREAD RELEASED AGAIN
+                  }
+                  goto case 1;
+
+              case 1:   // resumed after GetAsync completed
+                  _awaiter1.GetResult();
+                  _tcs.SetResult(_order);              // ← Task completes
+          }
+      }
+  }
+</pre>
+          </div>
+
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · What Actually Happens at Runtime</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ─── THREAD FLOW ──────────────────────────────────────────────────────────
+// Thread A (HTTP request thread) calls GetOrderAsync:
+//   1. MoveNext() called — state = -1
+//   2. _repo.GetByIdAsync starts IO (network/SQL)
+//   3. If NOT complete → registers MoveNext as continuation
+//   4. Thread A is RELEASED back to the thread pool  ← key insight
+//
+// Thread B (any thread pool thread) when IO completes:
+//   5. Continuation (MoveNext) is scheduled on thread pool
+//   6. MoveNext resumes at state 0 — reads result
+//   7. Continues to next await or finishes
+//
+// KEY: No thread is BLOCKED waiting. Thread A is free to serve other requests.
+// This is why async makes servers scale — fewer threads needed.
+</span>
+
+<span class="cm">// You can inspect the state machine yourself:</span>
+<span class="kw">var</span> method = <span class="kw">typeof</span>(<span class="cls">OrderService</span>).<span class="mth">GetMethod</span>(<span class="str">"GetOrderAsync"</span>)!;
+<span class="cm">// Decompile with ILSpy or SharpLab.io — you'll see the generated struct</span>
+
+<span class="cm">// Hot path optimization: if awaited task is already complete (cache hit),</span>
+<span class="cm">// IsCompleted = true → MoveNext continues synchronously, NO allocation!</span>
+<span class="kw">public async</span> Task&lt;<span class="cls">Product</span>?&gt; <span class="mth">GetCachedProductAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct)
+{
+    <span class="cm">// Cache hit: Task&lt;Product&gt; is already complete → state machine runs sync</span>
+    <span class="kw">if</span> (_memCache.<span class="mth">TryGetValue</span>(id, <span class="kw">out</span> <span class="cls">Product</span>? cached))
+        <span class="kw">return</span> cached;  <span class="cm">// or use ValueTask to avoid state machine entirely</span>
+
+    <span class="cm">// Cache miss: real async IO → state machine suspends + resumes</span>
+    <span class="kw">return await</span> _repo.<span class="mth">GetByIdAsync</span>(id, ct);
+}</code></pre>
+          </div>
+          <div class="callout callout-info"><span class="callout-icon">💡</span><span><strong>Paste your code into <a href="https://sharplab.io" target="_blank" style="color:var(--async)">Sharplab.io</a></strong> and switch to "C# → C#" to see the exact state machine your async method compiles to. It's the best way to build intuition about async internals.</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Thread Pool & SyncContext -->
+  <div class="topic" id="async-pitfalls">
+    <div class="topic-hdr"><span class="sb-dot async-dot"></span>SynchronizationContext, Thread Pool &amp; ConfigureAwait</div>
+    <div class="qcard" data-sec="async">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">ASYNC-02</span>
+        <span class="q-text">What is SynchronizationContext? How does ConfigureAwait(false) affect it, and when does it cause deadlocks?</span>
+        <span class="q-level">Senior / Principal</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <div class="diagram">
+<pre>
+  <span class="hl">SynchronizationContext flow:</span>
+
+  UI Thread / ASP.NET Classic:
+  ┌──────────────────────────────────────────────────────┐
+  │ SynchronizationContext.Current = WinFormsSyncContext  │
+  │   await Task.Delay(100)                              │
+  │   → continuation MUST run back on this thread        │
+  │   → if thread is BLOCKED (.Result / .Wait()),        │
+  │     continuation can NEVER run → ∞ DEADLOCK          │
+  └──────────────────────────────────────────────────────┘
+
+  <span class="hl2">ASP.NET Core:</span>
+  ┌──────────────────────────────────────────────────────┐
+  │ SynchronizationContext.Current = null                 │
+  │   → continuations scheduled on ThreadPool directly   │
+  │   → .Result still dangerous (wastes thread), but     │
+  │     no deadlock from SyncContext specifically         │
+  └──────────────────────────────────────────────────────┘
+
+  <span class="hl3">ConfigureAwait(false):</span>
+  ┌──────────────────────────────────────────────────────┐
+  │ Tells awaiter: don't capture SynchronizationContext  │
+  │ Continuation runs on any available ThreadPool thread  │
+  │ → Lower overhead (no context switch)                  │
+  │ → Safe in library code — required for reusable libs   │
+  └──────────────────────────────────────────────────────┘
+</pre>
+          </div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · Deadlock + Fix + ConfigureAwait Rules</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ─── CLASSIC DEADLOCK (WinForms / ASP.NET Classic) ────────────────────────</span>
+<span class="kw">public void</span> <span class="mth">Button_Click</span>(<span class="kw">object</span> sender, EventArgs e)
+{
+    <span class="cm">// .Result blocks the UI thread</span>
+    <span class="cm">// The continuation needs the UI thread → DEADLOCK</span>
+    <span class="kw">var</span> result = <span class="mth">GetDataAsync</span>().Result; <span class="cm">// ❌ NEVER DO THIS</span>
+}
+
+<span class="cm">// ─── FIX: async all the way ────────────────────────────────────────────────</span>
+<span class="kw">public async void</span> <span class="mth">Button_Click</span>(<span class="kw">object</span> sender, EventArgs e)
+{
+    <span class="kw">var</span> result = <span class="kw">await</span> <span class="mth">GetDataAsync</span>(); <span class="cm">// ✅ UI thread released, resumed after</span>
+}
+
+<span class="cm">// ─── CONFIGUREAWAIT RULES ─────────────────────────────────────────────────</span>
+
+<span class="cm">// ✅ Library / Infrastructure code — ALWAYS ConfigureAwait(false)</span>
+<span class="kw">public async</span> Task&lt;<span class="cls">Product</span>?&gt; <span class="mth">GetProductAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct)
+{
+    <span class="kw">var</span> json = <span class="kw">await</span> _httpClient.<span class="mth">GetStringAsync</span>($<span class="str">"/products/{id}"</span>, ct)
+                                .<span class="mth">ConfigureAwait</span>(<span class="kw">false</span>);   <span class="cm">// ✅</    
+    <span class="kw">return</span> JsonSerializer.<span class="mth">Deserialize</span>&lt;<span class="cls">Product</span>&gt;(json);
+}
+
+<span class="cm">// ✅ Controller / UI code — NO ConfigureAwait(false)</span>
+[<span class="kw3">HttpGet</span>]
+<span class="kw">public async</span> Task&lt;IActionResult&gt; <span class="mth">GetProduct</span>(<span class="cls">Guid</span> id)
+{
+    <span class="cm">// ASP.NET Core sets HttpContext after await — needs correct context</span>
+    <span class="kw">var</span> product = <span class="kw">await</span> _service.<span class="mth">GetProductAsync</span>(id);  <span class="cm">// No ConfigureAwait here</span>
+    <span class="kw">return</span> <span class="mth">Ok</span>(product);
+}
+
+<span class="cm">// ─── ASP.NET Core: .Result is wrong even without SyncContext ──────────────</span>
+<span class="kw">public</span> IActionResult <span class="mth">GetProductSync</span>(<span class="cls">Guid</span> id)
+{
+    <span class="cm">// No deadlock in Core, but BLOCKS a thread pool thread</span>
+    <span class="cm">// Under high load: thread starvation, degraded throughput</span>
+    <span class="kw">var</span> product = _service.<span class="mth">GetProductAsync</span>(id).Result; <span class="cm">// ❌ still wrong</span>
+    <span class="kw">return</span> <span class="mth">Ok</span>(product);
+}
+
+<span class="cm">// ─── Thread pool starvation example ───────────────────────────────────────</span>
+<span class="cm">// If all thread pool threads are blocked on .Result/.Wait(),</span>
+<span class="cm">// continuations (the code AFTER await) can't run → server hangs</span>
+<span class="cm">// Fix: async all the way, from controller down to repository</span></code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Pitfalls -->
+  <div class="topic" id="async-advanced">
+    <div class="topic-hdr"><span class="sb-dot async-dot"></span>async void, CancellationToken &amp; ValueTask</div>
+    <div class="qcard" data-sec="async">
+      <div class="q-head" onclick="toggle(this)">
+        <span class="q-tag">ASYNC-03</span>
+        <span class="q-text">Explain async void dangers, proper CancellationToken propagation in an e-commerce checkout, and when to use ValueTask over Task.</span>
+        <span class="q-level">Senior</span>
+        <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+      </div>
+      <div class="a-panel">
+        <div class="a-inner">
+          <div class="a-label">✦ Answer</div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · async void + CancellationToken</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ─── async void — THE DANGER ──────────────────────────────────────────────</span>
+<span class="cm">// Exception propagates to SynchronizationContext.UnhandledException → crash</span>
+<span class="kw">async void</span> <span class="mth">ProcessPaymentEvent</span>(<span class="kw">object</span> sender, <span class="cls">EventArgs</span> e)
+{
+    <span class="kw">await</span> _paymentService.<span class="mth">ProcessAsync</span>();
+    <span class="kw">throw new</span> <span class="cls">Exception</span>(<span class="str">"This crashes the process!"</span>); <span class="cm">// ❌ unhandleable</span>
+}
+
+<span class="cm">// ✅ Only valid use: event handlers (required signature)</span>
+<span class="kw">private async void</span> <span class="mth">OnOrderCreated</span>(<span class="kw">object</span> sender, <span class="cls">OrderCreatedEventArgs</span> e)
+{
+    <span class="kw">try</span>   { <span class="kw">await</span> _notifier.<span class="mth">SendAsync</span>(e.Order); }
+    <span class="kw">catch</span> (<span class="cls">Exception</span> ex) { _logger.<span class="mth">LogError</span>(ex, <span class="str">"Notification failed"</span>); } <span class="cm">// must catch all!</span>
+}
+
+<span class="cm">// ─── CANCELLATIONTOKEN: propagate everywhere ───────────────────────────────</span>
+<span class="cm">// E-commerce checkout — client closes browser → cancel everything</span>
+[<span class="kw3">HttpPost</span>(<span class="str">"checkout"</span>)]
+<span class="kw">public async</span> Task&lt;ActionResult&lt;<span class="cls">CheckoutResult</span>&gt;&gt; <span class="mth">Checkout</span>(
+    [<span class="kw3">FromBody</span>] <span class="cls">CheckoutDto</span> dto,
+    ISender mediator,
+    CancellationToken ct)  <span class="cm">// ASP.NET binds HttpContext.RequestAborted automatically</span>
+{
+    <span class="kw">return await</span> mediator.<span class="mth">Send</span>(<span class="kw">new</span> <span class="cls">CheckoutCommand</span>(dto), ct);
+}
+
+<span class="kw">public class</span> <span class="cls">CheckoutCommandHandler</span>
+{
+    <span class="kw">public async</span> Task&lt;<span class="cls">CheckoutResult</span>&gt; <span class="mth">Handle</span>(<span class="cls">CheckoutCommand</span> cmd, CancellationToken ct)
+    {
+        <span class="cm">// ct is checked at every IO boundary — if client disconnects, we stop</span>
+        <span class="kw">var</span> cart    = <span class="kw">await</span> _cartService.<span class="mth">GetAsync</span>(cmd.CustomerId, ct);
+        <span class="kw">var</span> payment = <span class="kw">await</span> _payment.<span class="mth">ChargeAsync</span>(cart.<span class="mth">ToPaymentRequest</span>(), ct);
+        <span class="kw">await</span> _orderRepo.<span class="mth">SaveAsync</span>(<span class="kw">new</span> <span class="cls">Order</span>(cart, payment), ct);
+        <span class="kw">await</span> _uow.<span class="mth">CommitAsync</span>(ct);
+        <span class="cm">// If ct cancelled mid-way: OperationCanceledException propagates up</span>
+        <span class="cm">// ASP.NET Core returns 499/400, DB transaction is rolled back</span>
+        <span class="kw">return new</span> <span class="cls">CheckoutResult</span>(payment.TransactionId);
+    }
+}
+
+<span class="cm">// Timeout + linked cancellation</span>
+<span class="kw">using var</span> timeoutCts = <span class="kw">new</span> <span class="cls">CancellationTokenSource</span>(TimeSpan.<span class="mth">FromSeconds</span>(30));
+<span class="kw">using var</span> linked = <span class="cls">CancellationTokenSource</span>.<span class="mth">CreateLinkedTokenSource</span>(requestCt, timeoutCts.Token);
+<span class="kw">await</span> _externalApi.<span class="mth">CallAsync</span>(linked.Token); <span class="cm">// cancel on request abort OR 30s timeout</span></code></pre>
+          </div>
+          <div class="code-wrap">
+            <div class="code-bar"><span class="code-lang">C# · ValueTask — When and Why</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ─── Task vs ValueTask ────────────────────────────────────────────────────</span>
+<span class="cm">// Task = class (heap allocation) — even for completed/sync operations</span>
+<span class="cm">// ValueTask = struct — ZERO allocation when result is synchronous</span>
+
+<span class="cm">// ✅ Use ValueTask when: result is frequently available synchronously</span>
+<span class="kw">public</span> ValueTask&lt;<span class="cls">Product</span>?&gt; <span class="mth">GetProductAsync</span>(<span class="cls">Guid</span> id, CancellationToken ct)
+{
+    <span class="cm">// Fast path: in-memory cache hit (99% of requests in hot catalog)</span>
+    <span class="kw">if</span> (_memCache.<span class="mth">TryGetValue</span>(id, <span class="kw">out</span> <span class="cls">Product</span>? cached))
+        <span class="kw">return</span> ValueTask.<span class="mth">FromResult</span>(cached); <span class="cm">// ZERO heap allocation</span>
+
+    <span class="cm">// Slow path: DB query (allocates, but infrequent)</span>
+    <span class="kw">return new</span> ValueTask&lt;<span class="cls">Product</span>?&gt;(_repo.<span class="mth">GetByIdAsync</span>(id, ct));
+}
+
+<span class="cm">// ─── ValueTask RULES ──────────────────────────────────────────────────────</span>
+<span class="cm">// ❌ NEVER await the same ValueTask twice</span>
+<span class="kw">var</span> vt = <span class="mth">GetProductAsync</span>(id, ct);
+<span class="kw">await</span> vt;
+<span class="kw">await</span> vt;  <span class="cm">// ❌ undefined behavior — ValueTask is consumed after first await</span>
+
+<span class="cm">// ❌ NEVER store in a field and await later</span>
+<span class="kw">private</span> ValueTask&lt;<span class="cls">Product</span>?&gt; _pending; <span class="cm">// ❌ unsafe to hold ValueTask</span>
+
+<span class="cm">// ✅ If you need to await multiple times, convert to Task first</span>
+<span class="kw">var</span> task = <span class="mth">GetProductAsync</span>(id, ct).<span class="mth">AsTask</span>();
+<span class="kw">await</span> task;
+<span class="kw">await</span> task;  <span class="cm">// ✅ Task is safe to await multiple times</span>
+
+<span class="cm">// ─── IAsyncEnumerable: streaming large datasets ───────────────────────────</span>
+<span class="kw">public async</span> IAsyncEnumerable&lt;<span class="cls">Order</span>&gt; <span class="mth">StreamOrdersAsync</span>(
+    [<span class="kw3">EnumeratorCancellation</span>] CancellationToken ct)
+{
+    <span class="kw">await foreach</span> (<span class="kw">var</span> order <span class="kw">in</span> _ctx.Orders.<span class="mth">AsAsyncEnumerable</span>().<span class="mth">WithCancellation</span>(ct))
+    {
+        <span class="kw">yield return</span> order;  <span class="cm">// yields one at a time — no load-all-into-memory</span>
+    }
+}
+
+<span class="cm">// Consume in controller with streaming JSON response</span>
+[<span class="kw3">HttpGet</span>(<span class="str">"stream"</span>)]
+<span class="kw">public</span> IAsyncEnumerable&lt;<span class="cls">OrderDto</span>&gt; <span class="mth">StreamOrders</span>(CancellationToken ct)
+    => _orderService.<span class="mth">StreamOrdersAsync</span>(ct).<span class="mth">Select</span>(o => o.<span class="mth">ToDto</span>());</code></pre>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Advanced async -->
+  <div class="qcard" data-sec="async" style="margin-top:14px">
+    <div class="q-head" onclick="toggle(this)">
+      <span class="q-tag">ASYNC-04</span>
+      <span class="q-text">How do you run multiple async operations in parallel in an e-commerce context, and what are the pitfalls?</span>
+      <span class="q-level">Senior</span>
+      <svg class="q-chevron" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="6 9 12 15 18 9"/></svg>
+    </div>
+    <div class="a-panel">
+      <div class="a-inner">
+        <div class="a-label">✦ Answer</div>
+        <div class="code-wrap">
+          <div class="code-bar"><span class="code-lang">C# · Parallel Async Patterns</span><button class="copy-btn" onclick="copyCode(this)">Copy</button></div>
+<pre><code><span class="cm">// ─── Task.WhenAll: run multiple tasks concurrently ────────────────────────</span>
+<span class="cm">// Checkout needs: user profile + cart + pricing — fetch in parallel</span>
+<span class="kw">public async</span> Task&lt;<span class="cls">CheckoutViewModel</span>&gt; <span class="mth">BuildCheckoutPageAsync</span>(<span class="kw2">string</span> userId, CancellationToken ct)
+{
+    <span class="cm">// Start ALL tasks — don't await between them (sequential would be 3x slower)</span>
+    <span class="kw">var</span> userTask    = _userService.<span class="mth">GetProfileAsync</span>(userId, ct);
+    <span class="kw">var</span> cartTask    = _cartService.<span class="mth">GetCartAsync</span>(userId, ct);
+    <span class="kw">var</span> pricingTask = _pricingEngine.<span class="mth">GetRulesAsync</span>(ct);
+
+    <span class="cm">// Await all concurrently — total time ≈ max(individual times)</span>
+    <span class="kw">await</span> Task.<span class="mth">WhenAll</span>(userTask, cartTask, pricingTask);
+
+    <span class="kw">return new</span> <span class="cls">CheckoutViewModel</span>(
+        await userTask, await cartTask, await pricingTask
+    );
+}
+
+<span class="cm">// ─── Task.WhenAny: first result wins (timeout pattern) ────────────────────</span>
+<span class="kw">public async</span> Task&lt;<span class="cls">ShippingRate</span>?&gt; <span class="mth">GetFastestQuoteAsync</span>(<span class="cls">Order</span> order, CancellationToken ct)
+{
+    <span class="kw">using var</span> cts = <span class="cls">CancellationTokenSource</span>.<span class="mth">CreateLinkedTokenSource</span>(ct);
+
+    <span class="kw">var</span> fedex = _fedex.<span class="mth">GetRateAsync</span>(order, cts.Token);
+    <span class="kw">var</span> dhl   = _dhl.<span class="mth">GetRateAsync</span>(order, cts.Token);
+    <span class="kw">var</span> local = _local.<span class="mth">GetRateAsync</span>(order, cts.Token);
+
+    <span class="kw">var</span> first = <span class="kw">await</span> Task.<span class="mth">WhenAny</span>(fedex, dhl, local);
+    cts.<span class="mth">Cancel</span>(); <span class="cm">// cancel the others</span>
+    <span class="kw">return await</span> first;
+}
+
+<span class="cm">// ─── PITFALL: EF DbContext is NOT thread-safe ─────────────────────────────</span>
+<span class="cm">// ❌ This will throw "A second operation was started on this context"</span>
+<span class="kw">var</span> ordersTask   = _ctx.Orders.<span class="mth">ToListAsync</span>(ct);   <span class="cm">// same DbContext</span>
+<span class="kw">var</span> productsTask = _ctx.Products.<span class="mth">ToListAsync</span>(ct); <span class="cm">// ❌ concurrent on same ctx</span>
+<span class="kw">await</span> Task.<span class="mth">WhenAll</span>(ordersTask, productsTask);
+
+<span class="cm">// ✅ Fix: separate DbContext instances per query (via IDbContextFactory)</span>
+<span class="kw">await using var</span> ctx1 = <span class="kw">await</span> _factory.<span class="mth">CreateDbContextAsync</span>(ct);
+<span class="kw">await using var</span> ctx2 = <span class="kw">await</span> _factory.<span class="mth">CreateDbContextAsync</span>(ct);
+<span class="kw">await</span> Task.<span class="mth">WhenAll</span>(ctx1.Orders.<span class="mth">ToListAsync</span>(ct), ctx2.Products.<span class="mth">ToListAsync</span>(ct)); <span class="cm">// ✅</span>
+
+<span class="cm">// ─── Throttled parallel: Parallel.ForEachAsync (.NET 6+) ──────────────────</span>
+<span class="cm">// Send 1000 order confirmation emails — max 10 concurrent</span>
+<span class="kw">await</span> Parallel.<span class="mth">ForEachAsync</span>(orders,
+    <span class="kw">new</span> <span class="cls">ParallelOptions</span> { MaxDegreeOfParallelism = 10, CancellationToken = ct },
+    async (order, innerCt) =>
+    {
+        <span class="kw">await</span> _email.<span class="mth">SendConfirmationAsync</span>(order, innerCt);
+    });
+
+<span class="cm">// ─── Semaphore for custom throttling ──────────────────────────────────────</span>
+<span class="kw">var</span> semaphore = <span class="kw">new</span> <span class="cls">SemaphoreSlim</span>(5); <span class="cm">// max 5 concurrent Stripe API calls</span>
+<span class="kw">var</span> tasks = orders.<span class="mth">Select</span>(<span class="kw">async</span> order =>
+{
+    <span class="kw">await</span> semaphore.<span class="mth">WaitAsync</span>(ct);
+    <span class="kw">try</span>     { <span class="kw">return await</span> _payment.<span class="mth">RefundAsync</span>(order, ct); }
+    <span class="kw">finally</span> { semaphore.<span class="mth">Release</span>(); }
+});
+<span class="kw">var</span> results = <span class="kw">await</span> Task.<span class="mth">WhenAll</span>(tasks);</code></pre>
+        </div>
+        <div class="tbl-wrap">
+          <table>
+            <tr><th>Pattern</th><th>When to Use</th><th>Pitfall</th></tr>
+            <tr><td><code>Task.WhenAll</code></td><td>Run independent tasks in parallel</td><td>First exception cancels others; DbContext not thread-safe</td></tr>
+            <tr><td><code>Task.WhenAny</code></td><td>Race conditions, timeout patterns</td><td>Cancel losing tasks to avoid resource leaks</td></tr>
+            <tr><td><code>Parallel.ForEachAsync</code></td><td>CPU-bound parallel loops (.NET 6+)</td><td>Not for IO-bound if task count is small</td></tr>
+            <tr><td><code>SemaphoreSlim</code></td><td>Throttle API calls, DB connections</td><td>Always release in finally block</td></tr>
+            <tr><td><code>IAsyncEnumerable</code></td><td>Stream large result sets</td><td>Can't use LINQ .ToList() — must foreach</td></tr>
+          </table>
+        </div>
+      </div>
+    </div>
+  </div>
+
+</div><!-- /async section -->
+
+</div><!-- /content -->
+</main>
+
+<script>
+// ─── Toggle card ──────────────────────────────────────────
+function toggle(head) {
+  head.closest('.qcard').classList.toggle('open');
+}
+
+// ─── Copy code ────────────────────────────────────────────
+function copyCode(btn) {
+  const code = btn.closest('.code-wrap').querySelector('pre').innerText;
+  navigator.clipboard.writeText(code).then(() => {
+    btn.textContent = 'Copied!';
+    btn.classList.add('copied');
+    setTimeout(() => { btn.textContent = 'Copy'; btn.classList.remove('copied'); }, 2000);
+  });
+}
+
+// ─── Search ───────────────────────────────────────────────
+const searchEl  = document.getElementById('search');
+const visCount  = document.getElementById('vis-count');
+const noResults = document.getElementById('no-results');
+const allCards  = document.querySelectorAll('.qcard');
+
+searchEl.addEventListener('input', () => {
+  const q = searchEl.value.trim().toLowerCase();
+  let visible = 0;
+
+  allCards.forEach(card => {
+    const match = !q || card.textContent.toLowerCase().includes(q);
+    card.classList.toggle('hidden', !match);
+    if (match) { visible++; if (q) card.classList.add('open'); }
+    else card.classList.remove('open');
+  });
+
+  visCount.textContent = q ? `${visible} results` : 'all';
+  noResults.classList.toggle('show', visible === 0 && !!q);
+
+  document.querySelectorAll('.topic').forEach(t => {
+    const any = [...t.querySelectorAll('.qcard')].some(c => !c.classList.contains('hidden'));
+    t.style.display = any ? '' : 'none';
+  });
+  document.querySelectorAll('.sec-block').forEach(s => {
+    const any = [...s.querySelectorAll('.qcard')].some(c => !c.classList.contains('hidden'));
+    s.style.display = any ? '' : 'none';
+  });
+});
+
+// ─── Progress bar ─────────────────────────────────────────
+const progFill = document.getElementById('prog-fill');
+const progPct  = document.getElementById('prog-pct');
+window.addEventListener('scroll', () => {
+  const total = document.body.scrollHeight - window.innerHeight;
+  const pct   = total > 0 ? Math.round((window.scrollY / total) * 100) : 0;
+  progFill.style.width = pct + '%';
+  progPct.textContent  = pct + '%';
+});
+
+// ─── Active sidebar ───────────────────────────────────────
+const sbLinks = document.querySelectorAll('.sb-link');
+const observer = new IntersectionObserver(entries => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      sbLinks.forEach(a => {
+        a.classList.toggle('active', a.getAttribute('href') === '#' + e.target.id);
+      });
+    }
+  });
+}, { rootMargin: '-15% 0px -75% 0px' });
+
+document.querySelectorAll('[id]').forEach(el => observer.observe(el));
+</script>
+</body>
+</html>
