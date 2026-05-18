@@ -1,0 +1,858 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>ASP.NET Core — Filter Pipeline</title>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&display=swap" rel="stylesheet"/>
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg:       #0a0c10;
+    --bg2:      #111318;
+    --bg3:      #181c24;
+    --border:   rgba(255,255,255,0.07);
+    --border2:  rgba(255,255,255,0.13);
+    --text:     #e8eaf0;
+    --muted:    #6b7280;
+    --dim:      #3a404e;
+
+    --purple:   #a78bfa;
+    --purple-bg:#1e1530;
+    --teal:     #2dd4bf;
+    --teal-bg:  #0d2320;
+    --blue:     #60a5fa;
+    --blue-bg:  #0e1f38;
+    --coral:    #fb7185;
+    --coral-bg: #2a1018;
+    --amber:    #fbbf24;
+    --amber-bg: #261d08;
+    --gray:     #94a3b8;
+    --gray-bg:  #151a22;
+
+    --mono: 'JetBrains Mono', monospace;
+    --sans: 'DM Sans', sans-serif;
+    --display: 'Syne', sans-serif;
+
+    --radius: 10px;
+    --radius-lg: 16px;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--sans);
+    font-size: 15px;
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ─── GRID BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed; inset: 0;
+    background-image:
+      linear-gradient(rgba(255,255,255,.025) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,.025) 1px, transparent 1px);
+    background-size: 48px 48px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── GLOW BLOBS ─── */
+  .blob {
+    position: fixed;
+    border-radius: 50%;
+    filter: blur(120px);
+    pointer-events: none;
+    z-index: 0;
+  }
+  .blob-1 { width: 600px; height: 600px; background: rgba(167,139,250,.07); top: -200px; left: -100px; }
+  .blob-2 { width: 500px; height: 500px; background: rgba(45,212,191,.05); bottom: -100px; right: -100px; }
+
+  /* ─── LAYOUT ─── */
+  .page { position: relative; z-index: 1; max-width: 900px; margin: 0 auto; padding: 0 32px 100px; }
+
+  /* ─── HEADER ─── */
+  header {
+    padding: 72px 0 56px;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 64px;
+  }
+  .badge {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-family: var(--mono); font-size: 11px; font-weight: 500; letter-spacing: .08em;
+    color: var(--teal); background: var(--teal-bg);
+    border: 1px solid rgba(45,212,191,.2);
+    padding: 4px 10px; border-radius: 20px; margin-bottom: 20px;
+    text-transform: uppercase;
+  }
+  .badge::before { content: ''; width: 6px; height: 6px; background: var(--teal); border-radius: 50%; animation: pulse 2s infinite; }
+  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:.5;transform:scale(1.2)} }
+
+  h1 {
+    font-family: var(--display);
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 800;
+    line-height: 1.1;
+    letter-spacing: -.02em;
+    color: #fff;
+    margin-bottom: 16px;
+  }
+  h1 span { color: var(--purple); }
+
+  .subtitle {
+    font-size: 16px;
+    color: var(--muted);
+    max-width: 540px;
+    font-weight: 300;
+  }
+
+  /* ─── SECTION TITLES ─── */
+  .section-label {
+    display: flex; align-items: center; gap: 12px;
+    font-family: var(--mono); font-size: 11px; letter-spacing: .12em;
+    text-transform: uppercase; color: var(--muted);
+    margin-bottom: 28px;
+  }
+  .section-label::after { content: ''; flex: 1; height: 1px; background: var(--border); }
+
+  h2 {
+    font-family: var(--display);
+    font-size: 22px; font-weight: 700;
+    color: #fff; margin-bottom: 16px;
+    letter-spacing: -.01em;
+  }
+
+  /* ─── PIPELINE DIAGRAM ─── */
+  .pipeline-section { margin-bottom: 72px; }
+
+  .pipeline-wrap {
+    position: relative;
+    padding: 32px 0;
+  }
+
+  /* Center line */
+  .pipeline-wrap::before {
+    content: '';
+    position: absolute;
+    left: 50%; top: 0; bottom: 0;
+    width: 1px;
+    background: linear-gradient(to bottom, transparent, var(--dim) 10%, var(--dim) 90%, transparent);
+    transform: translateX(-50%);
+  }
+
+  .pipe-group {
+    margin-bottom: 8px;
+  }
+
+  .pipe-group-label {
+    text-align: center;
+    font-family: var(--mono);
+    font-size: 10px;
+    letter-spacing: .1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-bottom: 10px;
+    position: relative;
+  }
+  .pipe-group-label span {
+    background: var(--bg);
+    padding: 0 12px;
+    position: relative;
+    z-index: 1;
+  }
+  .pipe-group-label::before {
+    content: '';
+    position: absolute;
+    left: 0; right: 0;
+    top: 50%;
+    height: 1px;
+    background: var(--border2);
+    border-radius: 1px;
+  }
+
+  .pipe-group-box {
+    border: 1px solid var(--border2);
+    border-radius: var(--radius-lg);
+    padding: 12px;
+    background: var(--bg2);
+    margin-bottom: 4px;
+  }
+
+  .pipe-node {
+    display: flex; align-items: center;
+    gap: 16px;
+    padding: 14px 18px;
+    border-radius: var(--radius);
+    border: 1px solid transparent;
+    margin-bottom: 4px;
+    transition: transform .15s, box-shadow .15s;
+    cursor: default;
+    position: relative;
+  }
+  .pipe-node:last-child { margin-bottom: 0; }
+  .pipe-node:hover { transform: translateX(4px); }
+
+  .pipe-icon {
+    width: 34px; height: 34px; flex-shrink: 0;
+    border-radius: 8px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px;
+  }
+
+  .pipe-text { flex: 1; }
+  .pipe-name {
+    font-family: var(--display);
+    font-size: 13px; font-weight: 700;
+    line-height: 1.3;
+  }
+  .pipe-desc {
+    font-size: 12px; color: var(--muted);
+    margin-top: 1px;
+    font-weight: 300;
+  }
+
+  .pipe-tag {
+    font-family: var(--mono); font-size: 10px;
+    padding: 3px 8px; border-radius: 4px;
+    white-space: nowrap; flex-shrink: 0;
+    font-weight: 500;
+  }
+
+  /* node color themes */
+  .n-gray   { background: var(--gray-bg);   border-color: rgba(148,163,184,.12); }
+  .n-gray   .pipe-name  { color: var(--gray); }
+  .n-gray   .pipe-icon  { background: rgba(148,163,184,.1); }
+  .n-gray   .pipe-tag   { background: rgba(148,163,184,.1); color: var(--gray); }
+
+  .n-purple { background: var(--purple-bg); border-color: rgba(167,139,250,.2); }
+  .n-purple .pipe-name  { color: var(--purple); }
+  .n-purple .pipe-icon  { background: rgba(167,139,250,.12); }
+  .n-purple .pipe-tag   { background: rgba(167,139,250,.12); color: var(--purple); }
+  .n-purple:hover { box-shadow: 0 0 24px rgba(167,139,250,.1); }
+
+  .n-teal   { background: var(--teal-bg);   border-color: rgba(45,212,191,.2); }
+  .n-teal   .pipe-name  { color: var(--teal); }
+  .n-teal   .pipe-icon  { background: rgba(45,212,191,.1); }
+  .n-teal   .pipe-tag   { background: rgba(45,212,191,.1); color: var(--teal); }
+  .n-teal:hover  { box-shadow: 0 0 24px rgba(45,212,191,.08); }
+
+  .n-blue   { background: var(--blue-bg);   border-color: rgba(96,165,250,.2); }
+  .n-blue   .pipe-name  { color: var(--blue); }
+  .n-blue   .pipe-icon  { background: rgba(96,165,250,.1); }
+  .n-blue   .pipe-tag   { background: rgba(96,165,250,.1); color: var(--blue); }
+  .n-blue:hover  { box-shadow: 0 0 24px rgba(96,165,250,.08); }
+
+  .n-coral  { background: var(--coral-bg);  border-color: rgba(251,113,133,.2); }
+  .n-coral  .pipe-name  { color: var(--coral); }
+  .n-coral  .pipe-icon  { background: rgba(251,113,133,.1); }
+  .n-coral  .pipe-tag   { background: rgba(251,113,133,.1); color: var(--coral); }
+  .n-coral:hover { box-shadow: 0 0 24px rgba(251,113,133,.08); }
+
+  .n-amber  { background: var(--amber-bg);  border-color: rgba(251,191,36,.2); }
+  .n-amber  .pipe-name  { color: var(--amber); }
+  .n-amber  .pipe-icon  { background: rgba(251,191,36,.1); }
+  .n-amber  .pipe-tag   { background: rgba(251,191,36,.1); color: var(--amber); }
+  .n-amber:hover { box-shadow: 0 0 24px rgba(251,191,36,.08); }
+
+  /* arrow connector */
+  .pipe-arrow {
+    display: flex; justify-content: center; align-items: center;
+    height: 20px; color: var(--dim); font-size: 16px;
+    letter-spacing: 0;
+  }
+
+  /* model binding mini node */
+  .binding-node {
+    display: flex; align-items: center; justify-content: center; gap: 8px;
+    padding: 8px 14px; border-radius: 8px;
+    background: rgba(255,255,255,.03);
+    border: 1px dashed var(--border2);
+    margin: 6px 60px;
+    font-family: var(--mono); font-size: 11px;
+    color: var(--muted);
+  }
+
+  /* ─── CARDS GRID ─── */
+  .cards { margin-bottom: 72px; }
+  .cards-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(380px, 1fr));
+    gap: 16px;
+  }
+  .card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 24px;
+    transition: border-color .2s, transform .2s;
+  }
+  .card:hover { border-color: var(--border2); transform: translateY(-2px); }
+
+  .card-header {
+    display: flex; align-items: center; gap: 12px;
+    margin-bottom: 14px;
+  }
+  .card-dot {
+    width: 10px; height: 10px; border-radius: 50%; flex-shrink: 0;
+  }
+  .card h3 {
+    font-family: var(--display);
+    font-size: 15px; font-weight: 700;
+    color: #fff;
+  }
+  .card p { font-size: 13.5px; color: var(--muted); line-height: 1.7; }
+
+  /* ─── CODE BLOCK ─── */
+  .code-section { margin-bottom: 72px; }
+
+  .code-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  .code-header {
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 12px 20px;
+    border-bottom: 1px solid var(--border);
+    background: var(--bg3);
+  }
+  .code-header-left { display: flex; align-items: center; gap: 10px; }
+  .dot-group { display: flex; gap: 6px; }
+  .dot { width: 12px; height: 12px; border-radius: 50%; }
+  .dot-r { background: #ff5f56; }
+  .dot-y { background: #ffbd2e; }
+  .dot-g { background: #27c93f; }
+  .code-filename {
+    font-family: var(--mono); font-size: 12px;
+    color: var(--muted);
+  }
+  .code-lang {
+    font-family: var(--mono); font-size: 10px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted);
+  }
+
+  pre {
+    padding: 24px;
+    overflow-x: auto;
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: #cdd6f4;
+  }
+
+  /* minimal syntax highlighting */
+  .kw  { color: #cba6f7; }  /* keyword */
+  .ty  { color: #89b4fa; }  /* type */
+  .fn  { color: #89dceb; }  /* function */
+  .st  { color: #a6e3a1; }  /* string */
+  .cm  { color: #585b70; font-style: italic; }  /* comment */
+  .nb  { color: #fab387; }  /* number / literal */
+  .at  { color: #f38ba8; }  /* attribute */
+
+  /* ─── COMPARISON TABLE ─── */
+  .table-section { margin-bottom: 72px; }
+
+  .table-wrap {
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+
+  table { width: 100%; border-collapse: collapse; }
+
+  thead th {
+    padding: 14px 20px;
+    text-align: left;
+    font-family: var(--mono);
+    font-size: 11px;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    font-weight: 500;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid var(--border);
+    transition: background .15s;
+  }
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,.02); }
+
+  tbody td {
+    padding: 13px 20px;
+    font-size: 13.5px;
+    vertical-align: middle;
+  }
+
+  td:first-child { color: var(--text); font-weight: 500; }
+  td:not(:first-child) { color: var(--muted); }
+
+  .yes { color: #4ade80 !important; font-weight: 600; }
+  .no  { color: var(--coral) !important; font-weight: 600; }
+  .partial { color: var(--amber) !important; font-weight: 600; }
+
+  /* ─── EXECUTION FLOW ─── */
+  .flow-section { margin-bottom: 72px; }
+
+  .flow-block {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    overflow: hidden;
+  }
+  .flow-header {
+    padding: 14px 20px;
+    background: var(--bg3);
+    border-bottom: 1px solid var(--border);
+    display: flex; align-items: center; gap: 10px;
+  }
+  .flow-header-text {
+    font-family: var(--mono); font-size: 12px;
+    color: var(--muted);
+  }
+  .flow-body { padding: 24px; }
+
+  .flow-step {
+    display: flex; gap: 16px;
+    margin-bottom: 4px;
+  }
+  .flow-step:last-child { margin-bottom: 0; }
+  .flow-indent-1 { padding-left: 32px; }
+  .flow-indent-2 { padding-left: 64px; }
+  .flow-indent-3 { padding-left: 96px; }
+  .flow-indent-4 { padding-left: 128px; }
+
+  .flow-line {
+    font-family: var(--mono);
+    font-size: 13px;
+    line-height: 1.7;
+    color: var(--muted);
+  }
+
+  .flow-enter { color: var(--blue); }
+  .flow-exit  { color: var(--teal); }
+  .flow-action { color: var(--amber); }
+  .flow-arrow-in  { color: var(--blue); }
+  .flow-arrow-out { color: var(--teal); }
+  .flow-system { color: var(--purple); font-style: italic; }
+
+  /* ─── SCOPE TABLE ─── */
+  .scope-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin-top: 0;
+  }
+  .scope-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 20px;
+  }
+  .scope-num {
+    font-family: var(--display);
+    font-size: 28px; font-weight: 800;
+    color: var(--dim);
+    margin-bottom: 8px;
+  }
+  .scope-title {
+    font-family: var(--display);
+    font-size: 14px; font-weight: 700;
+    color: #fff; margin-bottom: 6px;
+  }
+  .scope-code {
+    font-family: var(--mono);
+    font-size: 11px; color: var(--muted);
+    margin-bottom: 8px;
+    line-height: 1.6;
+  }
+  .scope-note { font-size: 12px; color: var(--muted); }
+
+  /* ─── ANIMATION ─── */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .pipe-node, .card, .scope-card {
+    animation: fadeUp .4s ease both;
+  }
+  .pipe-node:nth-child(1) { animation-delay: .05s; }
+  .pipe-node:nth-child(2) { animation-delay: .10s; }
+  .pipe-node:nth-child(3) { animation-delay: .15s; }
+  .pipe-node:nth-child(4) { animation-delay: .20s; }
+  .pipe-node:nth-child(5) { animation-delay: .25s; }
+  .pipe-node:nth-child(6) { animation-delay: .30s; }
+
+  /* ─── FOOTER ─── */
+  footer {
+    text-align: center;
+    padding: 48px 0 0;
+    border-top: 1px solid var(--border);
+    font-family: var(--mono);
+    font-size: 11px;
+    color: var(--dim);
+    letter-spacing: .06em;
+  }
+</style>
+</head>
+<body>
+<div class="blob blob-1"></div>
+<div class="blob blob-2"></div>
+
+<div class="page">
+
+  <!-- ─── HEADER ─── -->
+  <header>
+    <div class="badge">ASP.NET Core</div>
+    <h1>Filter <span>Pipeline</span></h1>
+    <p class="subtitle">
+      How filters inject cross-cutting concerns into the MVC pipeline — ordered execution, short-circuiting, and scope.
+    </p>
+  </header>
+
+  <!-- ─── PIPELINE DIAGRAM ─── -->
+  <section class="pipeline-section">
+    <div class="section-label"><span>01 — Pipeline order</span></div>
+
+    <div class="pipeline-wrap">
+
+      <!-- HTTP in -->
+      <div style="text-align:center;margin-bottom:12px;">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;">HTTP Request ↓</span>
+      </div>
+
+      <!-- Middleware group -->
+      <div class="pipe-group">
+        <div class="pipe-group-label"><span>Middleware pipeline</span></div>
+        <div class="pipe-group-box">
+          <div class="pipe-node n-gray">
+            <div class="pipe-icon">⚡</div>
+            <div class="pipe-text">
+              <div class="pipe-name">Exception handling middleware</div>
+              <div class="pipe-desc">Outer safety net — catches unhandled exceptions from everything below</div>
+            </div>
+            <div class="pipe-tag">UseExceptionHandler</div>
+          </div>
+          <div class="pipe-arrow">↓</div>
+          <div class="pipe-node n-gray">
+            <div class="pipe-icon">🔀</div>
+            <div class="pipe-text">
+              <div class="pipe-name">Routing middleware</div>
+              <div class="pipe-desc">Matches the URL to an endpoint — does not execute it yet</div>
+            </div>
+            <div class="pipe-tag">UseRouting</div>
+          </div>
+          <div class="pipe-arrow">↓</div>
+          <div class="pipe-node n-gray">
+            <div class="pipe-icon">🔐</div>
+            <div class="pipe-text">
+              <div class="pipe-name">Authentication / Authorization middleware</div>
+              <div class="pipe-desc">Middleware-level auth — sets the principal, does not know about action metadata</div>
+            </div>
+            <div class="pipe-tag">UseAuthorization</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="pipe-arrow">↓</div>
+
+      <!-- MVC / Filters group -->
+      <div class="pipe-group">
+        <div class="pipe-group-label"><span>MVC endpoint — filters execute here</span></div>
+        <div class="pipe-group-box">
+
+          <div class="pipe-node n-purple">
+            <div class="pipe-icon">🛡</div>
+            <div class="pipe-text">
+              <div class="pipe-name">Authorization filter</div>
+              <div class="pipe-desc">Runs first — short-circuits with 401/403 if access is denied. Implements <code style="font-family:var(--mono);font-size:11px;color:var(--purple)">IAuthorizationFilter</code></div>
+            </div>
+            <div class="pipe-tag">1st</div>
+          </div>
+
+          <div class="pipe-arrow">↓</div>
+
+          <div class="pipe-node n-teal">
+            <div class="pipe-icon">📦</div>
+            <div class="pipe-text">
+              <div class="pipe-name">Resource filter — OnResourceExecuting</div>
+              <div class="pipe-desc">Runs before model binding. Wraps the rest — ideal for output caching</div>
+            </div>
+            <div class="pipe-tag">2nd</div>
+          </div>
+
+          <div class="pipe-arrow">↓</div>
+          <div class="binding-node">⚙ Model binding</div>
+          <div class="pipe-arrow">↓</div>
+
+          <div class="pipe-node n-blue">
+            <div class="pipe-icon">⚙</div>
+            <div class="pipe-text">
+              <div class="pipe-name">Action filter — OnActionExecuting / Executed</div>
+              <div class="pipe-desc">Wraps the action method. Has access to ModelState, ActionArguments. Best for validation and logging</div>
+            </div>
+            <div class="pipe-tag">3rd</div>
+          </div>
+
+          <div class="pipe-arrow">↓</div>
+
+          <div class="pipe-node n-coral">
+            <div class="pipe-icon">🔥</div>
+            <div class="pipe-text">
+              <div class="pipe-name">Exception filter</div>
+              <div class="pipe-desc">Handles unhandled exceptions from the action and action filters only — not middleware or result filters</div>
+            </div>
+            <div class="pipe-tag">on throw</div>
+          </div>
+
+          <div class="pipe-arrow">↓</div>
+
+          <div class="pipe-node n-amber">
+            <div class="pipe-icon">📤</div>
+            <div class="pipe-text">
+              <div class="pipe-name">Result filter — OnResultExecuting / Executed</div>
+              <div class="pipe-desc">Wraps IActionResult execution. Runs only on success path — good for response headers and formatting</div>
+            </div>
+            <div class="pipe-tag">last</div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- HTTP out -->
+      <div style="text-align:center;margin-top:12px;">
+        <span style="font-family:var(--mono);font-size:11px;color:var(--muted);letter-spacing:.08em;text-transform:uppercase;">↑ HTTP Response</span>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ─── MIDDLEWARE VS FILTERS ─── -->
+  <section class="cards" style="margin-bottom:72px;">
+    <div class="section-label"><span>02 — Middleware vs filters</span></div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:28px;max-width:620px;">
+      The most important distinction. Middleware operates on raw <code style="font-family:var(--mono);font-size:12px;color:var(--blue)">HttpContext</code> — it has no knowledge of controllers, actions, or model binding. Filters live <em>inside</em> the MVC endpoint and have full action-aware context.
+    </p>
+    <div class="cards-grid">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot" style="background:var(--gray)"></div>
+          <h3>Middleware</h3>
+        </div>
+        <p>Sees only <code style="font-family:var(--mono);font-size:12px;color:var(--blue)">HttpContext</code>. Applies to all requests, including static files. Ideal for global concerns like CORS, compression, rate-limiting. Has no concept of action metadata.</p>
+      </div>
+      <div class="card">
+        <div class="card-header">
+          <div class="card-dot" style="background:var(--purple)"></div>
+          <h3>Filters</h3>
+        </div>
+        <p>Operate inside the MVC endpoint. Have access to <code style="font-family:var(--mono);font-size:12px;color:var(--purple)">ActionDescriptor</code>, <code style="font-family:var(--mono);font-size:12px;color:var(--purple)">ModelState</code>, and <code style="font-family:var(--mono);font-size:12px;color:var(--purple)">ActionArguments</code>. Only run for controller actions — not for static files or other middleware-handled requests.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── EXECUTION FLOW ─── -->
+  <section class="flow-section">
+    <div class="section-label"><span>03 — Execution (wrapping model)</span></div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:24px;max-width:620px;">
+      Filters don't run sequentially — they wrap each other. Each filter gets a before and after hook, forming a Russian-doll nesting pattern.
+    </p>
+    <div class="flow-block">
+      <div class="flow-header">
+        <div class="dot-group"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+        <div class="flow-header-text">Filter execution order — entering and exiting</div>
+      </div>
+      <div class="flow-body">
+        <pre><span class="flow-arrow-in">→</span> <span class="flow-enter">AuthorizationFilter</span><span class="cm">.OnAuthorization()</span>
+  <span class="flow-arrow-in">→</span> <span class="flow-enter">ResourceFilter</span><span class="cm">.OnResourceExecuting()</span>
+      <span class="flow-system">[Model Binding]</span>
+    <span class="flow-arrow-in">→</span> <span class="flow-enter">ActionFilter</span><span class="cm">.OnActionExecuting()</span>
+        <span class="flow-action">[Action Method executes]</span>
+    <span class="flow-arrow-out">←</span> <span class="flow-exit">ActionFilter</span><span class="cm">.OnActionExecuted()</span>
+    <span class="flow-arrow-out">←</span> <span class="flow-exit">ExceptionFilter</span> <span class="cm">← only if exception was thrown</span>
+  <span class="flow-arrow-out">←</span> <span class="flow-exit">ResourceFilter</span><span class="cm">.OnResourceExecuted()</span>
+  <span class="flow-arrow-in">→</span> <span class="flow-enter">ResultFilter</span><span class="cm">.OnResultExecuting()</span>
+      <span class="flow-system">[IActionResult.ExecuteResultAsync()]</span>
+  <span class="flow-arrow-out">←</span> <span class="flow-exit">ResultFilter</span><span class="cm">.OnResultExecuted()</span></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SHORT CIRCUIT CODE ─── -->
+  <section class="code-section">
+    <div class="section-label"><span>04 — Short-circuiting</span></div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:24px;max-width:620px;">
+      Any filter can stop the pipeline by assigning <code style="font-family:var(--mono);font-size:12px;color:var(--blue)">context.Result</code> without calling <code style="font-family:var(--mono);font-size:12px;color:var(--blue)">next()</code>. Already-executed filters still run their <code style="font-family:var(--mono);font-size:12px;color:var(--blue)">OnXxxExecuted</code> hooks on the way out.
+    </p>
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="dot-group"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+          <div class="code-filename">AuthorizationFilter.cs</div>
+        </div>
+        <div class="code-lang">C#</div>
+      </div>
+      <pre><span class="kw">public class</span> <span class="ty">RequireApiKeyFilter</span> : <span class="ty">IAuthorizationFilter</span>
+{
+    <span class="kw">public void</span> <span class="fn">OnAuthorization</span>(<span class="ty">AuthorizationFilterContext</span> context)
+    {
+        <span class="kw">var</span> hasKey = context.HttpContext.Request.Headers
+            .<span class="fn">TryGetValue</span>(<span class="st">"X-Api-Key"</span>, <span class="kw">out var</span> key);
+
+        <span class="kw">if</span> (!hasKey || key != <span class="st">"expected-secret"</span>)
+        {
+            <span class="cm">// Short-circuit — action method never runs</span>
+            context.Result = <span class="kw">new</span> <span class="ty">UnauthorizedObjectResult</span>(<span class="kw">new</span>
+            {
+                error = <span class="st">"Invalid or missing API key"</span>
+            });
+        }
+    }
+}</pre>
+    </div>
+
+    <div style="height:20px;"></div>
+
+    <div class="code-block">
+      <div class="code-header">
+        <div class="code-header-left">
+          <div class="dot-group"><div class="dot dot-r"></div><div class="dot dot-y"></div><div class="dot dot-g"></div></div>
+          <div class="code-filename">ActionFilter.cs</div>
+        </div>
+        <div class="code-lang">C#</div>
+      </div>
+      <pre><span class="kw">public class</span> <span class="ty">ValidateModelFilter</span> : <span class="ty">IActionFilter</span>
+{
+    <span class="cm">// Runs before the action — model is already bound</span>
+    <span class="kw">public void</span> <span class="fn">OnActionExecuting</span>(<span class="ty">ActionExecutingContext</span> context)
+    {
+        <span class="kw">if</span> (!context.ModelState.IsValid)
+        {
+            context.Result = <span class="kw">new</span> <span class="ty">UnprocessableEntityObjectResult</span>(
+                context.ModelState
+            );
+        }
+    }
+
+    <span class="cm">// Runs after the action — can inspect the result</span>
+    <span class="kw">public void</span> <span class="fn">OnActionExecuted</span>(<span class="ty">ActionExecutedContext</span> context)
+    {
+        <span class="cm">// e.g. log execution time, enrich the result</span>
+    }
+}</pre>
+    </div>
+  </section>
+
+  <!-- ─── COMPARISON TABLE ─── -->
+  <section class="table-section">
+    <div class="section-label"><span>05 — When to use filter vs middleware</span></div>
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Use case</th>
+            <th>Filter</th>
+            <th>Middleware</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Needs <code style="font-family:var(--mono);font-size:12px;">ModelState</code> or action arguments</td>
+            <td class="yes">✓ Filter</td>
+            <td class="no">✗ No access</td>
+          </tr>
+          <tr>
+            <td>Needs <code style="font-family:var(--mono);font-size:12px;">ActionDescriptor</code> / route data</td>
+            <td class="yes">✓ Filter</td>
+            <td class="partial">~ Partial</td>
+          </tr>
+          <tr>
+            <td>Applies to all requests (incl. static files)</td>
+            <td class="no">✗ MVC only</td>
+            <td class="yes">✓ Middleware</td>
+          </tr>
+          <tr>
+            <td>Response caching at the action level</td>
+            <td class="yes">✓ Resource filter</td>
+            <td class="no">✗ No action context</td>
+          </tr>
+          <tr>
+            <td>Global exception handling (incl. middleware errors)</td>
+            <td class="no">✗ Action scope only</td>
+            <td class="yes">✓ Middleware</td>
+          </tr>
+          <tr>
+            <td>Logging / timing around the action only</td>
+            <td class="yes">✓ Action filter</td>
+            <td class="no">✗ Too broad</td>
+          </tr>
+          <tr>
+            <td>Response header manipulation</td>
+            <td class="yes">✓ Result filter</td>
+            <td class="yes">✓ Middleware</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ─── EXCEPTION FILTER SCOPE ─── -->
+  <section style="margin-bottom:72px;">
+    <div class="section-label"><span>06 — Exception filter scope</span></div>
+    <div style="background:var(--coral-bg);border:1px solid rgba(251,113,133,.2);border-radius:var(--radius-lg);padding:24px;margin-bottom:16px;">
+      <div style="display:flex;gap:12px;align-items:flex-start;">
+        <div style="font-size:18px;flex-shrink:0;margin-top:2px;">⚠</div>
+        <div>
+          <div style="font-family:var(--display);font-size:15px;font-weight:700;color:var(--coral);margin-bottom:8px;">Exception filters do NOT catch everything</div>
+          <p style="font-size:13.5px;color:var(--muted);line-height:1.7;">
+            Exception filters only handle exceptions thrown within the <strong style="color:var(--text)">action method or action filters</strong>. They do not catch exceptions from middleware, result filters, or <code style="font-family:var(--mono);font-size:12px;color:var(--coral)">IActionResult.ExecuteResultAsync()</code>. Use <code style="font-family:var(--mono);font-size:12px;color:var(--coral)">UseExceptionHandler()</code> middleware as the global safety net.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ─── SCOPE & ORDER ─── -->
+  <section style="margin-bottom:72px;">
+    <div class="section-label"><span>07 — Filter scope and execution order</span></div>
+    <p style="color:var(--muted);font-size:14px;margin-bottom:24px;max-width:620px;">
+      Filters can be registered at three levels. Global wraps controller, which wraps action-scoped. Within the same scope, use <code style="font-family:var(--mono);font-size:12px;color:var(--blue)">IOrderedFilter.Order</code> (lower = outer).
+    </p>
+    <div class="scope-grid">
+      <div class="scope-card">
+        <div class="scope-num">01</div>
+        <div class="scope-title">Global</div>
+        <div class="scope-code">services.AddControllers(o =&gt;<br>  o.Filters.Add&lt;T&gt;());</div>
+        <div class="scope-note">Outermost — applies to every action in the app</div>
+      </div>
+      <div class="scope-card">
+        <div class="scope-num">02</div>
+        <div class="scope-title">Controller</div>
+        <div class="scope-code">[ServiceFilter(typeof(T))]<br>// on the class</div>
+        <div class="scope-note">Applies to all actions in the controller</div>
+      </div>
+      <div class="scope-card">
+        <div class="scope-num">03</div>
+        <div class="scope-title">Action</div>
+        <div class="scope-code">[ServiceFilter(typeof(T))]<br>// on the method</div>
+        <div class="scope-note">Innermost — most specific scope</div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    ASP.NET Core · Filter Pipeline Reference
+  </footer>
+
+</div>
+</body>
+</html>
