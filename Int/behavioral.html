@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>General & Behavioral — Senior Interview Guide</title>
+    <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+    <div class="wrapper">
+
+        <!-- ── HEADER ── -->
+        <header id="top">
+            <div class="header-tag">
+                <span class="header-dot"></span>
+                Senior Level · 5+ Years Experience
+            </div>
+            <div>
+                <a href="home.html" class="toc-item"><span class="badge badge-green">WEBAPI</span></a>
+                <a href="ef_core.html" class="toc-item"><span class="badge badge-blue">EFCore</span></a>
+                <a href="sql.html" class="toc-item"><span class="badge badge-amber">SQLServer</span></a>
+                <a href="wpf_mvvm.html" class="toc-item"><span class="badge badge-green">WPF&MVVM</span></a>
+                <a href="react.html" class="toc-item"><span class="badge badge-blue">React.js</span></a>
+                <a href="azure_devops.html" class="toc-item"><span class="badge badge-amber">Azure&DevOps</span></a>
+                <a href="architecture_design.html" class="toc-item"><span class="badge badge-green">Archi&Design</span></a>
+                <a href="behavioral.html" class="toc-item"><span class="badge badge-blue">G.Behavioral</span></a>
+            </div>
+            <h1>General &amp;<br><span>Behavioral Questions</span></h1>
+            <div class="header-meta">
+                <span class="badge badge-green">● 7 Questions</span>
+                <span class="badge badge-blue">Tech-Focused Behavioral</span>
+                <span class="badge badge-amber">Counter Questions Included</span>
+            </div>
+        </header>
+
+        <!-- ── HOW TO USE ── -->
+        <div class="card" style="margin-bottom: 36px;">
+            <div class="card-label">How to use this guide</div>
+            <p>Each question includes a <strong>structured answer</strong> using the STAR method (Situation → Task → Action → Result), followed by <strong>Counter Questions</strong> — the follow-up questions experienced interviewers ask to probe deeper. Prepare an answer for every counter question before your interview.</p>
+            <ul>
+                <li><strong>STAR method:</strong> Situation (context), Task (your responsibility), Action (what you did, step by step), Result (measurable outcome).</li>
+                <li><strong>Counter questions:</strong> Shown in purple — these are asked to verify your answer is genuine and to assess depth of thinking.</li>
+                <li><strong>Additional questions</strong> are included at the end with full answers.</li>
+            </ul>
+        </div>
+
+        <!-- ── TOC ── -->
+        <nav class="toc" aria-label="Table of contents">
+            <div class="toc-title">Table of Contents</div>
+            <div class="toc-grid">
+                <a href="#q1" class="toc-item"><span class="toc-num">01</span>Most Complex Technical Challenge</a>
+                <a href="#q2" class="toc-item"><span class="toc-num">02</span>Report Generation: 2 Hours → 20 Minutes</a>
+                <a href="#q3" class="toc-item"><span class="toc-num">03</span>Code Reviews &amp; Code Quality</a>
+                <a href="#q4" class="toc-item"><span class="toc-num">04</span>Working in an Agile Environment</a>
+                <a href="#q5" class="toc-item"><span class="toc-num">05</span>Disagreeing with a Technical Decision</a>
+                <a href="#q6" class="toc-item"><span class="toc-num">06</span>Keeping Technical Knowledge Current</a>
+                <a href="#q7" class="toc-item"><span class="toc-num">07</span>Deadlines, Shortcuts &amp; Technical Debt</a>
+            </div>
+        </nav>
+
+
+        <!-- ══════════════════════════════════════
+             Q1 — Most Complex Technical Challenge
+        ══════════════════════════════════════ -->
+        <section class="section" id="q1">
+            <div class="section-header">
+                <div class="q-num">01</div>
+                <h2 class="q-title">Walk me through the most complex technical challenge you solved in your current role.</h2>
+            </div>
+
+            <div class="callout callout-blue">
+                <strong>Strategy:</strong> Choose a challenge that demonstrates technical depth, problem-solving process, measurable impact, and collaboration — not just "I wrote complex code." The Rule Engine performance crisis is ideal: it has diagnosis, root cause, architecture decision, execution, and a clear before/after metric.
+            </div>
+
+            <div class="card">
+                <div class="card-label">STAR Structure</div>
+                <ul>
+                    <li><strong>Situation:</strong> The Rule Engine application evaluated business rules across 500+ data records every night. After a data volume increase, the nightly batch was timing out at 4 hours — business reports were not ready by 8 AM, causing daily escalations from management.</li>
+                    <li><strong>Task:</strong> As the senior developer on the team, I was responsible for diagnosing the root cause and designing a solution that could be delivered within two sprints without breaking the existing rule configuration or business logic.</li>
+                    <li><strong>Action:</strong> I ran the batch with SQL Profiler attached and discovered 3,200 individual database round-trips per execution — a severe N+1 problem where each rule was loading its dependent records one at a time inside a loop. The application had no execution plan caching, no batching, and was evaluating rules sequentially when most were independent of each other.</li>
+                    <li><strong>Result:</strong> After the refactor, the nightly batch ran in 22 minutes. The business had their reports ready at midnight instead of 8 AM. Maintenance improved significantly because the new strategy-based evaluator was far easier to extend with new rule types.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-label">The Four-Phase Fix — What I Actually Did</div>
+                <ul>
+                    <li><strong>Phase 1 — Diagnose before touching code:</strong> SQL Profiler + Application Insights confirmed 3,200 queries per batch. Execution plan showed table scans on three hot tables. No assumptions — measurements first.</li>
+                    <li><strong>Phase 2 — Batch all data upfront:</strong> Replaced the inner-loop lazy loading with a single query that fetched all required records for the entire batch before evaluation began. One query replacing 3,200.</li>
+                    <li><strong>Phase 3 — Strategy pattern for parallel evaluation:</strong> Replaced the sequential switch statement with a strategy registry. Independent rules were evaluated in parallel using <code>Parallel.ForEachAsync</code> with a controlled degree of parallelism (8 threads) to avoid connection pool exhaustion.</li>
+                    <li><strong>Phase 4 — Add missing indexes:</strong> Three covering indexes on the most-read tables reduced remaining query time from 8 seconds to 180ms each. Schema change reviewed by the DBA and deployed via idempotent migration script.</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-label">🎤 Deliver It Like This</div>
+                <p>"The complexity was not just technical — it was the constraint. We could not change the rule configuration format because 200 business rules were already defined by non-technical staff. Whatever we built had to be a drop-in replacement. That forced us toward a strategy pattern instead of a full rewrite, which was actually the better architectural decision long-term."</p>
+            </div>
+
+            <div class="card">
+                <div class="card-label">💬 Counter Questions — Prepare These Answers</div>
+                <div class="callout callout-purple">
+                    <strong>Q: "How did you convince your manager to give you time for this refactor instead of just applying a quick patch?"</strong><br /><br />
+                    A: "I framed it as risk management, not engineering preference. A quick patch — increasing the timeout limit — would have hidden the symptom but the problem would return worse with the next data volume increase. I presented the 3,200 queries per batch as a ticking clock metric, estimated the refactor at 6 days, and asked: 'Do we solve this now at 6 days, or later at 20 days when it's worse?' The manager approved it immediately."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "What would you do differently if you started this project again?"</strong><br /><br />
+                    A: "I would have written a performance benchmark test during the initial build — a test that runs the evaluator against a dataset of 1,000 records and asserts the total elapsed time is under 30 seconds. That constraint would have caught the N+1 issue during development instead of in production 6 months later. Performance is a feature. It should have regression tests like any other feature."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "How did you ensure you didn't break existing rule behavior during the refactor?"</strong><br /><br />
+                    A: "Before touching a single line of production code, I wrote characterization tests — tests that recorded the existing output of the evaluator for 50 representative rules and asserted those exact results. This gave us a safety net. After the refactor, every characterization test had to pass before a PR could be merged. The refactor itself was purely structural — the evaluation logic per rule type was not touched, only how rules were loaded and dispatched."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "What was the risk of using Parallel.ForEachAsync? Could it have introduced race conditions?"</strong><br /><br />
+                    A: "Yes — that was the most technically careful part of the solution. Each rule evaluation was given a read-only snapshot of the pre-loaded data, so there were no shared mutable objects across threads. Results were collected into a <code>ConcurrentBag</code> and aggregated after all threads completed. We also capped parallelism to 8 — below the connection pool limit of 20 — to prevent thread starvation. I documented these limits in code comments so the next developer would not accidentally raise the number without understanding why it was set conservatively."
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+
+        <!-- ══════════════════════════════════════
+             Q2 — Report Generation 2h → 20min
+        ══════════════════════════════════════ -->
+        <section class="section" id="q2">
+            <div class="section-header">
+                <div class="q-num">02</div>
+                <h2 class="q-title">How did you reduce report generation time from 2 hours to 20 minutes using Open XML? What was your approach?</h2>
+            </div>
+
+            <div class="callout callout-blue">
+                <strong>What the interviewer is testing:</strong> Technical problem-solving process, ability to profile and identify bottlenecks rather than guessing, knowledge of the technology (Open XML specifics), and communication of a concrete measurable improvement.
+            </div>
+
+            <div class="card">
+                <div class="card-label">STAR Structure</div>
+                <ul>
+                    <li><strong>Situation:</strong> The Trailer Management System generated a weekly Excel report covering all trailer activity, maintenance records, and trip statistics across 500 trailers. It was using Microsoft.Office.Interop.Excel and taking 2 hours to produce a 45,000-row workbook.</li>
+                    <li><strong>Task:</strong> Reduce report generation time to under 30 minutes, eliminate the Office installation requirement from the server, and ensure the output quality was identical to the original.</li>
+                    <li><strong>Action:</strong> Profiled the Interop version, identified the root causes, migrated to Open XML SDK, and applied five specific optimizations.</li>
+                    <li><strong>Result:</strong> Report generation dropped from 2 hours to 19 minutes — a 6× improvement. Office was removed as a server dependency, eliminating a category of deployment failures. The server's peak CPU during generation dropped from 94% to 31%.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-label">The Five Root Causes Found in Profiling</div>
+                <ul>
+                    <li><strong>1. COM automation overhead (the biggest):</strong> Every cell write through Interop was a COM interop call — crossing the managed/unmanaged boundary 45,000 × 12 columns = 540,000 times. Each call had marshaling overhead. Open XML writes to an in-memory XML stream — zero COM crossings.</li>
+                    <li><strong>2. Row-by-row data fetching:</strong> The report fetched each trailer's trips in a separate query inside the export loop — classic N+1. Replaced with a single JOIN query that returned all 45,000 rows at once before writing began.</li>
+                    <li><strong>3. Per-cell style application:</strong> The Interop code set font, color, and border on every individual cell. In Open XML, styles are defined once in the stylesheet and referenced by index — one stylesheet entry, thousands of references.</li>
+                    <li><strong>4. Missing SharedStringTable:</strong> The initial Open XML draft wrote every string as an inline string per cell. Switched to a SharedStringTable — duplicate strings stored once, cells reference by integer index. Reduced file size by 60% and write time proportionally.</li>
+                    <li><strong>5. Synchronous sequential column writes:</strong> Data transformation (date formatting, status mapping) was done inline during write. Separated data preparation (parallel, CPU-bound) from file writing (sequential, I/O-bound) using a producer-consumer pattern.</li>
+                </ul>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">C# — Key Open XML optimization: pre-built SharedStringTable</span>
+                </div>
+                <pre><code><span class="cm">// Build SharedStringTable once before writing any rows
+// Every unique string gets an integer index — cells store the index, not the string
+// 45,000 rows × "Active" repeated 30,000 times → stored once, referenced 30,000 times</span>
+<span class="kw">public class</span> <span class="cls">SharedStringCache</span>
+{
+                <span class="kw">private readonly</span> <span class="cls">Dictionary</span>&lt;<span class="kw">string</span>, <span class="kw">int</span>&gt; _index = [];
+                <span class="kw">private readonly</span> <span class="cls">SharedStringTable</span> _table;
+
+                <span class="kw">public</span> <span class="cls">SharedStringCache</span>(<span class="cls">SharedStringTable</span> table) => _table = table;
+
+                <span class="kw">public int</span> <span class="ann">GetOrAdd</span>(<span class="kw">string</span> value)
+    {
+                <span class="kw">if</span> (_index.<span class="ann">TryGetValue</span>(value, <span class="kw">out var</span> idx)) <span class="kw">return</span> idx;
+
+        _table.<span class="ann">AppendChild</span>(<span class="kw">new</span> <span class="cls">SharedStringItem</span>(<span class="kw">new</span> <span class="cls">Text</span>(value)));
+        idx = _index.Count;
+        _index[value] = idx;
+                <span class="kw">return</span> idx;
+    }
+}
+
+<span class="cm">// Cell using SharedString — DataType must be SharedString (not InlineString)</span>
+<span class="kw">private static</span> <span class="cls">Cell</span> <span class="ann">SharedStringCell</span>(<span class="kw">int</span> sharedIndex) =>
+                <span class="kw">new</span>() {
+        DataType  = <span class="cls">CellValues</span>.SharedString,
+        CellValue = <span class="kw">new</span> <span class="cls">CellValue</span>(sharedIndex)
+    };
+
+<span class="cm">// Date cells — stored as numeric OA date, styled with date format (StyleIndex)
+// Forgetting StyleIndex = dates display as numbers like "45521" in Excel</span>
+<span class="kw">private static</span> <span class="cls">Cell</span> <span class="ann">DateCell</span>(<span class="cls">DateTime</span> date) =>
+                <span class="kw">new</span>() {
+        DataType   = <span class="kw">null</span>,                                  <span class="cm">// Numeric — no DataType</span>
+        CellValue  = <span class="kw">new</span> <span class="cls">CellValue</span>(date.<span class="ann">ToOADate</span>()),
+        StyleIndex = <span class="num">2</span>                                       <span class="cm">// Points to date format in stylesheet</span>
+    };</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-label">🎤 Key Line to Memorize</div>
+                <p>"The SharedStringTable was the single biggest surprise. I had the Open XML version working correctly but it was still slower than expected. A profiler showed the file write itself was the bottleneck, not the data fetch. Switching from inline strings to SharedStringTable cut the file size from 18MB to 7MB and the write time from 14 minutes to 4 minutes. That was a lesson in always profiling the output layer, not just the data layer."</p>
+            </div>
+
+            <div class="card">
+                <div class="card-label">💬 Counter Questions — Prepare These Answers</div>
+                <div class="callout callout-purple">
+                    <strong>Q: "Why is it still 20 minutes — what's the remaining bottleneck?"</strong><br /><br />
+                    A: "Fourteen of the twenty minutes are the SQL query — 45,000 rows with 12 JOINed columns from a normalized schema. We could reduce this further with a denormalized reporting view or a read replica, but the business accepted 20 minutes as meeting the requirement. Engineering time has a cost — optimizing from 20 to 10 minutes would not change any business outcome, so it was correctly deprioritized."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "Did you consider ClosedXML or EPPlus instead of raw Open XML SDK?"</strong><br /><br />
+                    A: "Yes — I evaluated all three. ClosedXML and EPPlus have friendlier APIs but they are abstraction layers over Open XML. For a 45,000-row write, the abstraction overhead adds measurable time. More importantly, EPPlus has a commercial license requirement for production use above certain company sizes. Open XML SDK is MIT-licensed and gave us full control over the output structure, which mattered for the SharedStringTable optimization — some wrappers manage the shared string table inconsistently."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "How did you verify the output was identical to the Interop version?"</strong><br /><br />
+                    A: "I built a comparison test that generated the same report with both engines using the same seed data, opened both outputs with the Open XML SDK, and compared every cell value and data type in every row. It ran as part of the PR pipeline. I also had the finance team do a manual spot-check of 10 reports before we retired the Interop version. The one difference we found was date display formatting — Interop applied Excel's locale-aware format automatically while Open XML required an explicit StyleIndex. We fixed it in the stylesheet builder."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "What happened to the Interop version after the migration?"</strong><br /><br />
+                    A: "We kept it behind a feature flag for two months. The flag let us switch back instantly if a critical issue was found in production. After two months with zero rollback requests and the finance team satisfied with the output, we deleted the Interop code, removed the Office NuGet packages, and updated the server provisioning scripts to remove the Office installation requirement. The server setup process became simpler and cheaper."
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+
+        <!-- ══════════════════════════════════════
+             Q3 — Code Reviews & Quality
+        ══════════════════════════════════════ -->
+        <section class="section" id="q3">
+            <div class="section-header">
+                <div class="q-num">03</div>
+                <h2 class="q-title">How do you handle code reviews and ensure code quality in your team?</h2>
+            </div>
+
+            <div class="callout callout-blue">
+                <strong>What the interviewer is testing:</strong> Technical leadership beyond writing code — your ability to raise team standards, give constructive feedback, build culture, and use automation appropriately so reviews focus on what tools cannot catch.
+            </div>
+
+            <div class="card">
+                <div class="card-label">Our Code Review System — Three Layers</div>
+                <ul>
+                    <li><strong>Layer 1 — Automated gates (before human review):</strong> The PR pipeline blocked merge if the build failed, test coverage dropped below 80%, or SonarQube reported new critical/blocker issues. These are non-negotiable and non-negotiable with people — the pipeline enforces them. Human reviewers focus on what tools cannot catch.</li>
+                    <li><strong>Layer 2 — PR template and checklist:</strong> Every PR required a description, a test plan, and the author to self-check against a 10-point checklist before requesting review. This eliminated "WIP" PRs being sent for review and reduced back-and-forth by 40%.</li>
+                    <li><strong>Layer 3 — Human review focus:</strong> Reviewers looked for: business logic correctness, architectural fit, naming clarity, edge cases in the test plan, and knowledge sharing. Not formatting — that was handled by EditorConfig and StyleCop automatically.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-label">The PR Checklist We Used</div>
+                <ul>
+                    <li>Does this PR have a single clear purpose? (Split it if not)</li>
+                    <li>Is there a unit test for every new public method?</li>
+                    <li>Are exception paths tested, not just the happy path?</li>
+                    <li>Are magic strings and numbers extracted to constants?</li>
+                    <li>Is the new code consistent with the surrounding architectural patterns?</li>
+                    <li>Are new external dependencies justified in the PR description?</li>
+                    <li>Has the DB migration script been reviewed for backward compatibility?</li>
+                    <li>Are log messages structured (no string interpolation in log calls)?</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-label">Code Review Culture — How We Gave Feedback</div>
+                <ul>
+                    <li><strong>"Code, not person" rule:</strong> Comments were always about the code, never the author. "This method is doing two things — could we split it?" not "You wrote this wrong."</li>
+                    <li><strong>Prefix system:</strong> Comments were prefixed to signal intent — <strong>[Must]</strong> must be resolved before merge, <strong>[Consider]</strong> is a suggestion for discussion, <strong>[Question]</strong> is for understanding, <strong>[Nit]</strong> is minor style — author's discretion.</li>
+                    <li><strong>Praise explicitly:</strong> When a reviewer found an elegant solution or good test coverage, we commented on it. Positive reinforcement shaped the culture as much as corrections.</li>
+                    <li><strong>Size limits:</strong> PRs over 400 lines of changed code required a conversation before the review. Large PRs hide bugs and slow down the team. We enforced this as a guideline, not a hard gate.</li>
+                </ul>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-label">🎤 Key Sentence to Deliver</div>
+                <p>"The most important shift we made was separating mechanical review from intellectual review. EditorConfig and StyleCop enforced formatting, SonarQube enforced security patterns — so human reviewers could spend 100% of their attention on business logic correctness and architectural decisions. When a reviewer spends 10 minutes commenting on brace placement, that is 10 minutes not spent finding a missing null check."</p>
+            </div>
+
+            <div class="card">
+                <div class="card-label">💬 Counter Questions — Prepare These Answers</div>
+                <div class="callout callout-purple">
+                    <strong>Q: "How do you handle it when a senior developer pushes back on one of your review comments?"</strong><br /><br />
+                    A: "I distinguish between preference and principle. If it is a preference — naming style, structure choice — I defer to the author with a [Consider] tag and move on. If it is a principle — a security concern, a correctness issue, a violation of an agreed architectural decision — I escalate to a brief technical discussion, invite a third opinion if needed, and we resolve it as a team. I never block a merge out of ego. I have been overruled and later proven right, and I have been overruled and later admitted I was wrong. Both are fine."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "How do you prevent a bottleneck where you are the only reviewer?"</strong><br /><br />
+                    A: "We required a minimum of one approval, not specifically mine. I actively trained two mid-level developers to review backend code by pair-reviewing with them for a month — I would review first, they reviewed independently, then we compared notes. After 6 weeks they were reviewing autonomously with high accuracy. Distributing review responsibility was more valuable than being the gatekeeper of every PR."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "What is the most impactful code quality change you introduced?"</strong><br /><br />
+                    A: "Making the 80% test coverage gate automatic was the most impactful single change. Before the gate, coverage crept down to 42% over 8 months — each developer assumed someone else was writing tests. After the gate, it recovered to 84% within 6 weeks without any mandate or discussion. Automated enforcement beats culture campaigns every time."
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+
+        <!-- ══════════════════════════════════════
+             Q4 — Agile Environment
+        ══════════════════════════════════════ -->
+        <section class="section" id="q4">
+            <div class="section-header">
+                <div class="q-num">04</div>
+                <h2 class="q-title">Describe your experience working in an Agile environment.</h2>
+            </div>
+
+            <div class="callout callout-blue">
+                <strong>Avoid the generic answer:</strong> "We had two-week sprints, daily standups, and retrospectives" describes Agile ceremonies. The interviewer wants to know how you handled the hard parts — unclear requirements, changing scope mid-sprint, technical debt vs velocity pressure, and what you actually improved in your team's process.
+            </div>
+
+            <div class="card">
+                <div class="card-label">Our Agile Process — What We Actually Practiced</div>
+                <ul>
+                    <li><strong>Sprint length:</strong> Two-week sprints with a firm Definition of Done — code reviewed, tests passing, deployed to staging, and demoed. A story that was "code complete but not deployed" was not Done.</li>
+                    <li><strong>Story point calibration:</strong> We used Planning Poker with a reference story always visible — a specific past story that the team agreed represented 3 points. This kept estimation consistent as the team changed members over time.</li>
+                    <li><strong>Technical debt budget:</strong> We reserved 20% of each sprint's capacity for technical debt stories — refactoring, dependency updates, documentation. This was non-negotiable with the product owner. Without this budget, we accumulated 8 months of unchecked debt that later cost us a 3-week unplanned refactoring sprint.</li>
+                    <li><strong>Mid-sprint scope rule:</strong> New requests during a sprint were written as new stories for the next sprint, not injected mid-sprint. The only exception was a production bug — which preempted the lowest-priority story for the week.</li>
+                    <li><strong>Retrospective format:</strong> We rotated retrospective formats to prevent them becoming rote — Start/Stop/Continue, 4Ls, Mad/Sad/Glad. The test of a good retro was whether the next sprint looked different because of it. If actions from the retro were never implemented, we stopped accepting retrospective-generated actions without an assigned owner.</li>
+                </ul>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Challenge</th>
+                            <th>What Went Wrong</th>
+                            <th>How We Fixed It</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Vague acceptance criteria</strong></td>
+                            <td>Stories delivered did not match business expectations — rework in every sprint</td>
+                            <td class="td-yes">Introduced Three Amigos sessions before sprint planning — Dev + QA + PO define acceptance criteria together</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Sprint scope creep</strong></td>
+                            <td>Urgent requests injected mid-sprint, destroying velocity predictability</td>
+                            <td class="td-yes">Formal "sprint freeze" rule — new requests queued for next sprint; only P1 production bugs were exceptions</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Technical debt invisible to PO</strong></td>
+                            <td>Product Owner kept rejecting tech debt stories as low-value</td>
+                            <td class="td-yes">Started presenting debt in business language — "This refactor prevents the 3-week slowdown we had in Q2" — and reserved 20% capacity automatically</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Retro actions never implemented</strong></td>
+                            <td>Retrospectives identified the same problems sprint after sprint</td>
+                            <td class="td-yes">Every action item got an owner and a due sprint. Unfinished actions were the first agenda item in the next retro</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="card">
+                <div class="card-label">💬 Counter Questions — Prepare These Answers</div>
+                <div class="callout callout-purple">
+                    <strong>Q: "What do you do when a sprint story is too large and can't be completed in time?"</strong><br /><br />
+                    A: "We called it early — on day 6 of a 10-day sprint, not day 9. The developer would flag it in the standup, we would split the story into what was completed and what remained, mark the completed slice as Done, and move the remainder to the next sprint. The worst thing you can do in Agile is carry a half-finished story quietly and then announce it was not done on the last day. Early visibility gives the team options. Late disclosure gives the team a problem."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "How do you handle it when the business wants a feature by a deadline that the team says is unrealistic?"</strong><br /><br />
+                    A: "I separate 'what by when' from 'everything by when.' Usually the business has a hard deadline for a subset of the feature — the MVP that unlocks a sale or meets a compliance date. We scope to that, ship it, and continue the remainder in the next sprint. If genuinely everything is required by a hard date, we negotiate resources or scope — not quality. We never negotiate on automated tests or code review because technical debt has a compound interest rate that we always end up paying."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "Have you ever disagreed with the sprint priority set by the Product Owner?"</strong><br /><br />
+                    A: "Yes. In one sprint the Product Owner deprioritized a security patch for a known vulnerability in favor of a new feature requested by a client. I escalated — not to override the PO, but to ensure they understood the risk they were accepting. I documented the vulnerability, the potential impact, and the estimated probability in writing and asked the PO to acknowledge the risk formally. They moved the patch to the top of the sprint. The lesson: Product Owners make priority decisions, but they need complete information to make them responsibly. My job is to ensure they have it."
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+
+        <!-- ══════════════════════════════════════
+             Q5 — Disagreeing with a Technical Decision
+        ══════════════════════════════════════ -->
+        <section class="section" id="q5">
+            <div class="section-header">
+                <div class="q-num">05</div>
+                <h2 class="q-title">Tell me about a time you disagreed with a technical decision made by your team or manager. How did you handle it?</h2>
+            </div>
+
+            <div class="callout callout-blue">
+                <strong>What the interviewer is testing:</strong> Whether you can disagree professionally, influence without authority, commit to team decisions even when you lose the argument, and reflect on outcomes honestly. "I always agreed with my team" is a red flag.
+            </div>
+
+            <div class="card">
+                <div class="card-label">STAR Structure</div>
+                <ul>
+                    <li><strong>Situation:</strong> Early in the Trailer Management System project, the team decided to build a custom authentication system with self-managed JWT tokens, including a refresh token table and a full user management API. The tech lead argued it gave us full control.</li>
+                    <li><strong>Task:</strong> The client was a logistics company with 80 employees, all of whom already had Microsoft 365 accounts. I believed Azure AD was the significantly better choice and needed to make that case to the team.</li>
+                    <li><strong>Action:</strong> Rather than objecting in the standup, I prepared a written comparison: custom JWT implementation would require roughly 3 sprints — password hashing, refresh token rotation, email verification, password reset, account lockout, and MFA if required later. Azure AD required one sprint and handed us MFA, SSO, and Conditional Access for free. I also highlighted the security risk — maintaining cryptographic code is a specialist skill. I presented this to the tech lead privately before bringing it to the team.</li>
+                    <li><strong>Result:</strong> The team switched to Azure AD. We saved approximately 4 weeks of development time. When the client later asked for MFA enforcement, it was a 15-minute configuration change in Azure Portal instead of a multi-sprint feature. I was also wrong about one thing — I underestimated the complexity of the Azure App Registration setup, which took a full day to get right across environments. I acknowledged that in the retrospective.</li>
+                </ul>
+            </div>
+
+            <div class="callout callout-green">
+                <strong>What made this disagreement productive:</strong> I prepared evidence before speaking. I went to the decision-maker privately first — not to lobby behind backs, but to give them the chance to reconsider without losing face publicly. I framed it in business terms (sprint cost, future feature cost) not just technical preference. And critically — I acknowledged where my own estimate was wrong in the retrospective.
+            </div>
+
+            <div class="card">
+                <div class="card-label">💬 Counter Questions — Prepare These Answers</div>
+                <div class="callout callout-purple">
+                    <strong>Q: "What if the team had voted to keep the custom JWT approach? Would you have committed to building it?"</strong><br /><br />
+                    A: "Yes — and I would have built it as well as I possibly could. Disagreeing and then deliberately doing poor work is not disagreement, it is sabotage. Once a decision is made with full information, my job is to execute it excellently. I might note my concern in a retrospective after the fact if the prediction proved correct, but I would not say 'I told you so.' That builds no trust and solves no problem."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "Have you ever been overruled and later been proven wrong yourself?"</strong><br /><br />
+                    A: "Absolutely. In the Rule Engine project I advocated strongly for using RabbitMQ for the notification queue. The team chose Azure Service Bus instead — simpler to operate in our Azure environment, no separate infrastructure to maintain. I thought it was over-engineered for our volume. Twelve months later, when the message volume tripled and we needed dead-letter queues and retry policies with exponential back-off, Azure Service Bus handled it with configuration changes. RabbitMQ would have required infrastructure work. I told the tech lead at that point that he had made the better call."
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+
+        <!-- ══════════════════════════════════════
+             Q6 — Keeping Knowledge Current
+        ══════════════════════════════════════ -->
+        <section class="section" id="q6">
+            <div class="section-header">
+                <div class="q-num">06</div>
+                <h2 class="q-title">How do you keep your technical knowledge current in a fast-moving field?</h2>
+            </div>
+
+            <div class="callout callout-blue">
+                <strong>Avoid the generic answer:</strong> "I read blogs and watch YouTube" tells the interviewer nothing. Be specific about sources, how you filter signal from noise, and — most importantly — how you apply new knowledge rather than just consuming it.
+            </div>
+
+            <div class="compare-grid">
+                <div class="compare-card preferred">
+                    <div class="compare-card-label" style="color:var(--accent)">How I Learn — Inputs</div>
+                    <ul style="font-size:14px;color:var(--text-secondary);padding-left:16px;">
+                        <li><strong>Official release notes:</strong> .NET, C#, EF Core, React, Azure — I read every release blog. One hour per major release pays for itself in the first production bug it helps me avoid.</li>
+                        <li><strong>Andrew Lock's .NET blog</strong> for deep ASP.NET Core internals</li>
+                        <li><strong>Nick Chapsas on YouTube</strong> for practical .NET patterns and benchmark comparisons</li>
+                        <li><strong>Microsoft Learn</strong> for Azure certifications — structured knowledge, not just blog posts</li>
+                        <li><strong>Pull requests in open-source repos</strong> — reading how library authors solve problems teaches more than any tutorial</li>
+                    </ul>
+                </div>
+                <div class="compare-card preferred">
+                    <div class="compare-card-label" style="color:var(--accent)">How I Retain — Application</div>
+                    <ul style="font-size:14px;color:var(--text-secondary);padding-left:16px;">
+                        <li><strong>Build a small proof of concept</strong> for anything I intend to use — reading is not the same as doing</li>
+                        <li><strong>Knowledge-sharing sessions:</strong> After learning something new, I prepare a 20-minute team session. Teaching forces you to understand a topic correctly</li>
+                        <li><strong>Personal GitHub:</strong> Experimental repos exploring new patterns — my EF Core 8 interceptors repo, my Minimal API vs Controller benchmark</li>
+                        <li><strong>Apply to one real project feature:</strong> New knowledge that never touches a real codebase fades within weeks</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-label">💬 Counter Questions — Prepare These Answers</div>
+                <div class="callout callout-purple">
+                    <strong>Q: "With so much to learn, how do you decide what to focus on?"</strong><br /><br />
+                    A: "I filter by two criteria: does it solve a problem I currently have or will soon have, and is it directionally stable or still evolving rapidly? I did not invest time in Blazor in its first year — the API was changing every release. I invested in TanStack Query early because the problem it solved was persistent and the API was stabilizing. I also separate learning for my current role from learning for career growth — the first is a professional responsibility, the second is personal investment."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "What is the most recent thing you learned and applied in a real project?"</strong><br /><br />
+                    A: "EF Core 7's ExecuteUpdateAsync and ExecuteDeleteAsync. I learned about them from the release notes, built a small benchmark comparing them against the traditional load-then-delete pattern for 10,000 records, and presented the results to the team. We then replaced three bulk operation patterns in the Trailer Management System — the most impactful was the audit log archival job, which went from loading 300,000 entities into memory to executing a single DELETE statement. Memory usage during that job dropped from 2.4GB to under 50MB."
+                </div>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+
+        <!-- ══════════════════════════════════════
+             Q7 — Deadlines and Technical Debt
+        ══════════════════════════════════════ -->
+        <section class="section" id="q7">
+            <div class="section-header">
+                <div class="q-num">07</div>
+                <h2 class="q-title">How do you handle tight deadlines that pressure you to cut corners on code quality?</h2>
+            </div>
+
+            <div class="callout callout-blue">
+                <strong>What the interviewer is testing:</strong> Whether you have a principled position on quality vs speed, whether you understand that not all shortcuts are equal, and whether you can communicate technical risk to non-technical stakeholders honestly.
+            </div>
+
+            <div class="card">
+                <div class="card-label">The Framework: Not All Corners Are Equal</div>
+                <ul>
+                    <li><strong>Acceptable under deadline pressure:</strong> Defer non-critical refactoring, skip optional performance tuning, reduce test coverage on low-risk UI code, ship with known minor UX imperfections.</li>
+                    <li><strong>Never acceptable regardless of deadline:</strong> Skip tests on business logic, commit secrets to source control, skip input validation, deploy without a rollback plan, introduce known security vulnerabilities.</li>
+                    <li><strong>The rule:</strong> Corners you cut must be explicitly logged as technical debt stories, estimated, and scheduled — not forgotten. A shortcut with a debt ticket is acceptable. A shortcut that disappears is a ticking clock.</li>
+                </ul>
+            </div>
+
+            <div class="card">
+                <div class="card-label">STAR — Real Deadline Pressure Example</div>
+                <ul>
+                    <li><strong>Situation:</strong> A client demo was scheduled for a Thursday. On Monday, a key integration — the real-time trailer tracking map — had a bug that caused the markers to stop updating after 15 minutes due to a SignalR reconnection issue.</li>
+                    <li><strong>Task:</strong> Fix it before the demo without breaking the rest of the application — under two days.</li>
+                    <li><strong>Action:</strong> I identified the root cause: the reconnection handler was not re-subscribing to the correct trailer groups after reconnecting. The clean fix required refactoring the subscription lifecycle in the custom hook. The fast fix was adding a 10-minute client-side timeout that forced a full page refresh — ugly, but invisible in a 30-minute demo. I implemented the fast fix for the demo, logged a debt story for the proper fix with a "demo workaround — must fix before release" label, and fixed the hook properly the following week before the feature shipped to production.</li>
+                    <li><strong>Result:</strong> Demo succeeded, no technical debt was hidden, the proper fix shipped before any real user encountered the refresh behavior. The product owner was informed of the workaround — not to embarrass the team, but to ensure no one promised the demo behavior as production-ready.</li>
+                </ul>
+            </div>
+
+            <div class="callout callout-amber">
+                <strong>The most important habit:</strong> When you take a shortcut, tell your product owner what you did and what the real fix costs. Hidden shortcuts become hidden assumptions. When the product owner later schedules a sprint with full velocity and you have 5 days of debt to pay, the conflict could have been avoided with a 2-minute conversation.
+            </div>
+
+            <div class="card">
+                <div class="card-label">💬 Counter Questions — Prepare These Answers</div>
+                <div class="callout callout-purple">
+                    <strong>Q: "Has a shortcut you took ever come back to bite you?"</strong><br /><br />
+                    A: "Yes — and it was a valuable lesson. Early in the Rule Engine project we skipped integration tests for the rule import feature because the deadline was tight. We told ourselves we'd add them next sprint. We did not. Six months later, a schema change in the import file format broke the feature silently — no tests caught it, and the batch ran incorrectly for two days before a business user noticed inconsistent report numbers. The investigation took three days. If we had spent four hours writing integration tests the first time, we would have saved three days of incident response and protected the team's credibility. I referenced that incident every time someone proposed skipping integration tests after that."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "How do you say no to a manager who insists on skipping testing to hit a deadline?"</strong><br /><br />
+                    A: "I do not frame it as 'no.' I frame it as a risk decision that belongs to them, not me. I say: 'I can ship this by Friday without the integration tests. The risk is that a regression in this area won't be caught until a user finds it. Fixing a bug post-production typically costs us 3–5× what it costs to prevent. Do you want to make that trade?' Most managers, presented with the decision that way, choose quality. If they still choose speed, I document the decision in writing — a Slack message or email is sufficient — and I execute as professionally as possible. I have never had a manager insist on skipping tests after I framed it that way."
+                </div>
+                <div class="callout callout-purple">
+                    <strong>Q: "What is the difference between technical debt you accept and technical debt that is unacceptable?"</strong><br /><br />
+                    A: "Acceptable debt is a known, documented, scheduled trade-off — a deliberate decision made with full information. Unacceptable debt is invisible, untracked, and unscheduled — it accumulates interest until it forces an unplanned crisis. The same code change can be acceptable debt or unacceptable debt depending entirely on whether it is tracked. A workaround in a ticket labeled 'DEBT: replace before v2.0' is fine. The same workaround merged with the commit message 'quick fix' and no ticket is a liability."
+                </div>
+            </div>
+        </section>
+
+
+        <!-- ── FOOTER ── -->
+        <div class="divider"></div>
+        <div style="text-align: center; padding: 12px 0 32px;">
+            <div style="color: var(--text-muted); font-size: 13px; font-family: var(--font-mono); margin-bottom: 16px;">
+                General &amp; Behavioral · Senior Interview Guide · 7 Questions + Counter Questions
+            </div>
+            <a href="#top" class="back-top">↑ Back to top</a>
+        </div>
+
+    </div>
+</body>
+</html>

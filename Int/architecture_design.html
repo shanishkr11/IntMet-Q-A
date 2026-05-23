@@ -1,0 +1,888 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Architecture & Design Principles — Senior Interview Guide</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- ── HEADER ── -->
+    <header id="top">
+        <div class="header-tag">
+            <span class="header-dot"></span>
+            Senior Level · 5+ Years Experience
+        </div>
+        <div class="header-meta">
+            <a href="home.html" class="toc-item"><span class="badge badge-green">WEBAPI</span></a>
+            <a href="ef_core.html" class="toc-item"><span class="badge badge-blue">EFCore</span></a>
+            <a href="sql.html" class="toc-item"><span class="badge badge-amber">SQLServer</span></a>
+            <a href="wpf_mvvm.html" class="toc-item"><span class="badge badge-green">WPF&MVVM</span></a>
+            <a href="react.html" class="toc-item"><span class="badge badge-blue">React.js</span></a>
+            <a href="azure_devops.html" class="toc-item"><span class="badge badge-amber">Azure&DevOps</span></a>
+            <a href="architecture_design.html" class="toc-item"><span class="badge badge-green">Archi&Design</span></a>
+            <a href="behavioral.html" class="toc-item"><span class="badge badge-blue">G.Behavioral</span></a>
+        </div>
+        <h1>Architecture &amp;<br><span>Design Principles</span></h1>
+        <div class="header-meta">
+            <span class="badge badge-green">● 5 Questions</span>
+            <span class="badge badge-blue">Clean Architecture / SOLID</span>
+            <span class="badge badge-amber">Interview Ready</span>
+        </div>
+    </header>
+
+  <!-- ── TOC ── -->
+  <nav class="toc" aria-label="Table of contents">
+    <div class="toc-title">Table of Contents</div>
+    <div class="toc-grid">
+      <a href="#q1" class="toc-item"><span class="toc-num">01</span>Clean Architecture Structure in .NET Core</a>
+      <a href="#q2" class="toc-item"><span class="toc-num">02</span>SOLID Principles — Real Project Examples</a>
+      <a href="#q3" class="toc-item"><span class="toc-num">03</span>Service Layer vs. Controller Logic</a>
+      <a href="#q4" class="toc-item"><span class="toc-num">04</span>Design Patterns — Repository, UoW, Factory</a>
+      <a href="#q5" class="toc-item"><span class="toc-num">05</span>Structured Logging — Serilog &amp; Tools</a>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════
+       Q1 — Clean Architecture
+  ══════════════════════════════════════ -->
+  <section class="section" id="q1">
+    <div class="section-header">
+      <div class="q-num">01</div>
+      <h2 class="q-title">How would you structure a Clean Architecture project in .NET Core?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>The core rule:</strong> Source code dependencies must point <em>inward only</em>. The Domain layer knows nothing about Infrastructure or the API. Infrastructure knows nothing about the API. This makes the business core framework-agnostic, database-agnostic, and fully testable.
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card preferred">
+        <div class="compare-card-label" style="color:var(--accent)">Domain Layer — innermost</div>
+        <ul style="font-size:14px;color:var(--text-secondary);padding-left:16px;">
+          <li>Entities, value objects, enums</li>
+          <li>Domain events</li>
+          <li>Repository interfaces (<code>ITrailerRepository</code>)</li>
+          <li>Domain service interfaces</li>
+          <li>Business rule validation logic</li>
+          <li><strong>Zero NuGet dependencies</strong></li>
+        </ul>
+      </div>
+      <div class="compare-card preferred">
+        <div class="compare-card-label" style="color:var(--accent)">Application Layer</div>
+        <ul style="font-size:14px;color:var(--text-secondary);padding-left:16px;">
+          <li>Use cases — Commands &amp; Queries (MediatR)</li>
+          <li>DTOs, request/response models</li>
+          <li>Validators (FluentValidation)</li>
+          <li>Application service interfaces</li>
+          <li>Mapping profiles (AutoMapper)</li>
+          <li><strong>Depends on: Domain only</strong></li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <div class="compare-card-label" style="color:var(--accent)">Infrastructure Layer</div>
+        <ul style="font-size:14px;color:var(--text-secondary);padding-left:16px;">
+          <li>EF Core DbContext &amp; Configurations</li>
+          <li>Repository implementations</li>
+          <li>External service clients (email, SMS)</li>
+          <li>File storage, caching (Redis)</li>
+          <li>Identity, Azure AD integration</li>
+          <li><strong>Depends on: Domain &amp; Application</strong></li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <div class="compare-card-label" style="color:var(--accent)">Presentation Layer — outermost</div>
+        <ul style="font-size:14px;color:var(--text-secondary);padding-left:16px;">
+          <li>API Controllers (thin — delegate to MediatR)</li>
+          <li>Middleware pipeline setup</li>
+          <li>DI container registration</li>
+          <li>Program.cs, appsettings</li>
+          <li>Swagger configuration</li>
+          <li><strong>Depends on: All layers</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Solution structure — Trailer Management System</span>
+      </div>
+      <pre><code>TrailerManagement.sln
+├── src/
+│   ├── TrailerManagement.Domain/          <span class="cm"># No dependencies</span>
+│   │   ├── Entities/
+│   │   │   ├── Trailer.cs
+│   │   │   └── Trip.cs
+│   │   ├── ValueObjects/
+│   │   │   └── RegistrationNumber.cs
+│   │   ├── Events/
+│   │   │   └── TripStartedDomainEvent.cs
+│   │   ├── Interfaces/
+│   │   │   └── ITrailerRepository.cs      <span class="cm"># Interface only — no EF reference</span>
+│   │   └── Enums/
+│   │       └── TrailerStatus.cs
+│
+│   ├── TrailerManagement.Application/     <span class="cm"># Depends on Domain only</span>
+│   │   ├── Trailers/
+│   │   │   ├── Commands/
+│   │   │   │   ├── CreateTrailerCommand.cs
+│   │   │   │   └── CreateTrailerCommandHandler.cs
+│   │   │   ├── Queries/
+│   │   │   │   ├── GetTrailersQuery.cs
+│   │   │   │   └── GetTrailersQueryHandler.cs
+│   │   │   └── Validators/
+│   │   │       └── CreateTrailerCommandValidator.cs
+│   │   ├── Common/
+│   │   │   ├── Behaviours/
+│   │   │   │   ├── ValidationBehaviour.cs
+│   │   │   │   └── LoggingBehaviour.cs
+│   │   │   └── Mappings/
+│   │   │       └── TrailerProfile.cs
+│   │   └── DTOs/
+│   │       └── TrailerDto.cs
+│
+│   ├── TrailerManagement.Infrastructure/  <span class="cm"># Depends on Domain + Application</span>
+│   │   ├── Persistence/
+│   │   │   ├── AppDbContext.cs
+│   │   │   ├── Configurations/
+│   │   │   │   └── TrailerConfiguration.cs
+│   │   │   └── Repositories/
+│   │   │       └── TrailerRepository.cs   <span class="cm"># Implements ITrailerRepository</span>
+│   │   ├── Services/
+│   │   │   └── EmailService.cs
+│   │   └── DependencyInjection.cs         <span class="cm"># Extension method: AddInfrastructure()</span>
+│
+│   └── TrailerManagement.API/             <span class="cm"># Depends on all layers</span>
+│       ├── Controllers/
+│       │   └── TrailersController.cs
+│       ├── Middleware/
+│       │   └── GlobalExceptionMiddleware.cs
+│       └── Program.cs
+│
+└── tests/
+    ├── TrailerManagement.Domain.Tests/
+    ├── TrailerManagement.Application.Tests/
+    └── TrailerManagement.Integration.Tests/</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Domain entity with encapsulated business rule</span>
+      </div>
+      <pre><code><span class="cm">// Domain/Entities/Trailer.cs
+// Business rules live here — NOT in a service, NOT in a controller</span>
+<span class="kw">public class</span> <span class="cls">Trailer</span>
+{
+    <span class="kw">private readonly</span> <span class="cls">List</span>&lt;<span class="cls">Trip</span>&gt; _trips = [];
+
+    <span class="kw">public int</span>           <span class="prop">Id</span>                   { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="cls">RegistrationNumber</span> <span class="prop">Registration</span>    { <span class="kw">get</span>; <span class="kw">private set</span>; } = <span class="kw">default!</span>;
+    <span class="kw">public</span> <span class="cls">TrailerStatus</span> <span class="prop">Status</span>               { <span class="kw">get</span>; <span class="kw">private set</span>; }
+    <span class="kw">public</span> <span class="cls">IReadOnlyList</span>&lt;<span class="cls">Trip</span>&gt; <span class="prop">Trips</span>          => _trips.<span class="ann">AsReadOnly</span>();
+
+    <span class="kw">private</span> <span class="cls">List</span>&lt;<span class="cls">IDomainEvent</span>&gt; _domainEvents = [];
+    <span class="kw">public</span> <span class="cls">IReadOnlyList</span>&lt;<span class="cls">IDomainEvent</span>&gt; <span class="prop">DomainEvents</span> => _domainEvents.<span class="ann">AsReadOnly</span>();
+
+    <span class="cm">// Business rule: only available trailers can start a trip</span>
+    <span class="kw">public</span> <span class="cls">Trip</span> <span class="ann">StartTrip</span>(<span class="kw">int</span> driverId)
+    {
+        <span class="kw">if</span> (Status != <span class="cls">TrailerStatus</span>.Available)
+            <span class="kw">throw new</span> <span class="cls">DomainException</span>(<span class="str">$"Trailer {Id} is not available — status is {Status}"</span>);
+
+        Status = <span class="cls">TrailerStatus</span>.InUse;
+        <span class="kw">var</span> trip = <span class="kw">new</span> <span class="cls">Trip</span>(Id, driverId, <span class="cls">DateTime</span>.UtcNow);
+        _trips.<span class="ann">Add</span>(trip);
+        _domainEvents.<span class="ann">Add</span>(<span class="kw">new</span> <span class="cls">TripStartedDomainEvent</span>(Id, driverId));
+        <span class="kw">return</span> trip;
+    }
+
+    <span class="kw">public void</span> <span class="ann">EndTrip</span>(<span class="kw">int</span> tripId)
+    {
+        <span class="kw">var</span> trip = _trips.<span class="ann">SingleOrDefault</span>(t => t.Id == tripId)
+            ?? <span class="kw">throw new</span> <span class="cls">DomainException</span>(<span class="str">"Trip not found on this trailer"</span>);
+        trip.<span class="ann">Complete</span>();
+        Status = <span class="cls">TrailerStatus</span>.Available;
+    }
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Thin controller delegates everything to MediatR</span>
+      </div>
+      <pre><code><span class="cm">// API/Controllers/TrailersController.cs
+// Controller has ONE job: translate HTTP → command/query → HTTP response</span>
+[<span class="cls">ApiController</span>]
+[<span class="cls">Route</span>(<span class="str">"api/trailers"</span>)]
+[<span class="cls">Authorize</span>]
+<span class="kw">public class</span> <span class="cls">TrailersController</span>(<span class="cls">ISender</span> sender) : <span class="cls">ControllerBase</span>
+{
+    [<span class="cls">HttpGet</span>]
+    <span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">ActionResult</span>&lt;<span class="cls">PagedResult</span>&lt;<span class="cls">TrailerDto</span>&gt;&gt;&gt; <span class="ann">GetTrailers</span>(
+        [<span class="cls">FromQuery</span>] <span class="cls">GetTrailersQuery</span> query)
+        => <span class="ann">Ok</span>(<span class="kw">await</span> sender.<span class="ann">Send</span>(query));
+
+    [<span class="cls">HttpPost</span>]
+    <span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">ActionResult</span>&lt;<span class="cls">TrailerDto</span>&gt;&gt; <span class="ann">CreateTrailer</span>(
+        [<span class="cls">FromBody</span>] <span class="cls">CreateTrailerCommand</span> command)
+    {
+        <span class="kw">var</span> trailer = <span class="kw">await</span> sender.<span class="ann">Send</span>(command);
+        <span class="kw">return</span> <span class="ann">CreatedAtAction</span>(<span class="kw">nameof</span>(<span class="ann">GetTrailerById</span>), <span class="kw">new</span> { id = trailer.Id }, trailer);
+    }
+
+    [<span class="cls">HttpPost</span>(<span class="str">"{id}/trips/start"</span>)]
+    <span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">ActionResult</span>&lt;<span class="cls">TripDto</span>&gt;&gt; <span class="ann">StartTrip</span>(
+        <span class="kw">int</span> id, [<span class="cls">FromBody</span>] <span class="cls">StartTripCommand</span> command)
+        => <span class="ann">Ok</span>(<span class="kw">await</span> sender.<span class="ann">Send</span>(command <span class="kw">with</span> { TrailerId = id }));
+}
+<span class="cm">// No business logic. No try/catch. No DB calls. Pure HTTP translation.</span></code></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the Trailer Management System we had four projects in the solution: Domain, Application, Infrastructure, and API. The csproj references enforced the dependency rule at compile time — Domain referenced nothing, Application referenced only Domain, Infrastructure referenced Domain and Application, and API referenced everything. If someone in Infrastructure accidentally tried to reference API, the build would fail. Business rules like 'a trailer must be Available before starting a trip' lived in the domain entity method, not in any service. This meant we could test that rule with a plain xUnit test — no database, no HTTP, no mocks needed."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q2 — SOLID Principles
+  ══════════════════════════════════════ -->
+  <section class="section" id="q2">
+    <div class="section-header">
+      <div class="q-num">02</div>
+      <h2 class="q-title">Explain SOLID principles with examples from your actual projects.</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Key interview tip:</strong> Every SOLID principle should be anchored to a specific problem it solved in a real project. Generic textbook definitions are forgettable — concrete violation examples followed by the fix are memorable.
+    </div>
+
+    <div class="card">
+      <div class="card-label">S — Single Responsibility Principle</div>
+      <p>A class should have only one reason to change. If a class needs to change for two different business reasons, it has two responsibilities.</p>
+      <div class="callout callout-red">
+        <strong>Violation in the Rule Engine:</strong> Our original <code>RuleService</code> handled CRUD operations, evaluated rules against data, sent email notifications on violations, and wrote audit logs. A change to the notification template required touching the same class as a change to rule evaluation logic.
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — SRP fix: split into focused classes</span>
+      </div>
+      <pre><code><span class="cm">// ❌ Before — one class, four responsibilities</span>
+<span class="kw">public class</span> <span class="cls">RuleService</span> {
+    <span class="kw">public</span> <span class="cls">Rule</span>  <span class="ann">GetRule</span>(<span class="kw">int</span> id)         { ... } <span class="cm">// CRUD</span>
+    <span class="kw">public bool</span>  <span class="ann">EvaluateRule</span>(<span class="cls">Rule</span> rule)   { ... } <span class="cm">// Evaluation logic</span>
+    <span class="kw">public void</span>  <span class="ann">SendViolationEmail</span>(...)   { ... } <span class="cm">// Notification</span>
+    <span class="kw">public void</span>  <span class="ann">WriteAuditLog</span>(...)        { ... } <span class="cm">// Audit</span>
+}
+
+<span class="cm">// ✓ After — each class has one job, one reason to change</span>
+<span class="kw">public class</span> <span class="cls">RuleRepository</span>     { <span class="cm">/* CRUD only */</span> }
+<span class="kw">public class</span> <span class="cls">RuleEvaluator</span>      { <span class="cm">/* Evaluation logic only */</span> }
+<span class="kw">public class</span> <span class="cls">NotificationService</span> { <span class="cm">/* Sending alerts only */</span> }
+<span class="kw">public class</span> <span class="cls">AuditLogger</span>        { <span class="cm">/* Audit trail only */</span> }
+
+<span class="cm">// MediatR handler orchestrates them — no single class owns everything</span>
+<span class="kw">public class</span> <span class="cls">EvaluateRuleCommandHandler</span>(<span class="cls">IRuleRepository</span> repo,
+    <span class="cls">IRuleEvaluator</span> evaluator, <span class="cls">INotificationService</span> notifier, <span class="cls">IAuditLogger</span> audit)
+    : <span class="cls">IRequestHandler</span>&lt;<span class="cls">EvaluateRuleCommand</span>, <span class="cls">EvaluationResult</span>&gt;
+{
+    <span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">EvaluationResult</span>&gt; <span class="ann">Handle</span>(<span class="cls">EvaluateRuleCommand</span> req, <span class="cls">CancellationToken</span> ct)
+    {
+        <span class="kw">var</span> rule   = <span class="kw">await</span> repo.<span class="ann">GetByIdAsync</span>(req.RuleId, ct);
+        <span class="kw">var</span> result = evaluator.<span class="ann">Evaluate</span>(rule, req.Data);
+        <span class="kw">if</span> (result.HasViolation) <span class="kw">await</span> notifier.<span class="ann">SendViolationAlertAsync</span>(rule, result);
+        <span class="kw">await</span> audit.<span class="ann">LogAsync</span>(rule.Id, result);
+        <span class="kw">return</span> result;
+    }
+}</code></pre>
+    </div>
+
+    <div class="card">
+      <div class="card-label">O — Open/Closed Principle</div>
+      <p>Classes should be open for extension but closed for modification. Add new behavior by adding new code — not by editing existing, tested code.</p>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — OCP: Strategy pattern for extensible rule evaluation</span>
+      </div>
+      <pre><code><span class="cm">// ❌ Violates OCP — adding a new rule type means editing this switch</span>
+<span class="kw">public bool</span> <span class="ann">Evaluate</span>(<span class="cls">Rule</span> rule, <span class="kw">decimal</span> value) => rule.Type <span class="kw">switch</span>
+{
+    <span class="str">"GreaterThan"</span> => value > rule.Threshold,
+    <span class="str">"LessThan"</span>    => value < rule.Threshold,
+    <span class="str">"Between"</span>     => value >= rule.Min &amp;&amp; value <= rule.Max,
+    <span class="cm">// Every new type requires editing this class — breaks OCP</span>
+    _ => <span class="kw">throw new</span> <span class="cls">NotSupportedException</span>(rule.Type)
+};
+
+<span class="cm">// ✓ Satisfies OCP — add a new rule type by adding a new class, nothing changes</span>
+<span class="kw">public interface</span> <span class="cls">IRuleEvaluationStrategy</span>
+{
+    <span class="kw">string</span> <span class="prop">RuleType</span>  { <span class="kw">get</span>; }
+    <span class="kw">bool</span> <span class="ann">Evaluate</span>(<span class="cls">Rule</span> rule, <span class="kw">decimal</span> value);
+}
+
+<span class="kw">public class</span> <span class="cls">GreaterThanStrategy</span> : <span class="cls">IRuleEvaluationStrategy</span> {
+    <span class="kw">public string</span> <span class="prop">RuleType</span> => <span class="str">"GreaterThan"</span>;
+    <span class="kw">public bool</span>   <span class="ann">Evaluate</span>(<span class="cls">Rule</span> r, <span class="kw">decimal</span> v) => v > r.Threshold;
+}
+
+<span class="kw">public class</span> <span class="cls">BetweenStrategy</span> : <span class="cls">IRuleEvaluationStrategy</span> {
+    <span class="kw">public string</span> <span class="prop">RuleType</span> => <span class="str">"Between"</span>;
+    <span class="kw">public bool</span>   <span class="ann">Evaluate</span>(<span class="cls">Rule</span> r, <span class="kw">decimal</span> v) => v >= r.Min &amp;&amp; v <= r.Max;
+}
+
+<span class="cm">// Evaluator resolves the correct strategy via DI — no switch needed</span>
+<span class="kw">public class</span> <span class="cls">RuleEvaluator</span>(<span class="cls">IEnumerable</span>&lt;<span class="cls">IRuleEvaluationStrategy</span>&gt; strategies)
+{
+    <span class="kw">private readonly</span> <span class="cls">Dictionary</span>&lt;<span class="kw">string</span>, <span class="cls">IRuleEvaluationStrategy</span>&gt; _map =
+        strategies.<span class="ann">ToDictionary</span>(s => s.RuleType);
+
+    <span class="kw">public bool</span> <span class="ann">Evaluate</span>(<span class="cls">Rule</span> rule, <span class="kw">decimal</span> value) =>
+        _map.<span class="ann">TryGetValue</span>(rule.Type, <span class="kw">out var</span> strategy)
+            ? strategy.<span class="ann">Evaluate</span>(rule, value)
+            : <span class="kw">throw new</span> <span class="cls">NotSupportedException</span>(rule.Type);
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — LSP, ISP, DIP with project examples</span>
+      </div>
+      <pre><code><span class="cm">// ── L — LISKOV SUBSTITUTION PRINCIPLE ───────────────────────────────────
+// Any implementation of INotificationSender must behave the same way
+// — callers never need to know which sender is in use</span>
+<span class="kw">public interface</span> <span class="cls">INotificationSender</span>
+{
+    <span class="cls">Task</span> <span class="ann">SendAsync</span>(<span class="cls">NotificationMessage</span> message, <span class="cls">CancellationToken</span> ct);
+}
+
+<span class="kw">public class</span> <span class="cls">EmailNotificationSender</span>  : <span class="cls">INotificationSender</span> { ... }
+<span class="kw">public class</span> <span class="cls">SmsNotificationSender</span>    : <span class="cls">INotificationSender</span> { ... }
+<span class="kw">public class</span> <span class="cls">TeamsNotificationSender</span>  : <span class="cls">INotificationSender</span> { ... }
+
+<span class="cm">// LSP violation would be: SmsNotificationSender.SendAsync throws for messages
+// with HTML content even though the contract does not say it can</span>
+
+<span class="cm">// ── I — INTERFACE SEGREGATION PRINCIPLE ─────────────────────────────────
+// Original fat interface forced read-only consumers to implement write methods</span>
+
+<span class="cm">// ❌ Fat interface — reporting service only reads but must implement Save/Delete</span>
+<span class="kw">public interface</span> <span class="cls">ITrailerRepository</span> {
+    <span class="cls">Task</span>&lt;<span class="cls">Trailer</span>&gt; <span class="ann">GetByIdAsync</span>(<span class="kw">int</span> id);
+    <span class="cls">Task</span>&lt;<span class="cls">List</span>&lt;<span class="cls">Trailer</span>&gt;&gt; <span class="ann">GetAllAsync</span>();
+    <span class="cls">Task</span> <span class="ann">AddAsync</span>(<span class="cls">Trailer</span> t);
+    <span class="cls">Task</span> <span class="ann">UpdateAsync</span>(<span class="cls">Trailer</span> t);
+    <span class="cls">Task</span> <span class="ann">DeleteAsync</span>(<span class="kw">int</span> id);
+}
+
+<span class="cm">// ✓ Segregated — query handlers take ITrailerReadRepository (smaller contract)</span>
+<span class="kw">public interface</span> <span class="cls">ITrailerReadRepository</span> {
+    <span class="cls">Task</span>&lt;<span class="cls">Trailer</span>?&gt;      <span class="ann">GetByIdAsync</span>(<span class="kw">int</span> id,  <span class="cls">CancellationToken</span> ct);
+    <span class="cls">Task</span>&lt;<span class="cls">List</span>&lt;<span class="cls">Trailer</span>&gt;&gt; <span class="ann">GetAllAsync</span>(<span class="cls">CancellationToken</span> ct);
+}
+<span class="kw">public interface</span> <span class="cls">ITrailerWriteRepository</span> {
+    <span class="cls">Task</span> <span class="ann">AddAsync</span>(<span class="cls">Trailer</span> t, <span class="cls">CancellationToken</span> ct);
+    <span class="cls">Task</span> <span class="ann">UpdateAsync</span>(<span class="cls">Trailer</span> t, <span class="cls">CancellationToken</span> ct);
+}
+
+<span class="cm">// ── D — DEPENDENCY INVERSION PRINCIPLE ──────────────────────────────────
+// High-level policy (handler) must not depend on low-level detail (EF Core)
+// Both must depend on the abstraction (interface)</span>
+
+<span class="cm">// ✓ Handler depends on interface — EF Core is swappable without touching handler</span>
+<span class="kw">public class</span> <span class="cls">GetTrailersQueryHandler</span>(<span class="cls">ITrailerReadRepository</span> repo)
+    : <span class="cls">IRequestHandler</span>&lt;<span class="cls">GetTrailersQuery</span>, <span class="cls">List</span>&lt;<span class="cls">TrailerDto</span>&gt;&gt; { ... }
+
+<span class="cm">// Registered in DI — infrastructure detail is hidden from application layer</span>
+services.<span class="ann">AddScoped</span>&lt;<span class="cls">ITrailerReadRepository</span>,  <span class="cls">EfTrailerRepository</span>&gt;();
+services.<span class="ann">AddScoped</span>&lt;<span class="cls">ITrailerWriteRepository</span>, <span class="cls">EfTrailerRepository</span>&gt;();</code></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"The SOLID principle we violated most early on was SRP — our original RuleService was a 600-line class that did everything. When a product manager asked to add a new notification channel, we had to edit the same file that contained rule evaluation logic, which broke tests unrelated to notifications. After refactoring to single-responsibility classes orchestrated by MediatR handlers, each class was under 80 lines and changes were isolated. OCP helped us most with rule types — we went from a 12-case switch statement to a strategy registry where adding a new rule type meant adding one new file with zero modifications to existing code."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q3 — Service Layer vs Controller
+  ══════════════════════════════════════ -->
+  <section class="section" id="q3">
+    <div class="section-header">
+      <div class="q-num">03</div>
+      <h2 class="q-title">How do you decide when to use a service layer vs. putting logic in the controller?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Hard rule:</strong> A controller is an HTTP adapter — it speaks HTTP in, and HTTP out. The moment logic inside a controller could be needed by another controller, a background job, a test, or a different transport (gRPC, CLI), it must move to a service or handler.
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card preferred">
+        <div class="compare-card-label label-good">✓ Belongs in the Controller</div>
+        <ul style="font-size:14px;color:var(--text-secondary);padding-left:16px;">
+          <li>Route definition and HTTP verb</li>
+          <li>Reading from query string, body, headers</li>
+          <li>Returning correct HTTP status codes</li>
+          <li>Calling <code>ModelState.IsValid</code></li>
+          <li>Authorization attribute placement</li>
+          <li>Swagger documentation attributes</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <div class="compare-card-label label-bad">✗ Must NOT be in the Controller</div>
+        <ul style="font-size:14px;color:var(--text-secondary);padding-left:16px;">
+          <li>Any business rule or decision</li>
+          <li>Database queries or EF Core calls</li>
+          <li>Cross-entity orchestration</li>
+          <li>Transaction management</li>
+          <li>Sending emails, notifications</li>
+          <li>Anything you would want to unit test</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Fat controller anti-pattern vs Clean Architecture controller</span>
+      </div>
+      <pre><code><span class="cm">// ❌ FAT CONTROLLER — untestable, violates SRP, cannot be reused</span>
+[<span class="cls">HttpPost</span>(<span class="str">"start-trip"</span>)]
+<span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">IActionResult</span>&gt; <span class="ann">StartTrip</span>([<span class="cls">FromBody</span>] <span class="cls">StartTripRequest</span> request)
+{
+    <span class="kw">var</span> trailer = <span class="kw">await</span> _context.Trailers.<span class="ann">FindAsync</span>(request.TrailerId);
+    <span class="kw">if</span> (trailer == <span class="kw">null</span>)        <span class="kw">return</span> <span class="ann">NotFound</span>();
+    <span class="kw">if</span> (!trailer.IsAvailable)   <span class="kw">return</span> <span class="ann">BadRequest</span>(<span class="str">"Trailer not available"</span>);
+
+    trailer.Status = <span class="str">"InUse"</span>;
+    <span class="kw">var</span> trip = <span class="kw">new</span> <span class="cls">Trip</span> { TrailerId = trailer.Id, DriverId = request.DriverId };
+    _context.Trips.<span class="ann">Add</span>(trip);
+    <span class="kw">await</span> _context.<span class="ann">SaveChangesAsync</span>();
+
+    <span class="kw">await</span> _emailService.<span class="ann">SendTripStartedEmailAsync</span>(trailer, trip);
+    <span class="kw">await</span> _auditService.<span class="ann">LogAsync</span>(<span class="str">"TripStarted"</span>, trailer.Id);
+    <span class="kw">return</span> <span class="ann">Ok</span>(trip);
+    <span class="cm">// Testing this requires mocking: DbContext, EmailService, AuditService — painful</span>
+}
+
+<span class="cm">// ✓ THIN CONTROLLER — HTTP translation only, all logic in the handler</span>
+[<span class="cls">HttpPost</span>(<span class="str">"{id}/trips/start"</span>)]
+<span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">ActionResult</span>&lt;<span class="cls">TripDto</span>&gt;&gt; <span class="ann">StartTrip</span>(
+    <span class="kw">int</span> id, [<span class="cls">FromBody</span>] <span class="cls">StartTripCommand</span> command, <span class="cls">ISender</span> sender)
+    => <span class="ann">Ok</span>(<span class="kw">await</span> sender.<span class="ann">Send</span>(command <span class="kw">with</span> { TrailerId = id }));
+<span class="cm">// Testing the business rule: xUnit test → create handler → inject mocks → assert.
+// No HTTP, no controller, no integration test needed for the logic.</span></code></pre>
+    </div>
+
+    <div class="card">
+      <div class="card-label">The Decision Framework — Where does logic belong?</div>
+      <ul>
+        <li><strong>Domain layer:</strong> Invariants that must always be true regardless of how the operation is triggered — "a trailer must be Available to start a trip." Enforced in entity methods.</li>
+        <li><strong>Application layer (Handler/Service):</strong> Use-case orchestration — fetch the aggregate, call the domain method, persist, dispatch events, send notifications. Testable with mocks.</li>
+        <li><strong>Infrastructure layer:</strong> Technology-specific logic — how SQL Server stores the data, how Azure Blob stores the file. Not business logic.</li>
+        <li><strong>Controller:</strong> HTTP concerns only. The test: "Would this logic matter if I called this use case from a background job?" If yes, move it out of the controller.</li>
+      </ul>
+    </div>
+
+    <div class="callout callout-amber">
+      <strong>The other anti-pattern — anemic service:</strong> Moving all code from the controller into a giant <code>TrailerService</code> without proper layering just shifts the problem. If the service calls the repository, applies business rules, sends emails, and handles transactions all in one method, it is a fat controller in disguise. The application handler should orchestrate; the domain entity should enforce rules.
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"My test is simple: could this logic be needed from a background job, a different API endpoint, or a CLI tool? If yes, it does not belong in the controller. In the Trailer Management System, trip start logic was originally in the controller — 60 lines including DB access, status checks, email dispatch, and audit logging. A new requirement asked us to start trips automatically from a scheduler. We would have had to duplicate that controller code into a background service. Instead we extracted it into a MediatR command handler that both the controller and the scheduler could send. The controller dropped to one line."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q4 — Design Patterns
+  ══════════════════════════════════════ -->
+  <section class="section" id="q4">
+    <div class="section-header">
+      <div class="q-num">04</div>
+      <h2 class="q-title">What design patterns have you used? (Repository, Unit of Work, Factory, etc.)</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Senior framing:</strong> Name the pattern, state the problem it solved, and explain why that pattern specifically — not just "I used Repository because everyone does." Patterns are solutions to recurring problems, not mandatory ceremonies.
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Repository + Unit of Work: coordinated persistence</span>
+      </div>
+      <pre><code><span class="cm">// Repository: abstracts data access — handlers depend on interface, not EF Core
+// Problem it solved: switching from EF Core to Dapper for read queries
+// without touching any application layer code</span>
+<span class="kw">public interface</span> <span class="cls">ITrailerRepository</span>
+{
+    <span class="cls">Task</span>&lt;<span class="cls">Trailer</span>?&gt;       <span class="ann">GetByIdAsync</span>(<span class="kw">int</span> id, <span class="cls">CancellationToken</span> ct);
+    <span class="cls">Task</span>&lt;<span class="cls">List</span>&lt;<span class="cls">Trailer</span>&gt;&gt;  <span class="ann">GetByBranchAsync</span>(<span class="kw">int</span> branchId, <span class="cls">CancellationToken</span> ct);
+    <span class="kw">void</span>                 <span class="ann">Add</span>(<span class="cls">Trailer</span> trailer);
+    <span class="kw">void</span>                 <span class="ann">Remove</span>(<span class="cls">Trailer</span> trailer);
+}
+
+<span class="cm">// Unit of Work: multiple repositories share one DbContext transaction
+// Problem it solved: StartTrip needed to update Trailer + insert Trip atomically</span>
+<span class="kw">public interface</span> <span class="cls">IUnitOfWork</span>
+{
+    <span class="cls">ITrailerRepository</span>  <span class="prop">Trailers</span>  { <span class="kw">get</span>; }
+    <span class="cls">ITripRepository</span>     <span class="prop">Trips</span>     { <span class="kw">get</span>; }
+    <span class="cls">IDriverRepository</span>   <span class="prop">Drivers</span>   { <span class="kw">get</span>; }
+    <span class="cls">Task</span>&lt;<span class="kw">int</span>&gt;            <span class="ann">CommitAsync</span>(<span class="cls">CancellationToken</span> ct);
+}
+
+<span class="cm">// Handler uses UoW — one commit, one transaction, atomic</span>
+<span class="kw">public class</span> <span class="cls">StartTripCommandHandler</span>(<span class="cls">IUnitOfWork</span> uow)
+    : <span class="cls">IRequestHandler</span>&lt;<span class="cls">StartTripCommand</span>, <span class="cls">TripDto</span>&gt;
+{
+    <span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">TripDto</span>&gt; <span class="ann">Handle</span>(<span class="cls">StartTripCommand</span> req, <span class="cls">CancellationToken</span> ct)
+    {
+        <span class="kw">var</span> trailer = <span class="kw">await</span> uow.Trailers.<span class="ann">GetByIdAsync</span>(req.TrailerId, ct)
+            ?? <span class="kw">throw new</span> <span class="cls">NotFoundException</span>(<span class="kw">nameof</span>(<span class="cls">Trailer</span>), req.TrailerId);
+
+        <span class="kw">var</span> trip = trailer.<span class="ann">StartTrip</span>(req.DriverId);   <span class="cm">// Domain method — throws if invalid</span>
+        uow.Trips.<span class="ann">Add</span>(trip);
+        <span class="kw">await</span> uow.<span class="ann">CommitAsync</span>(ct);                     <span class="cm">// Single SaveChanges — atomic</span>
+        <span class="kw">return</span> trip.<span class="ann">ToDto</span>();
+    }
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Decorator pattern: transparent caching layer</span>
+      </div>
+      <pre><code><span class="cm">// Problem: GetActiveTrailers() was called 40 times per second on the dashboard
+// Solution: Cache decorator wraps the real repository — callers never know
+// Added zero code to handlers, zero code to the real repository</span>
+<span class="kw">public class</span> <span class="cls">CachedTrailerRepository</span>(<span class="cls">ITrailerRepository</span> inner, <span class="cls">IMemoryCache</span> cache)
+    : <span class="cls">ITrailerRepository</span>
+{
+    <span class="kw">private const string</span> <span class="prop">ActiveKey</span> = <span class="str">"trailers:active"</span>;
+
+    <span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">List</span>&lt;<span class="cls">Trailer</span>&gt;&gt; <span class="ann">GetActiveAsync</span>(<span class="cls">CancellationToken</span> ct)
+    {
+        <span class="kw">if</span> (cache.<span class="ann">TryGetValue</span>(<span class="prop">ActiveKey</span>, <span class="kw">out</span> <span class="cls">List</span>&lt;<span class="cls">Trailer</span>&gt;? cached))
+            <span class="kw">return</span> cached!;
+
+        <span class="kw">var</span> trailers = <span class="kw">await</span> inner.<span class="ann">GetActiveAsync</span>(ct);   <span class="cm">// Call real repository</span>
+        cache.<span class="ann">Set</span>(<span class="prop">ActiveKey</span>, trailers, <span class="cls">TimeSpan</span>.<span class="ann">FromSeconds</span>(<span class="num">30</span>));
+        <span class="kw">return</span> trailers;
+    }
+
+    <span class="cm">// Write methods — invalidate cache then delegate to inner</span>
+    <span class="kw">public void</span> <span class="ann">Add</span>(<span class="cls">Trailer</span> t) { cache.<span class="ann">Remove</span>(<span class="prop">ActiveKey</span>); inner.<span class="ann">Add</span>(t); }
+    <span class="kw">public void</span> <span class="ann">Remove</span>(<span class="cls">Trailer</span> t) { cache.<span class="ann">Remove</span>(<span class="prop">ActiveKey</span>); inner.<span class="ann">Remove</span>(t); }
+}
+
+<span class="cm">// DI registration — swap in the decorator without touching any handler</span>
+services.<span class="ann">AddScoped</span>&lt;<span class="cls">EfTrailerRepository</span>&gt;();
+services.<span class="ann">AddScoped</span>&lt;<span class="cls">ITrailerRepository</span>&gt;(sp =>
+    <span class="kw">new</span> <span class="cls">CachedTrailerRepository</span>(
+        sp.<span class="ann">GetRequiredService</span>&lt;<span class="cls">EfTrailerRepository</span>&gt;(),
+        sp.<span class="ann">GetRequiredService</span>&lt;<span class="cls">IMemoryCache</span>&gt;()));</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — MediatR Pipeline Behaviour (Decorator variant): cross-cutting concerns</span>
+      </div>
+      <pre><code><span class="cm">// Problem: every handler needed validation, logging, and performance monitoring
+// Solution: MediatR pipeline behaviours — applied automatically to ALL handlers</span>
+
+<span class="cm">// Validation behaviour — runs FluentValidation before any handler executes</span>
+<span class="kw">public class</span> <span class="cls">ValidationBehaviour</span>&lt;TRequest, TResponse&gt;(
+    <span class="cls">IEnumerable</span>&lt;<span class="cls">IValidator</span>&lt;TRequest&gt;&gt; validators)
+    : <span class="cls">IPipelineBehavior</span>&lt;TRequest, TResponse&gt;
+    <span class="kw">where</span> <span class="cls">TRequest</span> : <span class="cls">IRequest</span>&lt;TResponse&gt;
+{
+    <span class="kw">public async</span> <span class="cls">Task</span>&lt;TResponse&gt; <span class="ann">Handle</span>(TRequest request,
+        <span class="cls">RequestHandlerDelegate</span>&lt;TResponse&gt; next, <span class="cls">CancellationToken</span> ct)
+    {
+        <span class="kw">var</span> context = <span class="kw">new</span> <span class="cls">ValidationContext</span>&lt;TRequest&gt;(request);
+        <span class="kw">var</span> failures = validators
+            .<span class="ann">Select</span>(v => v.<span class="ann">Validate</span>(context))
+            .<span class="ann">SelectMany</span>(r => r.Errors)
+            .<span class="ann">Where</span>(f => f != <span class="kw">null</span>)
+            .<span class="ann">ToList</span>();
+
+        <span class="kw">if</span> (failures.Count > <span class="num">0</span>)
+            <span class="kw">throw new</span> <span class="cls">ValidationException</span>(failures);
+
+        <span class="kw">return await</span> <span class="ann">next</span>();   <span class="cm">// Call the actual handler</span>
+    }
+}
+
+<span class="cm">// Performance behaviour — logs a warning if any handler is slow</span>
+<span class="kw">public class</span> <span class="cls">PerformanceBehaviour</span>&lt;TRequest, TResponse&gt;(
+    <span class="cls">ILogger</span>&lt;<span class="cls">PerformanceBehaviour</span>&lt;TRequest, TResponse&gt;&gt; logger)
+    : <span class="cls">IPipelineBehavior</span>&lt;TRequest, TResponse&gt;
+{
+    <span class="kw">public async</span> <span class="cls">Task</span>&lt;TResponse&gt; <span class="ann">Handle</span>(TRequest request,
+        <span class="cls">RequestHandlerDelegate</span>&lt;TResponse&gt; next, <span class="cls">CancellationToken</span> ct)
+    {
+        <span class="kw">var</span> sw       = <span class="cls">Stopwatch</span>.<span class="ann">StartNew</span>();
+        <span class="kw">var</span> response = <span class="kw">await</span> <span class="ann">next</span>();
+        sw.<span class="ann">Stop</span>();
+
+        <span class="kw">if</span> (sw.ElapsedMilliseconds > <span class="num">500</span>)
+            logger.<span class="ann">LogWarning</span>(<span class="str">"Slow request: {Request} took {Elapsed}ms"</span>,
+                <span class="kw">typeof</span>(TRequest).Name, sw.ElapsedMilliseconds);
+
+        <span class="kw">return</span> response;
+    }
+}</code></pre>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Pattern</th>
+            <th>Problem it Solved</th>
+            <th>Project Used In</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Repository</strong></td>
+            <td>Abstract EF Core from application logic — enable Dapper for read-heavy queries</td>
+            <td style="color:var(--accent)">Trailer Management System</td>
+          </tr>
+          <tr>
+            <td><strong>Unit of Work</strong></td>
+            <td>Coordinate multi-repository changes in one atomic transaction</td>
+            <td style="color:var(--accent)">Trailer Management System</td>
+          </tr>
+          <tr>
+            <td><strong>Strategy</strong></td>
+            <td>Add new rule types without modifying existing evaluation code (OCP)</td>
+            <td style="color:var(--accent)">Rule Engine Application</td>
+          </tr>
+          <tr>
+            <td><strong>Decorator</strong></td>
+            <td>Add caching transparently around repositories without touching handlers</td>
+            <td style="color:var(--accent)">Trailer Management System</td>
+          </tr>
+          <tr>
+            <td><strong>Mediator (MediatR)</strong></td>
+            <td>Decouple controller from handler — enable shared pipeline behaviours</td>
+            <td style="color:var(--accent)">Both Projects</td>
+          </tr>
+          <tr>
+            <td><strong>Options Pattern</strong></td>
+            <td>Strongly-typed, validated configuration — no magic strings from IConfiguration</td>
+            <td style="color:var(--accent)">Both Projects</td>
+          </tr>
+          <tr>
+            <td><strong>Factory</strong></td>
+            <td>Create complex Trailer aggregates with correct initial state and validation</td>
+            <td style="color:var(--accent)">Trailer Management System</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"The pattern that gave us the highest return in the Rule Engine was the Strategy pattern combined with a DI registry for rule evaluators. We went from a 200-line switch statement that every developer was afraid to touch, to a system where adding a new rule type meant creating one new class and registering it — no existing tests broke, no existing code changed. The Decorator pattern for caching was another high-value one — we added memory caching to five repositories in a single afternoon with zero changes to the 30 handlers that used those repositories."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q5 — Structured Logging
+  ══════════════════════════════════════ -->
+  <section class="section" id="q5">
+    <div class="section-header">
+      <div class="q-num">05</div>
+      <h2 class="q-title">How do you approach structured logging? What tools did you use (Serilog, NLog)?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Structured vs plain text logging:</strong> Plain text logs are for humans to read in a terminal. Structured logs are machine-readable records where properties are first-class fields — queryable, filterable, and alertable in tools like Seq, Application Insights, and Elasticsearch.
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-card-label label-bad">❌ Plain Text — Unqueryable</div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-mono);">
+          "Trip started for trailer AB1234 by driver 42 at 2024-08-15 09:30:00"
+        </p>
+        <ul style="font-size:14px;color:var(--text-secondary);padding-left:16px;margin-top:8px;">
+          <li>Cannot filter by TrailerId in production</li>
+          <li>Cannot alert when TripCount exceeds threshold</li>
+          <li>Cannot correlate across microservices</li>
+          <li>Regex parsing is fragile and slow</li>
+        </ul>
+      </div>
+      <div class="compare-card preferred">
+        <div class="compare-card-label label-good">✓ Structured — Queryable</div>
+        <p style="font-size:13px;color:var(--text-secondary);font-family:var(--font-mono);">
+          { "EventType": "TripStarted", "TrailerId": 5, "DriverId": 42, "CorrelationId": "abc-123", "Elapsed": 142 }
+        </p>
+        <ul style="font-size:14px;color:var(--text-secondary);padding-left:16px;margin-top:8px;">
+          <li>Filter: <code>TrailerId = 5 AND Level = Error</code></li>
+          <li>Alert: <code>Elapsed &gt; 500ms</code></li>
+          <li>Correlate: <code>CorrelationId = "abc-123"</code> across all services</li>
+          <li>Aggregate: average elapsed time per endpoint</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Serilog setup with multiple sinks and enrichers</span>
+      </div>
+      <pre><code><span class="cm">// Program.cs — Serilog replaces the default Microsoft.Extensions.Logging provider</span>
+<span class="cls">Log</span>.Logger = <span class="kw">new</span> <span class="cls">LoggerConfiguration</span>()
+    .<span class="ann">ReadFrom</span>.<span class="ann">Configuration</span>(builder.Configuration)     <span class="cm">// appsettings drives log levels</span>
+    .<span class="ann">Enrich</span>.<span class="ann">FromLogContext</span>()                            <span class="cm">// Picks up LogContext.PushProperty() values</span>
+    .<span class="ann">Enrich</span>.<span class="ann">WithMachineName</span>()                          <span class="cm">// Which server emitted this log</span>
+    .<span class="ann">Enrich</span>.<span class="ann">WithEnvironmentName</span>()                      <span class="cm">// dev / staging / production</span>
+    .<span class="ann">Enrich</span>.<span class="ann">WithProperty</span>(<span class="str">"Application"</span>, <span class="str">"TrailerMgmt"</span>)  <span class="cm">// Tag for multi-app log stores</span>
+    .<span class="ann">WriteTo</span>.<span class="ann">Console</span>(<span class="kw">new</span> <span class="cls">RenderedCompactJsonFormatter</span>()) <span class="cm">// JSON to stdout — Docker friendly</span>
+    .<span class="ann">WriteTo</span>.<span class="ann">File</span>(<span class="kw">new</span> <span class="cls">CompactJsonFormatter</span>(),
+        path: <span class="str">"logs/app-.json"</span>,
+        rollingInterval: <span class="cls">RollingInterval</span>.Day,
+        retainedFileCountLimit: <span class="num">14</span>)
+    .<span class="ann">WriteTo</span>.<span class="ann">ApplicationInsights</span>(                      <span class="cm">// Azure monitoring sink</span>
+        builder.Configuration[<span class="str">"APPLICATIONINSIGHTS_CONNECTION_STRING"</span>],
+        <span class="cls">TelemetryConverter</span>.Traces)
+    .<span class="ann">WriteTo</span>.<span class="ann">Seq</span>(<span class="str">"http://localhost:5341"</span>,              <span class="cm">// Seq for local dev — rich query UI</span>
+        restrictedToMinimumLevel: <span class="cls">Events</span>.<span class="cls">LogEventLevel</span>.Debug)
+    .<span class="ann">CreateLogger</span>();
+
+builder.Host.<span class="ann">UseSerilog</span>();   <span class="cm">// Replace default logging provider</span></code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Structured log calls with message templates (never string interpolation)</span>
+      </div>
+      <pre><code><span class="cm">// ❌ WRONG — string interpolation destroys structure; TrailerId is just text</span>
+logger.<span class="ann">LogInformation</span>(<span class="str">$"Trip started for trailer {trailerId} by driver {driverId}"</span>);
+
+<span class="cm">// ✓ CORRECT — message template; TrailerId and DriverId are queryable properties</span>
+logger.<span class="ann">LogInformation</span>(
+    <span class="str">"Trip started. TrailerId={TrailerId} DriverId={DriverId}"</span>,
+    trailerId, driverId);
+
+<span class="cm">// ✓ Destructure complex objects with @ prefix — logs all properties</span>
+logger.<span class="ann">LogInformation</span>(<span class="str">"Trailer created: {@Trailer}"</span>, trailer);
+
+<span class="cm">// ✓ Scoped logging with LogContext — all logs within this scope carry CorrelationId</span>
+<span class="kw">using</span> (<span class="cls">LogContext</span>.<span class="ann">PushProperty</span>(<span class="str">"CorrelationId"</span>, correlationId))
+<span class="kw">using</span> (<span class="cls">LogContext</span>.<span class="ann">PushProperty</span>(<span class="str">"UserId"</span>, currentUserId))
+{
+    logger.<span class="ann">LogInformation</span>(<span class="str">"Processing StartTripCommand. TrailerId={TrailerId}"</span>, req.TrailerId);
+    <span class="kw">var</span> result = <span class="kw">await</span> handler.<span class="ann">Handle</span>(req, ct);
+    logger.<span class="ann">LogInformation</span>(<span class="str">"Trip started successfully. TripId={TripId}"</span>, result.TripId);
+    <span class="cm">// Both logs carry CorrelationId and UserId automatically</span>
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Request logging middleware + correlation ID propagation</span>
+      </div>
+      <pre><code><span class="cm">// Attach CorrelationId to every request — ties together all logs for one HTTP call</span>
+<span class="kw">public class</span> <span class="cls">CorrelationIdMiddleware</span>(<span class="cls">RequestDelegate</span> next)
+{
+    <span class="kw">public async</span> <span class="cls">Task</span> <span class="ann">InvokeAsync</span>(<span class="cls">HttpContext</span> context)
+    {
+        <span class="kw">var</span> correlationId = context.Request.Headers[<span class="str">"X-Correlation-ID"</span>]
+            .<span class="ann">FirstOrDefault</span>() ?? <span class="cls">Guid</span>.<span class="ann">NewGuid</span>().<span class="ann">ToString</span>(<span class="str">"N"</span>);
+
+        context.Response.Headers[<span class="str">"X-Correlation-ID"</span>] = correlationId;
+
+        <span class="kw">using</span> (<span class="cls">LogContext</span>.<span class="ann">PushProperty</span>(<span class="str">"CorrelationId"</span>, correlationId))
+        {
+            <span class="kw">await</span> <span class="ann">next</span>(context);
+        }
+    }
+}
+
+<span class="cm">// Serilog request logging — replaces verbose default ASP.NET Core request logs
+// Produces one clean structured log per request with status, path, elapsed time</span>
+app.<span class="ann">UseSerilogRequestLogging</span>(options =>
+{
+    options.EnrichDiagnosticContext = (diagnosticContext, httpContext) =>
+    {
+        diagnosticContext.<span class="ann">Set</span>(<span class="str">"UserId"</span>,      httpContext.User.<span class="ann">GetUserId</span>());
+        diagnosticContext.<span class="ann">Set</span>(<span class="str">"UserAgent"</span>,   httpContext.Request.Headers.UserAgent);
+        diagnosticContext.<span class="ann">Set</span>(<span class="str">"RequestHost"</span>, httpContext.Request.Host.Value);
+    };
+    options.MessageTemplate =
+        <span class="str">"HTTP {RequestMethod} {RequestPath} responded {StatusCode} in {Elapsed:0.0000}ms"</span>;
+});</code></pre>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Log Level Strategy — What to log at which level</div>
+      <ul>
+        <li><strong>Verbose / Trace:</strong> Fine-grained internal state — SQL query text, loop iterations. Dev only, never production.</li>
+        <li><strong>Debug:</strong> Diagnostic information for troubleshooting a specific issue. Off in production by default, toggleable via appsettings without redeploy.</li>
+        <li><strong>Information:</strong> Normal business operations — trip started, user logged in, report generated. High-value events that should always be logged.</li>
+        <li><strong>Warning:</strong> Unexpected but handled situations — retry attempted, fallback activated, slow query threshold exceeded. Something to monitor.</li>
+        <li><strong>Error:</strong> Operation failed, exception caught and handled. Requires investigation. Alert triggers here.</li>
+        <li><strong>Fatal / Critical:</strong> Application cannot continue — database unreachable, unhandled exception in startup. PagerDuty-level alert.</li>
+      </ul>
+    </div>
+
+    <div class="callout callout-purple">
+      <strong>appsettings.json log level control — no redeployment needed:</strong> Configure minimum levels per namespace in appsettings. Azure App Configuration or Azure Key Vault can update these at runtime, enabling you to temporarily enable Debug-level logging for a specific namespace in production to diagnose an issue, then revert — without restarting the application.
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"We used Serilog in both the Trailer Management System and the Rule Engine. The biggest win was correlation IDs — every HTTP request got a CorrelationId either from the incoming header or generated fresh, pushed into Serilog's LogContext, and added to the response header. When a client reported 'the dashboard was slow at 9:15 AM', we searched Application Insights for that time range, grouped by CorrelationId, and saw exactly which 3 queries in one request were taking 3 seconds each. Without structured logging that would have taken hours. We also used Serilog's request logging middleware instead of the default ASP.NET Core logs — it produced one clean JSON record per request instead of 4 noisy text lines, which cut our Application Insights bill by 30%."</p>
+    </div>
+  </section>
+
+
+  <!-- ── FOOTER ── -->
+  <div class="divider"></div>
+  <div style="text-align: center; padding: 12px 0 32px;">
+    <div style="color: var(--text-muted); font-size: 13px; font-family: var(--font-mono); margin-bottom: 16px;">
+      Architecture &amp; Design Principles · Senior Interview Guide · 5 Questions
+    </div>
+    <a href="#top" class="back-top">↑ Back to top</a>
+  </div>
+
+</div>
+</body>
+</html>
