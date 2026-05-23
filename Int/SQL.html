@@ -1,0 +1,595 @@
+﻿<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <div class="wrapper">
+
+        <!-- ── HEADER ── -->
+        <header id="top">
+            <div class="header-eyebrow">
+                <span class="live-dot"></span>
+                Senior Level · 5+ Years Experience
+            </div>
+            <div class="header-meta">
+                <a href="Home.html" class="toc-item"><span class="badge badge-green">WEBAPI</span></a>
+                <a href="Ef Core.html" class="toc-item"><span class="badge badge-blue">EFCore</span></a>
+                <a href="sql.html" class="toc-item"><span class="badge badge-amber">SQLServer</span></a>
+                <a href="wpf_mvvm.html" class="toc-item"><span class="badge badge-green">WPF&MVVM</span></a>
+                <a href="react.html" class="toc-item"><span class="badge badge-blue">React.js</span></a>
+                <a href="azure_devops.html" class="toc-item"><span class="badge badge-amber">Azure&DevOps</span></a>
+                <a href="architecture_design.html" class="toc-item"><span class="badge badge-green">Archi&Design</span></a>
+                <a href="behavioral.html" class="toc-item"><span class="badge badge-blue">G.Behavioral</span></a>
+            </div>
+            <h1>Entity Framework<br><span class="accent">Core (EF Core)</span></h1>
+            <div class="header-meta">
+                <span class="chip chip-green">● 5 Questions</span>
+                <span class="chip chip-blue">C# / .NET</span>
+                <span class="chip chip-amber">ORM &amp; Data Access</span>
+                <span class="chip chip-purple">Interview Ready</span>
+            </div>
+        </header>
+
+        <!-- ── TOC ── -->
+        <nav class="toc">
+            <div class="toc-label">Table of Contents</div>
+            <div class="toc-list">
+                <a href="#q1" class="toc-link"><span class="toc-n">01</span>Code First vs Database First</a>
+                <a href="#q2" class="toc-link"><span class="toc-n">02</span>Lazy Loading vs Eager Loading</a>
+                <a href="#q3" class="toc-link"><span class="toc-n">03</span>Migrations in Production</a>
+                <a href="#q4" class="toc-link"><span class="toc-n">04</span>N+1 Query Problem</a>
+                <a href="#q5" class="toc-link"><span class="toc-n">05</span>Raw SQL / Stored Procedures vs LINQ</a>
+            </div>
+        </nav>
+
+        <!-- ══════════════════════════════════════
+             Q1 — Code First vs Database First
+        ══════════════════════════════════════ -->
+        <section class="section" id="q1">
+            <div class="section-head">
+                <div class="q-badge">01</div>
+                <h2 class="q-title">What is the difference between Code First and Database First approaches?</h2>
+            </div>
+
+            <div class="callout callout-green">
+                <strong>One-liner:</strong> Code First = your C# classes drive the schema. Database First = an existing schema drives your C# classes. For any greenfield project, Code First is the standard choice.
+            </div>
+
+            <div class="two-col">
+                <div class="col-card highlight-green">
+                    <div class="col-label label-green">✓ Code First — Preferred</div>
+                    <ul style="font-size:14px; color:var(--text-secondary); padding-left:16px;">
+                        <li>Define domain models in C#</li>
+                        <li>EF generates migrations &amp; schema</li>
+                        <li>Schema lives in version control</li>
+                        <li>Clean Architecture friendly</li>
+                        <li>Works with CI/CD pipelines</li>
+                        <li>Full migration history tracked</li>
+                    </ul>
+                </div>
+                <div class="col-card">
+                    <div class="col-label label-amber">Database First — Legacy Use</div>
+                    <ul style="font-size:14px; color:var(--text-secondary); padding-left:16px;">
+                        <li>Schema already exists (legacy DBs)</li>
+                        <li>EF scaffolds DbContext + models</li>
+                        <li>DBAs own the schema directly</li>
+                        <li>Difficult to evolve incrementally</li>
+                        <li>Regenerating overwrites customizations</li>
+                        <li>Harder to integrate with CI/CD</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Aspect</th><th>Code First</th><th>Database First</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Source of truth</td><td class="td-yes">C# models</td><td style="color:var(--text-muted)">SQL schema</td></tr>
+                        <tr><td>Migrations</td><td class="td-yes">Tracked in code (version-controlled)</td><td class="td-warn">Manual SQL scripts</td></tr>
+                        <tr><td>Best for</td><td class="td-yes">New projects, Clean Architecture</td><td style="color:var(--text-muted)">Legacy / DBA-managed databases</td></tr>
+                        <tr><td>Evolving schema</td><td class="td-yes">Incremental, reversible</td><td class="td-no">Risk of overwriting scaffolding</td></tr>
+                        <tr><td>Team workflow</td><td class="td-yes">Dev-driven, PR-tracked</td><td class="td-warn">Requires DB access to scaffold</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Code First — Domain model + Fluent API configuration</span>
+                </div>
+                <pre><code><span class="kw">public class</span> <span class="cls">Trailer</span>
+{
+                <span class="kw">public int</span> <span class="prop">Id</span> { <span class="kw">get</span>; <span class="kw">set</span>; }
+                <span class="kw">public string</span> <span class="prop">RegistrationNumber</span> { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="kw">default!</span>;
+                <span class="kw">public</span> <span class="cls">TrailerStatus</span> <span class="prop">Status</span> { <span class="kw">get</span>; <span class="kw">set</span>; }
+                <span class="kw">public</span> <span class="cls">ICollection</span>&lt;<span class="cls">Trip</span>&gt; <span class="prop">Trips</span> { <span class="kw">get</span>; <span class="kw">set</span>; } = [];
+}
+
+<span class="cm">// Fluent API config — keeps domain model clean (no data annotations)</span>
+<span class="kw">public class</span> <span class="cls">TrailerConfiguration</span> : <span class="cls">IEntityTypeConfiguration</span>&lt;<span class="cls">Trailer</span>&gt;
+{
+                <span class="kw">public void</span> <span class="ann">Configure</span>(<span class="cls">EntityTypeBuilder</span>&lt;<span class="cls">Trailer</span>&gt; builder)
+    {
+        builder.<span class="ann">HasKey</span>(t =&gt; t.Id);
+        builder.<span class="ann">Property</span>(t =&gt; t.RegistrationNumber)
+               .<span class="ann">HasMaxLength</span>(<span class="num">20</span>)
+               .<span class="ann">IsRequired</span>();
+        builder.<span class="ann">HasIndex</span>(t =&gt; t.RegistrationNumber).<span class="ann">IsUnique</span>();
+        builder.<span class="ann">HasMany</span>(t =&gt; t.Trips)
+               .<span class="ann">WithOne</span>(tr =&gt; tr.Trailer)
+               .<span class="ann">HasForeignKey</span>(tr =&gt; tr.TrailerId)
+               .<span class="ann">OnDelete</span>(<span class="cls">DeleteBehavior</span>.Restrict);
+    }
+}</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-label">🎤 Interview Answer</div>
+                <p>"In all our greenfield projects — Trailer Management System, Rule Engine — we used Code First exclusively. The schema lives in the repository alongside the application code, so every change goes through a PR, is reviewed, and is tracked in Git history. Database First was only relevant when we integrated with a legacy Oracle database on one project — we scaffolded the models once and then hand-maintained them to avoid the regeneration problem."</p>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- ══════════════════════════════════════
+             Q2 — Lazy vs Eager Loading
+        ══════════════════════════════════════ -->
+        <section class="section" id="q2">
+            <div class="section-head">
+                <div class="q-badge">02</div>
+                <h2 class="q-title">How does Lazy Loading vs. Eager Loading work? When would you prefer each?</h2>
+            </div>
+
+            <div class="callout callout-blue">
+                <strong>Summary:</strong> Eager loading fetches related data upfront in a single query using <code>Include()</code>. Lazy loading defers it until the navigation property is accessed — silently firing extra queries. In production APIs, default to eager loading.
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Strategy</th><th>How It Works</th><th>Query Count</th><th>Best For</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Eager Loading</strong></td>
+                            <td>JOIN at query time via <code>Include()</code></td>
+                            <td class="td-yes">1 query</td>
+                            <td style="color:var(--text-secondary)">API responses, reports, known relationships</td>
+                        </tr>
+                        <tr>
+                            <td style="color:var(--amber)"><strong>Lazy Loading</strong></td>
+                            <td>Proxy fires query on property access</td>
+                            <td class="td-no">N+1 risk</td>
+                            <td style="color:var(--text-secondary)">Desktop apps, rarely in web APIs</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Explicit Loading</strong></td>
+                            <td>Manual <code>Entry().Collection().Load()</code></td>
+                            <td class="td-warn">Controlled N</td>
+                            <td style="color:var(--text-secondary)">Conditional loading of large collections</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Split Queries</strong></td>
+                            <td><code>AsSplitQuery()</code> — separate SELECTs</td>
+                            <td class="td-warn">Controlled</td>
+                            <td style="color:var(--text-secondary)">Cartesian explosion on multiple Includes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Eager Loading — Preferred in API layer</span>
+                </div>
+                <pre><code><span class="cm">// Single JOIN query — predictable, fast, no hidden round-trips</span>
+<span class="kw">var</span> trailers = <span class="kw">await</span> _context.Trailers
+    .<span class="ann">Include</span>(t =&gt; t.Trips)
+        .<span class="ann">ThenInclude</span>(tr =&gt; tr.Driver)
+    .<span class="ann">Where</span>(t =&gt; t.Status == <span class="cls">TrailerStatus</span>.Active)
+    .<span class="ann">AsNoTracking</span>() <span class="cm">// Read-only queries — skip change tracking overhead</span>
+    .<span class="ann">ToListAsync</span>();
+
+<span class="cm">// AsSplitQuery — avoids cartesian explosion when including multiple collections</span>
+<span class="kw">var</span> trailers = <span class="kw">await</span> _context.Trailers
+    .<span class="ann">Include</span>(t =&gt; t.Trips)
+    .<span class="ann">Include</span>(t =&gt; t.MaintenanceRecords) <span class="cm">// 2 collections = cartesian risk</span>
+    .<span class="ann">AsSplitQuery</span>()                      <span class="cm">// Fires 3 separate SELECTs instead</span>
+    .<span class="ann">ToListAsync</span>();</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Lazy Loading — Enabled but dangerous in web APIs</span>
+                </div>
+                <pre><code><span class="cm">// Setup: Install Microsoft.EntityFrameworkCore.Proxies</span>
+services.<span class="ann">AddDbContext</span>&lt;<span class="cls">AppDbContext</span>&gt;(opt =&gt;
+    opt.<span class="ann">UseSqlServer</span>(connectionString)
+       .<span class="ann">UseLazyLoadingProxies</span>()); <span class="cm">// ⚠ Enable with caution</span>
+
+<span class="cm">// Navigation properties must be virtual for proxy interception</span>
+<span class="kw">public virtual</span> <span class="cls">ICollection</span>&lt;<span class="cls">Trip</span>&gt; <span class="prop">Trips</span> { <span class="kw">get</span>; <span class="kw">set</span>; } = [];
+
+<span class="cm">// Problem: this fires a hidden SELECT for EVERY trailer's Trips</span>
+<span class="kw">foreach</span> (<span class="kw">var</span> trailer <span class="kw">in</span> trailers)
+{
+                <span class="kw">var</span> count = trailer.Trips.<span class="ann">Count</span>(); <span class="cm">// ← silent DB round-trip here</span>
+}</code></pre>
+            </div>
+
+            <div class="callout callout-amber">
+                <strong>Production rule:</strong> Disable lazy loading in Web API projects by not calling <code>UseLazyLoadingProxies()</code>. Make every data access explicit. Hidden queries are the #1 cause of performance regressions that only show up under load.
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-label">🎤 Interview Answer</div>
+                <p>"We enforced eager loading as a team standard in the Trailer Management System. Lazy loading was explicitly disabled — if a developer needed related data, they had to Include() it intentionally. This made query behavior predictable, reviewable in PRs, and profiled easily in Azure Application Insights. We used AsSplitQuery() in a few cases where including two large collections caused cartesian explosion on the result set."</p>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- ══════════════════════════════════════
+             Q3 — Migrations in Production
+        ══════════════════════════════════════ -->
+        <section class="section" id="q3">
+            <div class="section-head">
+                <div class="q-badge">03</div>
+                <h2 class="q-title">How do you handle database migrations in a production environment?</h2>
+            </div>
+
+            <div class="callout callout-blue">
+                <strong>Summary:</strong> Never run <code>migrate</code> from a developer machine against production. Generate SQL scripts, review them, and apply through a controlled pipeline with rollback capability.
+            </div>
+
+            <div class="card">
+                <div class="card-label">Production Migration Workflow</div>
+                <ul class="steps">
+                    <li>
+                        <span class="step-num">1</span>
+                        <div><strong>Generate idempotent SQL script</strong> — <code>dotnet ef migrations script --idempotent</code> produces a script that checks which migrations are already applied before running. Safe to run multiple times.</div>
+                    </li>
+                    <li>
+                        <span class="step-num">2</span>
+                        <div><strong>Review the script</strong> — a DBA or senior dev reviews the generated SQL. Catches destructive operations: column drops, data-type changes, index rebuilds on large tables.</div>
+                    </li>
+                    <li>
+                        <span class="step-num">3</span>
+                        <div><strong>Run in CI/CD pipeline</strong> — apply via Azure DevOps release pipeline, not from a developer's machine. Ensures auditability and environment parity.</div>
+                    </li>
+                    <li>
+                        <span class="step-num">4</span>
+                        <div><strong>Take a DB snapshot before applying</strong> — on Azure SQL, enable Point-in-Time Restore. On-premise: full backup first. This is your rollback strategy.</div>
+                    </li>
+                    <li>
+                        <span class="step-num">5</span>
+                        <div><strong>Use backward-compatible migrations</strong> — add columns as nullable first, backfill data, then add NOT NULL constraints in a subsequent migration. Never drop a column in the same release the code stops using it.</div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Generate idempotent script — safe for production</span>
+                </div>
+                <pre><code><span class="cm"># Generate script between two specific migrations (safer for targeted releases)</span>
+dotnet ef migrations script 20240101_InitialCreate 20240815_AddBranchIdToTrailer \
+  --idempotent \
+  --output ./deploy/migrations/20240815_migration.sql \
+  --project src/Infrastructure \
+  --startup-project src/API</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Program.cs — Auto-migrate on startup (staging only, never production)</span>
+                </div>
+                <pre><code><span class="cm">// ✓ Acceptable for staging / integration environments
+// ✗ Never for production — no review, no rollback point</span>
+<span class="kw">if</span> (app.Environment.<span class="ann">IsStaging</span>())
+{
+                <span class="kw">using var</span> scope = app.Services.<span class="ann">CreateScope</span>();
+                <span class="kw">var</span> db = scope.ServiceProvider.<span class="ann">GetRequiredService</span>&lt;<span class="cls">AppDbContext</span>&gt;();
+                <span class="kw">await</span> db.Database.<span class="ann">MigrateAsync</span>();
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Backward-compatible migration pattern — safe column rename</span>
+                </div>
+                <pre><code><span class="cm">// WRONG — dropping and re-adding breaks running instances during deploy</span>
+migrationBuilder.<span class="ann">DropColumn</span>(<span class="str">"OldName"</span>, <span class="str">"Trailers"</span>);
+migrationBuilder.<span class="ann">AddColumn</span>&lt;<span class="kw">string</span>&gt;(<span class="str">"NewName"</span>, <span class="str">"Trailers"</span>);
+
+<span class="cm">// CORRECT — expand/contract pattern across two releases</span>
+<span class="cm">// Release 1: Add nullable new column, keep old</span>
+migrationBuilder.<span class="ann">AddColumn</span>&lt;<span class="kw">string</span>&gt;(
+    name: <span class="str">"NewName"</span>, table: <span class="str">"Trailers"</span>, nullable: <span class="kw">true</span>);
+migrationBuilder.<span class="ann">Sql</span>(<span class="str">"UPDATE Trailers SET NewName = OldName"</span>); <span class="cm">// Backfill</span>
+
+<span class="cm">// Release 2 (separate deploy): Remove old column after all code uses NewName</span>
+migrationBuilder.<span class="ann">DropColumn</span>(<span class="str">"OldName"</span>, <span class="str">"Trailers"</span>);</code></pre>
+            </div>
+
+            <div class="callout callout-amber">
+                <strong>Senior insight — Expand/Contract pattern:</strong> During a rolling deployment, both old and new application instances run simultaneously. A destructive schema change breaks the old instances before they shut down. Always expand (add) first, contract (remove) in a later release.
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- ══════════════════════════════════════
+             Q4 — N+1 Query Problem
+        ══════════════════════════════════════ -->
+        <section class="section" id="q4">
+            <div class="section-head">
+                <div class="q-badge">04</div>
+                <h2 class="q-title">What is the N+1 query problem, and how did you resolve it?</h2>
+            </div>
+
+            <div class="callout callout-blue">
+                <strong>Summary:</strong> N+1 happens when you load a list of N records, then fire one extra query per record to load related data — resulting in N+1 database round-trips instead of 1. It's invisible in development, catastrophic under load.
+            </div>
+
+            <div class="nplus-visual">
+                <div class="nplus-label">❌ N+1 Pattern — 101 queries for 100 trailers</div>
+                <div class="nplus-row"><span class="q-pill q-bad">SELECT * FROM Trailers</span><span style="color:var(--text-muted);font-size:12px">← 1 query</span></div>
+                <div class="nplus-row"><span class="q-pill q-bad">SELECT * FROM Trips WHERE TrailerId = 1</span><span style="color:var(--text-muted);font-size:12px">← per row</span></div>
+                <div class="nplus-row"><span class="q-pill q-bad">SELECT * FROM Trips WHERE TrailerId = 2</span><span style="color:var(--text-muted);font-size:12px">← per row</span></div>
+                <div class="nplus-row" style="color:var(--text-muted); font-size:12px; padding-left:4px">... × 100 trailers = <strong style="color:var(--red)">101 queries total</strong></div>
+                <div style="height:14px"></div>
+                <div class="nplus-label">✓ Fixed with Include() — 1 query with JOIN</div>
+                <div class="nplus-row"><span class="q-pill q-good">SELECT t.*, tr.* FROM Trailers t LEFT JOIN Trips tr ON t.Id = tr.TrailerId</span></div>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">The N+1 problem — how it silently appears</span>
+                </div>
+                <pre><code><span class="cm">// ❌ Triggers N+1 — Trips loaded lazily inside the loop</span>
+<span class="kw">var</span> trailers = <span class="kw">await</span> _context.Trailers.<span class="ann">ToListAsync</span>(); <span class="cm">// Query 1</span>
+<span class="kw">foreach</span> (<span class="kw">var</span> trailer <span class="kw">in</span> trailers)
+{
+                <span class="kw">var</span> tripCount = trailer.Trips.<span class="ann">Count</span>(); <span class="cm">// ← Query 2..N+1</span>
+    Console.<span class="ann">WriteLine</span>(<span class="str">$"Trailer {trailer.Id} has {tripCount} trips"</span>);
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Fix 1 — Eager loading with Include()</span>
+                </div>
+                <pre><code><span class="cm">// ✓ Single JOIN query — all related data loaded upfront</span>
+<span class="kw">var</span> trailers = <span class="kw">await</span> _context.Trailers
+    .<span class="ann">Include</span>(t =&gt; t.Trips)
+    .<span class="ann">AsNoTracking</span>()
+    .<span class="ann">ToListAsync</span>();
+
+<span class="kw">foreach</span> (<span class="kw">var</span> trailer <span class="kw">in</span> trailers)
+{
+                <span class="kw">var</span> tripCount = trailer.Trips.<span class="ann">Count</span>(); <span class="cm">// ← Already loaded, no DB hit</span>
+}</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Fix 2 — Project into DTO to avoid loading full entities</span>
+                </div>
+                <pre><code><span class="cm">// ✓ Best for API responses — project only what you need</span>
+<span class="kw">var</span> result = <span class="kw">await</span> _context.Trailers
+    .<span class="ann">Where</span>(t =&gt; t.Status == <span class="cls">TrailerStatus</span>.Active)
+    .<span class="ann">Select</span>(t =&gt; <span class="kw">new</span> <span class="cls">TrailerSummaryDto</span>
+    {
+        Id = t.Id,
+        Registration = t.RegistrationNumber,
+        TripCount = t.Trips.<span class="ann">Count</span>(),          <span class="cm">// ← Translated to SQL COUNT()</span>
+        LastTripDate = t.Trips
+            .<span class="ann">OrderByDescending</span>(tr =&gt; tr.Date)
+            .<span class="ann">Select</span>(tr =&gt; tr.Date)
+            .<span class="ann">FirstOrDefault</span>()
+    })
+    .<span class="ann">AsNoTracking</span>()
+    .<span class="ann">ToListAsync</span>();</code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Fix 3 — Detect N+1 with EF Core logging in development</span>
+                </div>
+                <pre><code><span class="cm">// Warn when EF fires multiple queries in a single request — catches N+1 early</span>
+services.<span class="ann">AddDbContext</span>&lt;<span class="cls">AppDbContext</span>&gt;(opt =&gt;
+{
+    opt.<span class="ann">UseSqlServer</span>(connectionString);
+                <span class="kw">if</span> (env.<span class="ann">IsDevelopment</span>())
+    {
+        opt.<span class="ann">EnableSensitiveDataLogging</span>();
+        opt.<span class="ann">LogTo</span>(Console.WriteLine, <span class="cls">LogLevel</span>.Information);
+        opt.<span class="ann">EnableDetailedErrors</span>();
+    }
+});</code></pre>
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-label">🎤 Real Project Example</div>
+                <p>"In the Trailer Management System, we had a report endpoint that loaded trailers with their full trip history. In dev it felt fast — 10 records. In production with 500 trailers it fired 501 queries and timed out. We diagnosed it with SQL Profiler and Azure Application Insights query tracking. The fix was a single projection query using Select() into a DTO — query count went from 501 to 1, and response time dropped from 8 seconds to 180ms."</p>
+            </div>
+        </section>
+
+        <div class="divider"></div>
+
+        <!-- ══════════════════════════════════════
+             Q5 — Raw SQL / Stored Procedures vs LINQ
+        ══════════════════════════════════════ -->
+        <section class="section" id="q5">
+            <div class="section-head">
+                <div class="q-badge">05</div>
+                <h2 class="q-title">When would you use Raw SQL / Stored Procedures over LINQ in EF Core?</h2>
+            </div>
+
+            <div class="callout callout-green">
+                <strong>Summary:</strong> LINQ is the default — readable, type-safe, refactorable. Drop to raw SQL or stored procedures only when LINQ can't express the query efficiently, or when the generated SQL is provably worse than hand-written SQL.
+            </div>
+
+            <div class="table-wrap">
+                <table>
+                    <thead>
+                        <tr><th>Scenario</th><th>Use LINQ</th><th>Use Raw SQL / SP</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Standard CRUD operations</td>
+                            <td class="td-yes">✓ Always</td>
+                            <td style="color:var(--text-muted)">—</td>
+                        </tr>
+                        <tr>
+                            <td>Complex aggregations / window functions</td>
+                            <td class="td-warn">Sometimes — check generated SQL</td>
+                            <td class="td-yes">✓ If LINQ output is inefficient</td>
+                        </tr>
+                        <tr>
+                            <td>Reporting / bulk reads with CTEs</td>
+                            <td class="td-no">✗ Rarely expressive enough</td>
+                            <td class="td-yes">✓ Raw SQL or view-backed query</td>
+                        </tr>
+                        <tr>
+                            <td>Bulk INSERT / UPDATE / DELETE</td>
+                            <td class="td-warn">EF Core 7+ ExecuteUpdateAsync</td>
+                            <td class="td-yes">✓ For very large batches</td>
+                        </tr>
+                        <tr>
+                            <td>DBA-tuned queries with query hints</td>
+                            <td class="td-no">✗ Not supported in LINQ</td>
+                            <td class="td-yes">✓ Stored procedures</td>
+                        </tr>
+                        <tr>
+                            <td>Multi-step transactional logic</td>
+                            <td style="color:var(--text-muted)">Use with transactions</td>
+                            <td class="td-yes">✓ Stored procedures</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Raw SQL with FromSqlRaw — still maps to entities</span>
+                </div>
+                <pre><code><span class="cm">// Use when LINQ can't express the query (CTEs, window functions, etc.)</span>
+<span class="cm">// EF Core still handles result mapping — you keep type safety on the output</span>
+<span class="kw">var</span> results = <span class="kw">await</span> _context.Trailers
+    .<span class="ann">FromSqlRaw</span>(<span class="str">"""
+        SELECT t.*, 
+               ROW_NUMBER() OVER (PARTITION BY t.BranchId ORDER BY t.CreatedAt DESC) AS RowNum
+        FROM   Trailers t
+        WHERE  t.Status = 'Active'
+    """</span>)
+    .<span class="ann">AsNoTracking</span>()
+    .<span class="ann">ToListAsync</span>();
+
+<span class="cm">// ⚠ Always use parameterized queries to prevent SQL injection</span>
+<span class="kw">var</span> branchId = <span class="num">5</span>;
+<span class="kw">var</span> trailers = <span class="kw">await</span> _context.Trailers
+    .<span class="ann">FromSqlInterpolated</span>(<span class="str">$"SELECT * FROM Trailers WHERE BranchId = {branchId}"</span>)
+    .<span class="ann">ToListAsync</span>(); <span class="cm">// EF parameterizes the interpolated value — safe</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">Stored Procedure execution via EF Core</span>
+                </div>
+                <pre><code><span class="cm">// Executing a stored procedure that returns entities</span>
+<span class="kw">var</span> trailers = <span class="kw">await</span> _context.Trailers
+    .<span class="ann">FromSqlRaw</span>(<span class="str">"EXEC sp_GetActiveTrailersByBranch @BranchId"</span>,
+                <span class="kw">new</span> <span class="cls">SqlParameter</span>(<span class="str">"@BranchId"</span>, branchId))
+    .<span class="ann">AsNoTracking</span>()
+    .<span class="ann">ToListAsync</span>();
+
+<span class="cm">// For SPs that don't map to an entity — use a raw DTO projection</span>
+<span class="kw">var</span> report = <span class="kw">await</span> _context.Database
+    .<span class="ann">SqlQueryRaw</span>&lt;<span class="cls">TrailerReportDto</span>&gt;(
+                <span class="str">"EXEC sp_GetTrailerActivityReport @StartDate, @EndDate"</span>,
+                <span class="kw">new</span> <span class="cls">SqlParameter</span>(<span class="str">"@StartDate"</span>, startDate),
+                <span class="kw">new</span> <span class="cls">SqlParameter</span>(<span class="str">"@EndDate"</span>,   endDate))
+    .<span class="ann">ToListAsync</span>(); <span class="cm">// EF Core 7+ SqlQueryRaw supports non-entity types</span></code></pre>
+            </div>
+
+            <div class="code-block">
+                <div class="code-bar">
+                    <div class="code-dots"><span></span><span></span><span></span></div>
+                    <span class="code-lang">EF Core 7+ — Bulk operations without loading entities</span>
+                </div>
+                <pre><code><span class="cm">// ✓ ExecuteUpdateAsync — no entity load, single UPDATE statement</span>
+<span class="kw">await</span> _context.Trailers
+    .<span class="ann">Where</span>(t =&gt; t.LastInspectionDate &lt; <span class="cls">DateTime</span>.UtcNow.<span class="ann">AddYears</span>(-<span class="num">1</span>))
+    .<span class="ann">ExecuteUpdateAsync</span>(s =&gt;
+        s.<span class="ann">SetProperty</span>(t =&gt; t.Status, <span class="cls">TrailerStatus</span>.RequiresInspection));
+
+<span class="cm">// ✓ ExecuteDeleteAsync — no entity load, single DELETE statement</span>
+<span class="kw">await</span> _context.AuditLogs
+    .<span class="ann">Where</span>(a =&gt; a.CreatedAt &lt; <span class="cls">DateTime</span>.UtcNow.<span class="ann">AddYears</span>(-<span class="num">7</span>))
+    .<span class="ann">ExecuteDeleteAsync</span>(); <span class="cm">// Retention cleanup — never load 500k rows to delete them</span></code></pre>
+            </div>
+
+            <div class="two-col">
+                <div class="col-card">
+                    <div class="col-label label-green">Use LINQ when</div>
+                    <ul style="font-size:14px; color:var(--text-secondary); padding-left:16px;">
+                        <li>Standard CRUD and filtering</li>
+                        <li>Business logic benefits from type safety</li>
+                        <li>Query needs to be composable / reusable</li>
+                        <li>Unit testing the query logic matters</li>
+                        <li>The generated SQL is clean (check with <code>ToQueryString()</code>)</li>
+                    </ul>
+                </div>
+                <div class="col-card">
+                    <div class="col-label label-amber">Use Raw SQL / SP when</div>
+                    <ul style="font-size:14px; color:var(--text-secondary); padding-left:16px;">
+                        <li>Window functions, CTEs, PIVOT needed</li>
+                        <li>Generated LINQ SQL is provably worse</li>
+                        <li>DBA has a tuned query with query hints</li>
+                        <li>Bulk data operations (&gt;10k rows)</li>
+                        <li>Multi-step transactional stored proc logic</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="callout callout-purple">
+                <strong>Pro tip — inspect before you optimize:</strong> Run <code>query.ToQueryString()</code> in development to see the exact SQL EF generates. Many developers jump to raw SQL prematurely. Often, a well-structured LINQ query with <code>Select()</code> projection produces perfectly efficient SQL.
+            </div>
+
+            <div class="tip-box">
+                <div class="tip-label">🎤 Interview Answer</div>
+                <p>"In the Rule Engine application, we had a complex report that ranked rules by execution frequency across multiple branches using ROW_NUMBER() window functions. LINQ couldn't express this cleanly, so we used FromSqlRaw() with a hand-written query while still mapping the results to typed DTOs via EF Core. For bulk archiving of audit logs — sometimes 300k+ rows — we used ExecuteDeleteAsync() in EF Core 7, which generates a single DELETE statement instead of loading every entity into memory."</p>
+            </div>
+        </section>
+
+        <!-- ── FOOTER ── -->
+        <div class="divider"></div>
+        <div style="text-align:center; padding:12px 0 32px;">
+            <div style="color:var(--text-muted); font-size:13px; font-family:var(--font-mono); margin-bottom:16px;">
+                Entity Framework Core · Senior Interview Guide · 5 Questions
+            </div>
+            <a href="#top" class="back-top">↑ Back to top</a>
+        </div>
+
+    </div>
+</body>
+</html>
