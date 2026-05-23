@@ -1,0 +1,598 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Azure & DevOps — Senior Interview Guide</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- ── HEADER ── -->
+    <header id="top">
+        <div class="header-tag">
+            <span class="header-dot"></span>
+            Senior Level · 5+ Years Experience
+        </div>
+        <div class="header-meta">
+            <a href="home.html" class="toc-item"><span class="badge badge-green">WEBAPI</span></a>
+            <a href="ef_core.html" class="toc-item"><span class="badge badge-blue">EFCore</span></a>
+            <a href="sql.html" class="toc-item"><span class="badge badge-amber">SQLServer</span></a>
+            <a href="wpf_mvvm.html" class="toc-item"><span class="badge badge-green">WPF&MVVM</span></a>
+            <a href="react.html" class="toc-item"><span class="badge badge-blue">React.js</span></a>
+            <a href="azure_devops.html" class="toc-item"><span class="badge badge-amber">Azure&DevOps</span></a>
+            <a href="architecture_design.html" class="toc-item"><span class="badge badge-green">Archi&Design</span></a>
+            <a href="behavioral.html" class="toc-item"><span class="badge badge-blue">G.Behavioral</span></a>
+        </div>
+        <h1>Azure &amp;<br><span>DevOps</span></h1>
+        <div class="header-meta">
+            <span class="badge badge-green">● 3 Questions</span>
+            <span class="badge badge-blue">Azure / CI-CD / Auth</span>
+            <span class="badge badge-amber">Interview Ready</span>
+        </div>
+    </header>
+
+  <!-- ── TOC ── -->
+  <nav class="toc" aria-label="Table of contents">
+    <div class="toc-title">Table of Contents</div>
+    <div class="toc-grid">
+      <a href="#q1" class="toc-item"><span class="toc-num">01</span>Azure AD Integration — E-Commerce App</a>
+      <a href="#q2" class="toc-item"><span class="toc-num">02</span>Azure DevOps CI/CD Pipeline</a>
+      <a href="#q3" class="toc-item"><span class="toc-num">03</span>Azure AD vs Traditional JWT Auth</a>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════
+       Q1 — Azure AD Integration
+  ══════════════════════════════════════ -->
+  <section class="section" id="q1">
+    <div class="section-header">
+      <div class="q-num">01</div>
+      <h2 class="q-title">How did you integrate Azure AD for authentication in the e-commerce app?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Summary:</strong> Azure AD integration has two sides — the backend validates the incoming Bearer token issued by Azure, and the frontend uses MSAL.js to acquire that token silently or interactively. You write almost zero auth logic yourself; Microsoft's identity platform handles token issuance, refresh, MFA, and SSO.
+    </div>
+
+    <div class="card">
+      <div class="card-label">Integration Checklist — Azure Portal + Code</div>
+      <ul>
+        <li><strong>Step 1 — App Registration:</strong> Register two apps in Azure AD — one for the API (exposes scopes), one for the SPA/client (granted those scopes). The API registration defines what permissions exist; the client registration requests them.</li>
+        <li><strong>Step 2 — Expose an API scope:</strong> In the API app registration, create a scope such as <code>api://&lt;client-id&gt;/Trailers.Read</code>. This is what the frontend requests in its token.</li>
+        <li><strong>Step 3 — Backend middleware:</strong> <code>Microsoft.Identity.Web</code> validates the incoming token — issuer, audience, signature, expiry — with one line of configuration.</li>
+        <li><strong>Step 4 — Frontend MSAL:</strong> <code>@azure/msal-browser</code> handles the login redirect, token acquisition, and silent refresh. You never touch a raw token in component code.</li>
+        <li><strong>Step 5 — App Roles for RBAC:</strong> Define roles in the API app manifest. Users assigned to roles receive a <code>roles</code> claim in their token — no custom role table needed in your database.</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — ASP.NET Core backend: Microsoft.Identity.Web setup</span>
+      </div>
+      <pre><code><span class="cm">// Program.cs — Microsoft.Identity.Web replaces manual JWT validation entirely</span>
+builder.Services
+    .<span class="ann">AddAuthentication</span>(<span class="cls">JwtBearerDefaults</span>.AuthenticationScheme)
+    .<span class="ann">AddMicrosoftIdentityWebApi</span>(builder.Configuration.<span class="ann">GetSection</span>(<span class="str">"AzureAd"</span>));
+
+<span class="cm">// appsettings.json — no secret stored here; validation uses Azure's public keys</span>
+<span class="cm">// {
+//   "AzureAd": {
+//     "Instance":  "https://login.microsoftonline.com/",
+//     "TenantId":  "your-tenant-id",
+//     "ClientId":  "your-api-client-id",
+//     "Audience":  "api://your-api-client-id"
+//   }
+// }</span>
+
+<span class="cm">// The library automatically:
+// - Downloads Azure AD's public signing keys (JWKS endpoint)
+// - Validates: issuer, audience, signature, expiry, token version
+// - Populates HttpContext.User with all claims from the token</span>
+
+<span class="cm">// Policy-based RBAC using App Roles defined in Azure AD manifest</span>
+builder.Services.<span class="ann">AddAuthorization</span>(options =>
+{
+    options.<span class="ann">AddPolicy</span>(<span class="str">"CanManageProducts"</span>, policy =>
+        policy.<span class="ann">RequireRole</span>(<span class="str">"Product.Manager"</span>, <span class="str">"Admin"</span>));
+
+    options.<span class="ann">AddPolicy</span>(<span class="str">"CanViewOrders"</span>, policy =>
+        policy.<span class="ann">RequireRole</span>(<span class="str">"Order.Viewer"</span>, <span class="str">"Admin"</span>));
+});</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Controller: reading Azure AD claims</span>
+      </div>
+      <pre><code>[<span class="cls">ApiController</span>]
+[<span class="cls">Route</span>(<span class="str">"api/products"</span>)]
+[<span class="cls">Authorize</span>]
+<span class="kw">public class</span> <span class="cls">ProductsController</span> : <span class="cls">ControllerBase</span>
+{
+    [<span class="cls">HttpPost</span>]
+    [<span class="cls">Authorize</span>(Policy = <span class="str">"CanManageProducts"</span>)]
+    <span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">IActionResult</span>&gt; <span class="ann">CreateProduct</span>(
+        [<span class="cls">FromBody</span>] <span class="cls">CreateProductRequest</span> request)
+    {
+        <span class="cm">// Claims populated automatically by Microsoft.Identity.Web</span>
+        <span class="kw">var</span> userId       = <span class="cls">User</span>.<span class="ann">FindFirstValue</span>(<span class="cls">ClaimTypes</span>.NameIdentifier); <span class="cm">// Azure OID</span>
+        <span class="kw">var</span> userEmail    = <span class="cls">User</span>.<span class="ann">FindFirstValue</span>(<span class="str">"preferred_username"</span>);
+        <span class="kw">var</span> displayName  = <span class="cls">User</span>.<span class="ann">FindFirstValue</span>(<span class="str">"name"</span>);
+        <span class="kw">var</span> tenantId     = <span class="cls">User</span>.<span class="ann">FindFirstValue</span>(<span class="str">"tid"</span>);
+
+        <span class="cm">// Use OID as the stable user identifier — email can change, OID never does</span>
+        request.CreatedByUserId = userId!;
+        <span class="kw">var</span> product = <span class="kw">await</span> _productService.<span class="ann">CreateAsync</span>(request);
+        <span class="kw">return</span> <span class="ann">CreatedAtAction</span>(<span class="kw">nameof</span>(<span class="ann">GetProduct</span>), <span class="kw">new</span> { id = product.Id }, product);
+    }
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — React frontend: MSAL configuration and token acquisition</span>
+      </div>
+      <pre><code><span class="cm">// lib/msalConfig.ts — configured once, used app-wide</span>
+<span class="kw">import</span> { <span class="cls">PublicClientApplication</span>, <span class="cls">Configuration</span> } <span class="kw">from</span> <span class="str">'@azure/msal-browser'</span>;
+
+<span class="kw">const</span> <span class="prop">msalConfig</span>: <span class="cls">Configuration</span> = {
+  auth: {
+    clientId:    <span class="str">'your-spa-client-id'</span>,
+    authority:   <span class="str">'https://login.microsoftonline.com/your-tenant-id'</span>,
+    redirectUri: window.location.origin,
+  },
+  cache: { cacheLocation: <span class="str">'sessionStorage'</span> },  <span class="cm">// sessionStorage — cleared on tab close</span>
+};
+
+<span class="kw">export const</span> <span class="prop">msalInstance</span> = <span class="kw">new</span> <span class="cls">PublicClientApplication</span>(msalConfig);
+
+<span class="cm">// Scopes to request — matches the scope exposed in the API app registration</span>
+<span class="kw">export const</span> <span class="prop">apiScopes</span> = [<span class="str">'api://your-api-client-id/Trailers.Read'</span>];
+
+<span class="cm">// lib/apiClient.ts — attach Azure AD token to every API request automatically</span>
+apiClient.interceptors.request.<span class="ann">use</span>(<span class="kw">async</span> (config) => {
+  <span class="kw">const</span> accounts = msalInstance.<span class="ann">getAllAccounts</span>();
+  <span class="kw">if</span> (accounts.length === <span class="num">0</span>) <span class="kw">return</span> config;
+
+  <span class="kw">try</span> {
+    <span class="cm">// acquireTokenSilent: uses cached token or refreshes it — no login popup</span>
+    <span class="kw">const</span> result = <span class="kw">await</span> msalInstance.<span class="ann">acquireTokenSilent</span>({
+      scopes:  apiScopes,
+      account: accounts[<span class="num">0</span>],
+    });
+    config.headers.Authorization = <span class="str">`Bearer ${result.accessToken}`</span>;
+  } <span class="kw">catch</span> {
+    <span class="cm">// Silent refresh failed (expired refresh token) — force interactive login</span>
+    <span class="kw">await</span> msalInstance.<span class="ann">acquireTokenRedirect</span>({ scopes: apiScopes });
+  }
+  <span class="kw">return</span> config;
+});</code></pre>
+    </div>
+
+    <div class="callout callout-amber">
+      <strong>Key design decision — OID vs email as user identifier:</strong> Always store the Azure AD Object ID (<code>oid</code> claim) as the user's primary key in your database, not the email address. Email can change (name changes, domain migrations). The <code>oid</code> is immutable for the lifetime of the account in that tenant.
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the e-commerce app we had two Azure AD app registrations — one for the API that exposed scopes like Products.Read and Orders.Manage, and one for the React SPA. The backend used Microsoft.Identity.Web which handled all token validation automatically by downloading Azure's public signing keys. We defined App Roles in the manifest for RBAC — Product.Manager, Order.Viewer — so role assignments lived in Azure AD, not in our database. The frontend used MSAL's acquireTokenSilent inside the Axios interceptor, so the user was never prompted unless their session genuinely expired."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q2 — CI/CD Pipeline
+  ══════════════════════════════════════ -->
+  <section class="section" id="q2">
+    <div class="section-header">
+      <div class="q-num">02</div>
+      <h2 class="q-title">What is your experience with Azure DevOps pipelines? Describe a CI/CD pipeline you set up or worked with.</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Summary:</strong> We had a two-stage YAML pipeline — a CI build pipeline that ran on every pull request, and a CD release pipeline that deployed to Dev automatically and required a manual approval gate before Staging and Production.
+    </div>
+
+    <div class="pipeline">
+      <span class="pipe-step">PR / Push</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">CI Build</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Unit Tests</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Publish Artifact</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Deploy Dev</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Approval Gate</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Deploy Staging</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Deploy Prod</span>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">azure-pipelines.yml — Full CI build pipeline</span>
+      </div>
+      <pre><code><span class="prop">trigger</span>:
+  <span class="prop">branches</span>:
+    <span class="prop">include</span>: [main, develop]
+  <span class="prop">paths</span>:
+    <span class="prop">exclude</span>: [<span class="str">'**/*.md'</span>, <span class="str">'docs/**'</span>]  <span class="cm"># Don't trigger on doc-only changes</span>
+
+<span class="prop">pr</span>:
+  <span class="prop">branches</span>:
+    <span class="prop">include</span>: [main, develop]       <span class="cm"># Run CI on every PR — blocks merge if failed</span>
+
+<span class="prop">variables</span>:
+  <span class="prop">buildConfiguration</span>: <span class="str">'Release'</span>
+  <span class="prop">dotnetVersion</span>:      <span class="str">'8.0.x'</span>
+  <span class="prop">projectPath</span>:        <span class="str">'src/TrailerManagement.API'</span>
+  <span class="prop">testProjectPath</span>:    <span class="str">'tests/TrailerManagement.Tests'</span>
+
+<span class="prop">pool</span>:
+  <span class="prop">vmImage</span>: <span class="str">'ubuntu-latest'</span>
+
+<span class="prop">stages</span>:
+  - <span class="prop">stage</span>: Build
+    <span class="prop">displayName</span>: <span class="str">'Build &amp; Test'</span>
+    <span class="prop">jobs</span>:
+      - <span class="prop">job</span>: BuildJob
+        <span class="prop">steps</span>:
+
+          - <span class="prop">task</span>: UseDotNet@2
+            <span class="prop">inputs</span>:
+              <span class="prop">packageType</span>: <span class="str">'sdk'</span>
+              <span class="prop">version</span>:     <span class="str">'$(dotnetVersion)'</span>
+
+          - <span class="prop">script</span>: dotnet restore $(projectPath)
+            <span class="prop">displayName</span>: <span class="str">'Restore NuGet packages'</span>
+
+          - <span class="prop">script</span>: |
+              dotnet build $(projectPath) \
+                --configuration $(buildConfiguration) \
+                --no-restore \
+                /p:TreatWarningsAsErrors=true   <span class="cm"># Fail build on any warning</span>
+            <span class="prop">displayName</span>: <span class="str">'Build solution'</span>
+
+          - <span class="prop">script</span>: |
+              dotnet test $(testProjectPath) \
+                --configuration $(buildConfiguration) \
+                --no-build \
+                --collect:"XPlat Code Coverage" \
+                --results-directory $(Agent.TempDirectory)/coverage \
+                --logger "trx;LogFileName=test-results.trx"
+            <span class="prop">displayName</span>: <span class="str">'Run unit tests with coverage'</span>
+
+          - <span class="prop">task</span>: PublishTestResults@2
+            <span class="prop">inputs</span>:
+              <span class="prop">testResultsFormat</span>: <span class="str">'VSTest'</span>
+              <span class="prop">testResultsFiles</span>: <span class="str">'**/*.trx'</span>
+            <span class="prop">condition</span>: always()  <span class="cm"># Publish results even if tests failed</span>
+
+          - <span class="prop">task</span>: PublishCodeCoverageResults@1
+            <span class="prop">inputs</span>:
+              <span class="prop">codeCoverageTool</span>: <span class="str">'Cobertura'</span>
+              <span class="prop">summaryFileLocation</span>: <span class="str">'$(Agent.TempDirectory)/coverage/**/coverage.cobertura.xml'</span>
+
+          - <span class="prop">script</span>: |
+              dotnet publish $(projectPath) \
+                --configuration $(buildConfiguration) \
+                --output $(Build.ArtifactStagingDirectory)/app \
+                --no-build
+            <span class="prop">displayName</span>: <span class="str">'Publish application'</span>
+
+          - <span class="prop">task</span>: PublishBuildArtifacts@1
+            <span class="prop">inputs</span>:
+              <span class="prop">PathtoPublish</span>: <span class="str">'$(Build.ArtifactStagingDirectory)'</span>
+              <span class="prop">ArtifactName</span>:  <span class="str">'drop'</span>   <span class="cm"># Named artifact picked up by CD stage</span></code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">azure-pipelines.yml — CD release stages with approval gate</span>
+      </div>
+      <pre><code>  - <span class="prop">stage</span>: DeployDev
+    <span class="prop">displayName</span>: <span class="str">'Deploy to Dev'</span>
+    <span class="prop">dependsOn</span>: Build
+    <span class="prop">condition</span>: <span class="ann">and</span>(succeeded(), eq(variables[<span class="str">'Build.SourceBranch'</span>], <span class="str">'refs/heads/develop'</span>))
+    <span class="prop">variables</span>:
+      - <span class="prop">group</span>: <span class="str">'dev-variable-group'</span>   <span class="cm"># Linked to Azure Key Vault — secrets injected at runtime</span>
+    <span class="prop">jobs</span>:
+      - <span class="prop">deployment</span>: DeployToDevApp
+        <span class="prop">environment</span>: <span class="str">'dev'</span>
+        <span class="prop">strategy</span>:
+          <span class="prop">runOnce</span>:
+            <span class="prop">deploy</span>:
+              <span class="prop">steps</span>:
+                - <span class="prop">task</span>: AzureRmWebAppDeployment@4
+                  <span class="prop">inputs</span>:
+                    <span class="prop">azureSubscription</span>: <span class="str">'$(AZURE_SERVICE_CONNECTION)'</span>
+                    <span class="prop">appType</span>:           <span class="str">'webApp'</span>
+                    <span class="prop">WebAppName</span>:        <span class="str">'trailer-mgmt-dev'</span>
+                    <span class="prop">packageForLinux</span>:   <span class="str">'$(Pipeline.Workspace)/drop/app/**/*.zip'</span>
+
+                - <span class="prop">task</span>: AzureAppServiceSettings@1
+                  <span class="prop">inputs</span>:
+                    <span class="prop">azureSubscription</span>: <span class="str">'$(AZURE_SERVICE_CONNECTION)'</span>
+                    <span class="prop">appName</span>:           <span class="str">'trailer-mgmt-dev'</span>
+                    <span class="prop">appSettings</span>: |    <span class="cm"># Inject Key Vault secrets as App Settings</span>
+                      [
+                        {"name": "ConnectionStrings__Default",
+                         "value": "$(DB_CONNECTION_STRING)", "slotSetting": false},
+                        {"name": "AzureAd__TenantId",
+                         "value": "$(AZURE_TENANT_ID)",      "slotSetting": false}
+                      ]
+
+  - <span class="prop">stage</span>: DeployStaging
+    <span class="prop">displayName</span>: <span class="str">'Deploy to Staging'</span>
+    <span class="prop">dependsOn</span>: DeployDev
+    <span class="prop">condition</span>: succeeded()
+    <span class="prop">jobs</span>:
+      - <span class="prop">deployment</span>: DeployToStaging
+        <span class="prop">environment</span>: <span class="str">'staging'</span>   <span class="cm"># ← Approval gate configured on this environment in Azure DevOps UI</span>
+        <span class="prop">strategy</span>:                 <span class="cm">#   Pipeline pauses here and emails approvers</span>
+          <span class="prop">runOnce</span>:
+            <span class="prop">deploy</span>:
+              <span class="prop">steps</span>:
+                - <span class="prop">task</span>: AzureRmWebAppDeployment@4
+                  <span class="prop">inputs</span>:
+                    <span class="prop">azureSubscription</span>: <span class="str">'$(AZURE_SERVICE_CONNECTION)'</span>
+                    <span class="prop">WebAppName</span>:        <span class="str">'trailer-mgmt-staging'</span>
+                    <span class="prop">packageForLinux</span>:   <span class="str">'$(Pipeline.Workspace)/drop/app/**/*.zip'</span>
+                    <span class="prop">deployToSlotOrASE</span>: <span class="kw">true</span>   <span class="cm"># Deploy to staging slot first</span>
+                    <span class="prop">ResourceGroupName</span>: <span class="str">'rg-trailer-staging'</span>
+                    <span class="prop">SlotName</span>:          <span class="str">'staging'</span>
+
+                - <span class="prop">task</span>: AzureAppServiceManage@0
+                  <span class="prop">displayName</span>: <span class="str">'Swap staging slot to production'</span>
+                  <span class="prop">inputs</span>:
+                    <span class="prop">Action</span>:            <span class="str">'Swap Slots'</span>  <span class="cm"># Zero-downtime swap</span>
+                    <span class="prop">WebAppName</span>:        <span class="str">'trailer-mgmt-staging'</span>
+                    <span class="prop">SourceSlot</span>:        <span class="str">'staging'</span></code></pre>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Branch Strategy and Pipeline Rules We Enforced</div>
+      <ul>
+        <li><strong>Branch policies on <code>main</code> and <code>develop</code>:</strong> PRs required at least 1 reviewer approval and a passing CI build before merge was allowed. No direct pushes to protected branches.</li>
+        <li><strong>Variable groups linked to Azure Key Vault:</strong> Connection strings, API keys, and tenant IDs were stored in Key Vault — the pipeline injected them at runtime. No secrets in YAML files or source control.</li>
+        <li><strong>Slot swapping for zero-downtime:</strong> Deployed to the <code>staging</code> slot on the App Service, ran smoke tests, then swapped slots. The old production slot became the new staging slot, giving instant rollback capability.</li>
+        <li><strong>Separate service connections per environment:</strong> Dev, Staging, and Production had distinct Azure service connections with least-privilege service principals — the Dev pipeline could not accidentally deploy to Production.</li>
+        <li><strong>Test gate enforced with <code>/p:TreatWarningsAsErrors=true</code>:</strong> Any compiler warning failed the build. This caught nullable reference issues and deprecated API usage before they reached review.</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">YAML — Database migration step before app deployment</span>
+      </div>
+      <pre><code><span class="cm"># Run EF Core migrations as a pipeline step — not inside the app on startup
+# Uses the idempotent script generated during CI build</span>
+- <span class="prop">task</span>: SqlAzureDacpacDeployment@1
+  <span class="prop">displayName</span>: <span class="str">'Apply EF Core migrations'</span>
+  <span class="prop">inputs</span>:
+    <span class="prop">azureSubscription</span>: <span class="str">'$(AZURE_SERVICE_CONNECTION)'</span>
+    <span class="prop">authenticationType</span>: <span class="str">'servicePrincipal'</span>
+    <span class="prop">serverName</span>:         <span class="str">'$(SQL_SERVER_NAME).database.windows.net'</span>
+    <span class="prop">databaseName</span>:       <span class="str">'$(DB_NAME)'</span>
+    <span class="prop">deployType</span>:         <span class="str">'SqlTask'</span>
+    <span class="prop">sqlFile</span>:            <span class="str">'$(Pipeline.Workspace)/drop/migrations/idempotent.sql'</span>
+
+<span class="cm"># Alternatively — use dotnet-ef bundle (self-contained migration executable)</span>
+- <span class="prop">script</span>: |
+    dotnet tool install --global dotnet-ef
+    dotnet ef migrations bundle \
+      --project src/Infrastructure \
+      --startup-project src/API \
+      --output $(Build.ArtifactStagingDirectory)/efbundle \
+      --self-contained
+  <span class="prop">displayName</span>: <span class="str">'Build EF migration bundle'</span></code></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the Trailer Management System we had a single YAML pipeline file committed to the repo — infrastructure as code, versioned alongside the application. CI ran on every PR: restore, build with warnings-as-errors, unit tests with coverage, then publish a zip artifact. CD had three stages — Dev deployed automatically, Staging and Production required manual approval from a lead. Secrets never touched the YAML file; they came from Azure Key Vault through variable groups. We used slot swapping for production deployments, which gave us instant rollback by swapping slots back if the smoke tests failed post-deploy."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q3 — Azure AD vs Traditional JWT
+  ══════════════════════════════════════ -->
+  <section class="section" id="q3">
+    <div class="section-header">
+      <div class="q-num">03</div>
+      <h2 class="q-title">What is the difference between Azure AD and traditional JWT-based auth?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Critical nuance:</strong> Azure AD tokens <em>are</em> JWTs — the formats are not opposites. The real distinction is between a <strong>managed identity provider</strong> (Azure AD) and a <strong>self-issued JWT</strong> approach where your application is its own token authority.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Aspect</th>
+            <th>Azure AD (Managed IdP)</th>
+            <th>Self-issued JWT</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Token issuer</strong></td>
+            <td class="td-yes">Microsoft's STS — globally trusted</td>
+            <td style="color:var(--text-secondary)">Your own application / auth server</td>
+          </tr>
+          <tr>
+            <td><strong>Signing key management</strong></td>
+            <td class="td-yes">Microsoft rotates keys automatically</td>
+            <td style="color:var(--amber)">You manage and rotate the secret yourself</td>
+          </tr>
+          <tr>
+            <td><strong>MFA support</strong></td>
+            <td class="td-yes">Built-in — enforced via Conditional Access</td>
+            <td class="td-no">Must build or integrate separately</td>
+          </tr>
+          <tr>
+            <td><strong>SSO</strong></td>
+            <td class="td-yes">Free — works across all Azure AD apps</td>
+            <td class="td-no">Must implement cross-app token sharing</td>
+          </tr>
+          <tr>
+            <td><strong>Token refresh</strong></td>
+            <td class="td-yes">MSAL handles silently with refresh tokens</td>
+            <td style="color:var(--amber)">You implement refresh token rotation logic</td>
+          </tr>
+          <tr>
+            <td><strong>RBAC</strong></td>
+            <td class="td-yes">App Roles in manifest — <code>roles</code> claim in token</td>
+            <td style="color:var(--amber)">You query DB and embed roles in token yourself</td>
+          </tr>
+          <tr>
+            <td><strong>Token revocation</strong></td>
+            <td class="td-yes">Conditional Access can revoke immediately</td>
+            <td class="td-no">JWT is valid until expiry — no instant revocation</td>
+          </tr>
+          <tr>
+            <td><strong>User directory</strong></td>
+            <td class="td-yes">Azure AD manages users, groups, devices</td>
+            <td style="color:var(--text-secondary)">Your own <code>Users</code> table</td>
+          </tr>
+          <tr>
+            <td><strong>Setup complexity</strong></td>
+            <td style="color:var(--amber)">App registrations, scopes, tenant config</td>
+            <td class="td-yes">Simpler initial setup for small apps</td>
+          </tr>
+          <tr>
+            <td><strong>Best for</strong></td>
+            <td style="color:var(--accent)">Enterprise, B2B, Microsoft 365 integration</td>
+            <td style="color:var(--text-secondary)">Public APIs, B2C, non-Microsoft ecosystems</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-card-label" style="color:var(--accent)">Self-issued JWT Flow</div>
+        <ul style="font-size:14px; color:var(--text-secondary); padding-left:16px; margin:0;">
+          <li>User POSTs credentials to your <code>/auth/login</code></li>
+          <li>Your code validates password against DB</li>
+          <li>Your code signs a JWT with your secret key</li>
+          <li>Client stores token, sends in <code>Authorization</code> header</li>
+          <li>Your API validates the signature on every request</li>
+          <li>You implement refresh token table and rotation</li>
+          <li>You handle token revocation (blocklist in DB/Redis)</li>
+        </ul>
+      </div>
+      <div class="compare-card preferred">
+        <div class="compare-card-label" style="color:var(--accent)">Azure AD Flow</div>
+        <ul style="font-size:14px; color:var(--text-secondary); padding-left:16px; margin:0;">
+          <li>User redirected to <code>login.microsoftonline.com</code></li>
+          <li>Microsoft validates identity (+ MFA if configured)</li>
+          <li>Microsoft issues a signed JWT access token</li>
+          <li>MSAL stores token, silently refreshes before expiry</li>
+          <li>Your API validates signature using Azure's public keys</li>
+          <li>Refresh tokens managed by Microsoft — invisible to your code</li>
+          <li>Conditional Access revokes sessions instantly if needed</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — What you own with self-issued JWT vs Azure AD</span>
+      </div>
+      <pre><code><span class="cm">// ── SELF-ISSUED JWT — you own the full auth stack ───────────────────────
+// You write and maintain all of this:</span>
+
+<span class="cm">// 1. Password hashing and validation</span>
+<span class="kw">var</span> isValid = _passwordHasher.<span class="ann">VerifyHashedPassword</span>(user, user.PasswordHash, request.Password);
+
+<span class="cm">// 2. Token generation — your secret key must be stored and rotated securely</span>
+<span class="kw">var</span> token = <span class="kw">new</span> <span class="cls">JwtSecurityToken</span>(
+    issuer:    <span class="str">"https://your-api.com"</span>,     <span class="cm">// You are the issuer</span>
+    audience:  <span class="str">"https://your-api.com"</span>,
+    claims:    claims,
+    expires:   <span class="cls">DateTime</span>.UtcNow.<span class="ann">AddMinutes</span>(<span class="num">15</span>),
+    signingCredentials: <span class="kw">new</span> <span class="cls">SigningCredentials</span>(
+        <span class="kw">new</span> <span class="cls">SymmetricSecurityKey</span>(<span class="cls">Encoding</span>.UTF8.<span class="ann">GetBytes</span>(secretKey)),
+        <span class="cls">SecurityAlgorithms</span>.HmacSha256)
+);
+
+<span class="cm">// 3. Refresh token — stored in DB, rotated on use, revoked on logout</span>
+<span class="kw">var</span> refreshToken = <span class="kw">new</span> <span class="cls">RefreshToken</span>
+{
+    Token     = <span class="cls">Convert</span>.<span class="ann">ToBase64String</span>(<span class="cls">RandomNumberGenerator</span>.<span class="ann">GetBytes</span>(<span class="num">64</span>)),
+    UserId    = user.Id,
+    ExpiresAt = <span class="cls">DateTime</span>.UtcNow.<span class="ann">AddDays</span>(<span class="num">7</span>),
+    IsRevoked = <span class="kw">false</span>
+};
+<span class="kw">await</span> _context.RefreshTokens.<span class="ann">AddAsync</span>(refreshToken);
+
+<span class="cm">// ── AZURE AD — Microsoft owns all of the above ──────────────────────────
+// You write only this in Program.cs:</span>
+
+builder.Services
+    .<span class="ann">AddAuthentication</span>(<span class="cls">JwtBearerDefaults</span>.AuthenticationScheme)
+    .<span class="ann">AddMicrosoftIdentityWebApi</span>(builder.Configuration.<span class="ann">GetSection</span>(<span class="str">"AzureAd"</span>));
+
+<span class="cm">// Password hashing     → Microsoft handles
+// Token signing        → Microsoft's private key (you verify with their public key)
+// Refresh tokens       → Microsoft manages, MSAL handles silently
+// MFA                  → Conditional Access policy — zero code
+// Token revocation     → Conditional Access — zero code
+// Key rotation         → Automatic — zero code</span></code></pre>
+    </div>
+
+    <div class="card">
+      <div class="card-label">When to Choose Which</div>
+      <ul>
+        <li><strong>Choose Azure AD when:</strong> Your users already have Microsoft 365 / work accounts. You need MFA, SSO, or Conditional Access without building it. You are building a B2B application for corporate clients. You are in a Microsoft-heavy ecosystem (Teams, SharePoint, Dynamics integration).</li>
+        <li><strong>Choose Azure AD B2C when:</strong> You have external/consumer users who need social login (Google, Facebook) or local accounts with their own email — this is Azure AD's consumer variant.</li>
+        <li><strong>Choose self-issued JWT when:</strong> You need full control over the auth flow. Your users are external consumers without Microsoft accounts. You are building a public API consumed by third-party developers. You are using a non-Microsoft cloud.</li>
+        <li><strong>The worst choice:</strong> Mixing both without a clear reason — dual token validation adds complexity and confusion for no benefit.</li>
+      </ul>
+    </div>
+
+    <div class="callout callout-purple">
+      <strong>Interview trap — "Azure AD doesn't use JWT":</strong> It does. Azure AD access tokens are signed JWTs — you can decode them at jwt.ms. The difference is the <em>issuer</em> (<code>iss</code> claim shows <code>https://login.microsoftonline.com/&lt;tenantId&gt;/v2.0</code>) and the signing keys — Azure's RSA public keys from <code>https://login.microsoftonline.com/common/discovery/v2.0/keys</code>. Your API validates the signature using those public keys, not a shared secret.
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"Both approaches produce JWTs — the real difference is who issues and manages them. With self-issued JWTs we own everything: password hashing, signing key storage and rotation, refresh token tables, and revocation. With Azure AD, Microsoft's STS issues the token and we only validate it using their public keys — which rotate automatically. In the e-commerce app, the client already used Microsoft 365 for email and Teams, so Azure AD was the obvious choice. Every employee already had an account, MFA was enforced via Conditional Access with zero code on our side, and SSO worked across all internal tools from day one."</p>
+    </div>
+  </section>
+
+
+  <!-- ── FOOTER ── -->
+  <div class="divider"></div>
+  <div style="text-align: center; padding: 12px 0 32px;">
+    <div style="color: var(--text-muted); font-size: 13px; font-family: var(--font-mono); margin-bottom: 16px;">
+      Azure &amp; DevOps · Senior Interview Guide · 3 Questions
+    </div>
+    <a href="#top" class="back-top">↑ Back to top</a>
+  </div>
+
+</div>
+</body>
+</html>

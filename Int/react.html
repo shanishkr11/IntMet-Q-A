@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>React.js Frontend — Senior Interview Guide</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- ── HEADER ── -->
+  <header id="top">
+    <div class="header-tag">
+      <span class="header-dot"></span>
+      Senior Level · 5+ Years Experience
+    </div>
+<div class="header-meta">
+            <a href="home.html" class="toc-item"><span class="badge badge-green">WEBAPI</span></a>
+            <a href="ef_core.html" class="toc-item"><span class="badge badge-blue">EFCore</span></a>
+            <a href="sql.html" class="toc-item"><span class="badge badge-amber">SQLServer</span></a>
+            <a href="wpf_mvvm.html" class="toc-item"><span class="badge badge-green">WPF&MVVM</span></a>
+            <a href="react.html" class="toc-item"><span class="badge badge-blue">React.js</span></a>
+            <a href="azure_devops.html" class="toc-item"><span class="badge badge-amber">Azure&DevOps</span></a>
+            <a href="architecture_design.html" class="toc-item"><span class="badge badge-green">Archi&Design</span></a>
+            <a href="behavioral.html" class="toc-item"><span class="badge badge-blue">G.Behavioral</span></a>
+</div>
+    <h1>React.js<br><span>Frontend Development</span></h1>
+    <div class="header-meta">
+      <span class="badge badge-green">● 5 Questions</span>
+      <span class="badge badge-blue">React / TypeScript</span>
+      <span class="badge badge-amber">Interview Ready</span>
+    </div>
+  </header>
+
+  <!-- ── TOC ── -->
+  <nav class="toc" aria-label="Table of contents">
+    <div class="toc-title">Table of Contents</div>
+    <div class="toc-grid">
+      <a href="#q1" class="toc-item"><span class="toc-num">01</span>Component Structure — Trailer Management System</a>
+      <a href="#q2" class="toc-item"><span class="toc-num">02</span>State Management — Local vs Context vs Redux</a>
+      <a href="#q3" class="toc-item"><span class="toc-num">03</span>Real-Time Tracking — SignalR on the Frontend</a>
+      <a href="#q4" class="toc-item"><span class="toc-num">04</span>Consistent API Error Handling in React</a>
+      <a href="#q5" class="toc-item"><span class="toc-num">05</span>useEffect vs useLayoutEffect</a>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════
+       Q1 — Component Structure
+  ══════════════════════════════════════ -->
+  <section class="section" id="q1">
+    <div class="section-header">
+      <div class="q-num">01</div>
+      <h2 class="q-title">How did you structure your React components in the Trailer Management System?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Core principle:</strong> Feature-based folder structure — not type-based. Group everything a feature needs (component, hook, service, types, tests) in one folder. This scales; a <code>components/</code>, <code>hooks/</code>, <code>services/</code> flat split does not survive past 20 screens.
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">Folder structure — Trailer Management System</span>
+      </div>
+      <pre><code>src/
+├── features/                    <span class="cm"># One folder per domain feature</span>
+│   ├── trailers/
+│   │   ├── components/
+│   │   │   ├── TrailerList.tsx       <span class="cm"># Smart — owns data fetching logic</span>
+│   │   │   ├── TrailerCard.tsx       <span class="cm"># Dumb — pure display, no side effects</span>
+│   │   │   ├── TrailerFilters.tsx
+│   │   │   └── TrailerMap.tsx
+│   │   ├── hooks/
+│   │   │   ├── useTrailers.ts        <span class="cm"># Encapsulates fetch + cache + error</span>
+│   │   │   └── useTrailerFilters.ts
+│   │   ├── services/
+│   │   │   └── trailerService.ts     <span class="cm"># Raw API calls only, no React</span>
+│   │   ├── types/
+│   │   │   └── trailer.types.ts
+│   │   └── index.ts                  <span class="cm"># Barrel — public API of the feature</span>
+│   ├── trips/
+│   └── drivers/
+├── shared/                      <span class="cm"># Truly reusable across features</span>
+│   ├── components/
+│   │   ├── Button/
+│   │   ├── DataTable/
+│   │   ├── Modal/
+│   │   └── ErrorBoundary/
+│   ├── hooks/
+│   │   ├── useDebounce.ts
+│   │   └── usePagination.ts
+│   └── utils/
+├── lib/                         <span class="cm"># Third-party wrappers (axios, signalr)</span>
+│   ├── apiClient.ts
+│   └── signalrClient.ts
+└── app/                         <span class="cm"># Routing, providers, global layout</span>
+    ├── App.tsx
+    ├── router.tsx
+    └── providers.tsx</code></pre>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card preferred">
+        <div class="compare-card-label label-good">✓ Smart Component — TrailerList</div>
+        <ul style="font-size:14px; color:var(--text-secondary); padding-left:16px;">
+          <li>Owns <code>useTrailers()</code> hook call</li>
+          <li>Handles loading and error states</li>
+          <li>Passes clean data down as props</li>
+          <li>Contains pagination and filter logic</li>
+          <li>Connects to global state if needed</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <div class="compare-card-label label-good">✓ Dumb Component — TrailerCard</div>
+        <ul style="font-size:14px; color:var(--text-secondary); padding-left:16px;">
+          <li>Receives only typed props</li>
+          <li>Zero side effects, zero hooks</li>
+          <li>Pure render — same props = same output</li>
+          <li>Wrapped in <code>React.memo()</code> if in lists</li>
+          <li>100% testable without mocking anything</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — Smart vs Dumb component pattern</span>
+      </div>
+      <pre><code><span class="cm">// ── DUMB — pure display, exported for reuse and testing ─────────────────</span>
+<span class="kw">interface</span> <span class="cls">TrailerCardProps</span> {
+  trailer:   <span class="cls">Trailer</span>;
+  onSelect:  (<span class="prop">id</span>: <span class="kw">number</span>) => <span class="kw">void</span>;
+  isSelected: <span class="kw">boolean</span>;
+}
+
+<span class="kw">export const</span> <span class="cls">TrailerCard</span> = <span class="cls">React</span>.<span class="ann">memo</span>&lt;<span class="cls">TrailerCardProps</span>&gt;(
+  ({ trailer, onSelect, isSelected }) => (
+    &lt;<span class="cls">div</span>
+      className={<span class="str">`trailer-card ${isSelected ? 'trailer-card--selected' : ''}`</span>}
+      onClick={() =&gt; <span class="ann">onSelect</span>(trailer.id)}
+    &gt;
+      &lt;<span class="cls">span</span>&gt;{trailer.registrationNumber}&lt;/<span class="cls">span</span>&gt;
+      &lt;<span class="cls">StatusBadge</span> status={trailer.status} /&gt;
+    &lt;/<span class="cls">div</span>&gt;
+  )
+); <span class="cm">// React.memo prevents re-render if props haven't changed</span>
+
+<span class="cm">// ── SMART — owns data and orchestrates children ──────────────────────────</span>
+<span class="kw">export const</span> <span class="cls">TrailerList</span>: <span class="cls">React.FC</span> = () => {
+  <span class="kw">const</span> [selectedId, <span class="ann">setSelectedId</span>] = <span class="ann">useState</span>&lt;<span class="kw">number</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);
+  <span class="kw">const</span> { trailers, isLoading, error } = <span class="ann">useTrailers</span>(); <span class="cm">// custom hook owns fetch</span>
+
+  <span class="kw">if</span> (isLoading) <span class="kw">return</span> &lt;<span class="cls">Skeleton</span> rows={<span class="num">5</span>} /&gt;;
+  <span class="kw">if</span> (error)     <span class="kw">return</span> &lt;<span class="cls">ErrorMessage</span> error={error} /&gt;;
+
+  <span class="kw">return</span> (
+    &lt;<span class="cls">div</span> className=<span class="str">"trailer-list"</span>&gt;
+      {trailers.<span class="ann">map</span>(t =&gt; (
+        &lt;<span class="cls">TrailerCard</span>
+          key={t.id}
+          trailer={t}
+          isSelected={selectedId === t.id}
+          onSelect={<span class="ann">setSelectedId</span>}
+        /&gt;
+      ))}
+    &lt;/<span class="cls">div</span>&gt;
+  );
+};</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — Custom hook encapsulating fetch logic</span>
+      </div>
+      <pre><code><span class="cm">// hooks/useTrailers.ts — all data concern lives here, not in the component</span>
+<span class="kw">export function</span> <span class="ann">useTrailers</span>(filters?: <span class="cls">TrailerFilters</span>) {
+  <span class="kw">return</span> <span class="ann">useQuery</span>({
+    queryKey: [<span class="str">'trailers'</span>, filters],         <span class="cm">// Cache key — refetches if filters change</span>
+    queryFn:  () => trailerService.<span class="ann">getAll</span>(filters),
+    staleTime: <span class="num">30_000</span>,                        <span class="cm">// Cache fresh for 30s — prevents waterfalls</span>
+    select: (data) => data.<span class="ann">sort</span>(               <span class="cm">// Transform on the way out</span>
+      (a, b) => a.registrationNumber.<span class="ann">localeCompare</span>(b.registrationNumber)
+    ),
+  });
+}
+
+<span class="cm">// Component stays clean — no fetch logic, no try/catch, no loading booleans</span>
+<span class="kw">const</span> { data: trailers = [], isLoading, error, refetch } = <span class="ann">useTrailers</span>(filters);</code></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the Trailer Management System, we used a strict feature-based structure. Each feature folder was a self-contained module — you could delete the trailers folder and nothing in trips or drivers would break. Smart components owned the data layer through custom hooks and TanStack Query; dumb components were pure functions wrapped in React.memo. We enforced this in code review — any component that both fetched data AND rendered UI was split. The payoff was that unit testing was trivial: dumb components needed no mocking whatsoever."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q2 — State Management
+  ══════════════════════════════════════ -->
+  <section class="section" id="q2">
+    <div class="section-header">
+      <div class="q-num">02</div>
+      <h2 class="q-title">How do you manage state in a React app — local state vs. context vs. Redux?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Decision rule:</strong> The question is not which tool is best — it is what <em>type</em> of state you are dealing with. Server state, UI state, and global app state are fundamentally different problems that need different solutions.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>State Type</th>
+            <th>Tool</th>
+            <th>Example</th>
+            <th>Why</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Local UI state</strong></td>
+            <td><code>useState</code></td>
+            <td>Modal open, active tab, form field</td>
+            <td class="td-yes">Scoped to one component — keep it local</td>
+          </tr>
+          <tr>
+            <td><strong>Shared UI state</strong></td>
+            <td><code>useState</code> + props / Context</td>
+            <td>Selected trailer across siblings</td>
+            <td style="color:var(--text-secondary)">Lift state up or use context for deep trees</td>
+          </tr>
+          <tr>
+            <td><strong>Server / async state</strong></td>
+            <td>TanStack Query</td>
+            <td>Trailer list, driver data, reports</td>
+            <td class="td-yes">Caching, refetch, background sync built-in</td>
+          </tr>
+          <tr>
+            <td><strong>Global app state</strong></td>
+            <td>Redux Toolkit</td>
+            <td>Auth user, permissions, notifications</td>
+            <td style="color:var(--text-secondary)">Predictable, DevTools, time-travel debug</td>
+          </tr>
+          <tr>
+            <td><strong>URL state</strong></td>
+            <td>React Router search params</td>
+            <td>Filters, pagination, active tab</td>
+            <td class="td-yes">Shareable, bookmarkable, browser back works</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — Context: right use vs wrong use</span>
+      </div>
+      <pre><code><span class="cm">// ✓ CORRECT use — low-frequency, truly global theme/auth value</span>
+<span class="kw">const</span> <span class="cls">AuthContext</span> = <span class="ann">createContext</span>&lt;<span class="cls">AuthContextValue</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);
+
+<span class="kw">export const</span> <span class="cls">AuthProvider</span>: <span class="cls">React.FC</span>&lt;{ children: <span class="cls">React.ReactNode</span> }&gt; = ({ children }) => {
+  <span class="kw">const</span> [user, <span class="ann">setUser</span>] = <span class="ann">useState</span>&lt;<span class="cls">User</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);
+
+  <span class="kw">const</span> value = <span class="ann">useMemo</span>(() => ({        <span class="cm">// useMemo prevents context re-render on every parent render</span>
+    user,
+    isAuthenticated: user !== <span class="kw">null</span>,
+    <span class="ann">login</span>:  (credentials: <span class="cls">Credentials</span>) => { <span class="cm">/* ... */</span> },
+    <span class="ann">logout</span>: () => <span class="ann">setUser</span>(<span class="kw">null</span>),
+  }), [user]);
+
+  <span class="kw">return</span> &lt;<span class="cls">AuthContext</span>.Provider value={value}&gt;{children}&lt;/<span class="cls">AuthContext</span>.Provider&gt;;
+};
+
+<span class="cm">// ❌ WRONG use — high-frequency updates in context cause full tree re-renders
+// Every subscriber re-renders when ANY property changes, even unrelated ones</span>
+<span class="kw">const</span> <span class="cls">TrailerListContext</span> = <span class="ann">createContext</span>({ <span class="cm">/* trailers, filters, pagination... */</span> });
+<span class="cm">// 50 components subscribed → each filter keystroke re-renders all 50. Use Redux or URL state instead.</span></code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — Redux Toolkit slice for auth and notifications</span>
+      </div>
+      <pre><code><span class="cm">// features/auth/authSlice.ts — Redux Toolkit (RTK) removes all the old boilerplate</span>
+<span class="kw">const</span> <span class="prop">authSlice</span> = <span class="ann">createSlice</span>({
+  name: <span class="str">'auth'</span>,
+  initialState: { user: <span class="kw">null</span> <span class="kw">as</span> <span class="cls">User</span> | <span class="kw">null</span>, isLoading: <span class="kw">false</span> },
+  reducers: {
+    <span class="ann">logout</span>: (state) => { state.user = <span class="kw">null</span>; },
+  },
+  extraReducers: (builder) => {
+    builder
+      .<span class="ann">addCase</span>(<span class="prop">loginThunk</span>.pending,   (state)         => { state.isLoading = <span class="kw">true</span>; })
+      .<span class="ann">addCase</span>(<span class="prop">loginThunk</span>.fulfilled, (state, action) => {
+        state.user      = action.payload;
+        state.isLoading = <span class="kw">false</span>;
+      })
+      .<span class="ann">addCase</span>(<span class="prop">loginThunk</span>.rejected,  (state)         => { state.isLoading = <span class="kw">false</span>; });
+  },
+});
+
+<span class="cm">// Typed selector — co-locate with slice, not in component</span>
+<span class="kw">export const</span> <span class="ann">selectCurrentUser</span> =
+  (state: <span class="cls">RootState</span>) => state.auth.user;
+
+<span class="cm">// Async thunk with createAsyncThunk — handles pending/fulfilled/rejected automatically</span>
+<span class="kw">export const</span> <span class="prop">loginThunk</span> = <span class="ann">createAsyncThunk</span>(
+  <span class="str">'auth/login'</span>,
+  <span class="kw">async</span> (credentials: <span class="cls">Credentials</span>, { rejectWithValue }) => {
+    <span class="kw">try</span>   { <span class="kw">return await</span> authService.<span class="ann">login</span>(credentials); }
+    <span class="kw">catch</span> (err) { <span class="kw">return</span> <span class="ann">rejectWithValue</span>(<span class="str">'Invalid credentials'</span>); }
+  }
+);</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — Server state with TanStack Query (replaces Redux for API data)</span>
+      </div>
+      <pre><code><span class="cm">// TanStack Query handles: loading, error, caching, background refetch, pagination
+// This replaces the old pattern of: Redux slice + thunk + loading flag + error flag</span>
+
+<span class="kw">export function</span> <span class="ann">useTrailerDetail</span>(id: <span class="kw">number</span>) {
+  <span class="kw">return</span> <span class="ann">useQuery</span>({
+    queryKey: [<span class="str">'trailers'</span>, id],
+    queryFn:  () => trailerService.<span class="ann">getById</span>(id),
+    enabled:  id &gt; <span class="num">0</span>,                   <span class="cm">// Don't fetch if id is invalid</span>
+    retry:    <span class="num">2</span>,                          <span class="cm">// Retry failed requests twice</span>
+    staleTime: <span class="num">60_000</span>,
+  });
+}
+
+<span class="cm">// Mutations — handle create/update/delete with optimistic updates</span>
+<span class="kw">export function</span> <span class="ann">useUpdateTrailer</span>() {
+  <span class="kw">const</span> queryClient = <span class="ann">useQueryClient</span>();
+
+  <span class="kw">return</span> <span class="ann">useMutation</span>({
+    mutationFn: trailerService.update,
+    <span class="ann">onSuccess</span>: (updated) => {
+      <span class="cm">// Invalidate the list cache + update the detail cache directly</span>
+      queryClient.<span class="ann">invalidateQueries</span>({ queryKey: [<span class="str">'trailers'</span>] });
+      queryClient.<span class="ann">setQueryData</span>([<span class="str">'trailers'</span>, updated.id], updated);
+    },
+  });
+}</code></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the Trailer Management System we used three tools for three jobs. TanStack Query owned all server state — trailer lists, trip data, driver records. Redux Toolkit owned global app state — the authenticated user, role permissions, and the notification queue. Local useState handled everything else: modal toggles, form inputs, active tabs. We explicitly banned putting API data into Redux — that was the biggest architectural decision. It eliminated 40% of our Redux code and all the loading/error boilerplate that came with it."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q3 — Real-Time Tracking
+  ══════════════════════════════════════ -->
+  <section class="section" id="q3">
+    <div class="section-header">
+      <div class="q-num">03</div>
+      <h2 class="q-title">How did you implement real-time tracking on the frontend? (SignalR / WebSocket / Polling?)</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Summary:</strong> We used SignalR — it negotiates the best available transport (WebSocket → Server-Sent Events → Long Polling) automatically. The frontend gets real-time trailer GPS updates without managing raw WebSocket lifecycle code.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Approach</th>
+            <th>Bi-directional</th>
+            <th>Auto-Reconnect</th>
+            <th>Best For</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>SignalR</strong></td>
+            <td class="td-yes">✓ Yes</td>
+            <td class="td-yes">✓ Built-in</td>
+            <td style="color:var(--accent)">ASP.NET backends — our choice</td>
+          </tr>
+          <tr>
+            <td>Raw WebSocket</td>
+            <td class="td-yes">✓ Yes</td>
+            <td class="td-no">✗ Manual</td>
+            <td style="color:var(--text-secondary)">Non-.NET backends, full control needed</td>
+          </tr>
+          <tr>
+            <td>Server-Sent Events</td>
+            <td class="td-no">✗ One-way only</td>
+            <td class="td-yes">✓ Native</td>
+            <td style="color:var(--text-secondary)">Server-push only, no client messages</td>
+          </tr>
+          <tr>
+            <td>Polling</td>
+            <td class="td-no">✗ Simulated</td>
+            <td class="td-yes">✓ Simple</td>
+            <td style="color:var(--amber)">Fallback only — wastes bandwidth</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — SignalR client singleton with reconnection</span>
+      </div>
+      <pre><code><span class="cm">// lib/signalrClient.ts — singleton connection, not recreated per component</span>
+<span class="kw">import</span> * <span class="kw">as</span> signalR <span class="kw">from</span> <span class="str">'@microsoft/signalr'</span>;
+
+<span class="kw">let</span> <span class="prop">connection</span>: signalR.<span class="cls">HubConnection</span> | <span class="kw">null</span> = <span class="kw">null</span>;
+
+<span class="kw">export function</span> <span class="ann">getTrackingConnection</span>(): signalR.<span class="cls">HubConnection</span> {
+  <span class="kw">if</span> (!connection) {
+    connection = <span class="kw">new</span> signalR.<span class="cls">HubConnectionBuilder</span>()
+      .<span class="ann">withUrl</span>(<span class="str">`${import.meta.env.VITE_API_URL}/hubs/tracking`</span>, {
+        accessTokenFactory: () => authService.<span class="ann">getToken</span>() ?? <span class="str">''</span>,
+      })
+      .<span class="ann">withAutomaticReconnect</span>([<span class="num">0</span>, <span class="num">2000</span>, <span class="num">5000</span>, <span class="num">10000</span>, <span class="num">30000</span>]) <span class="cm">// Exponential back-off</span>
+      .<span class="ann">configureLogging</span>(signalR.<span class="cls">LogLevel</span>.Warning)
+      .<span class="ann">build</span>();
+
+    <span class="cm">// Global lifecycle hooks — log reconnect events for monitoring</span>
+    connection.<span class="ann">onreconnecting</span>(() => console.<span class="ann">warn</span>(<span class="str">'SignalR: reconnecting...'</span>));
+    connection.<span class="ann">onreconnected</span> (() => console.<span class="ann">info</span>(<span class="str">'SignalR: reconnected'</span>));
+    connection.<span class="ann">onclose</span>       (() => console.<span class="ann">error</span>(<span class="str">'SignalR: connection closed'</span>));
+  }
+  <span class="kw">return</span> connection;
+}
+
+<span class="kw">export async function</span> <span class="ann">startConnection</span>(): <span class="cls">Promise</span>&lt;<span class="kw">void</span>&gt; {
+  <span class="kw">const</span> conn = <span class="ann">getTrackingConnection</span>();
+  <span class="kw">if</span> (conn.state === signalR.<span class="cls">HubConnectionState</span>.Disconnected) {
+    <span class="kw">await</span> conn.<span class="ann">start</span>();
+  }
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — Custom hook encapsulating full SignalR lifecycle</span>
+      </div>
+      <pre><code><span class="cm">// hooks/useTrailerTracking.ts</span>
+<span class="kw">interface</span> <span class="cls">TrailerPosition</span> {
+  trailerId:  <span class="kw">number</span>;
+  latitude:   <span class="kw">number</span>;
+  longitude:  <span class="kw">number</span>;
+  speed:      <span class="kw">number</span>;
+  updatedAt:  <span class="kw">string</span>;
+}
+
+<span class="kw">export function</span> <span class="ann">useTrailerTracking</span>(trailerIds: <span class="kw">number</span>[]) {
+  <span class="kw">const</span> [positions, <span class="ann">setPositions</span>] = <span class="ann">useState</span>&lt;<span class="cls">Map</span>&lt;<span class="kw">number</span>, <span class="cls">TrailerPosition</span>&gt;&gt;(
+    <span class="kw">new</span> <span class="cls">Map</span>()
+  );
+  <span class="kw">const</span> [isConnected, <span class="ann">setIsConnected</span>] = <span class="ann">useState</span>(<span class="kw">false</span>);
+
+  <span class="ann">useEffect</span>(() => {
+    <span class="kw">if</span> (trailerIds.length === <span class="num">0</span>) <span class="kw">return</span>;
+
+    <span class="kw">let</span> <span class="prop">isMounted</span> = <span class="kw">true</span>;  <span class="cm">// Guard against state updates on unmounted component</span>
+
+    <span class="kw">const</span> <span class="ann">subscribe</span> = <span class="kw">async</span> () => {
+      <span class="kw">const</span> conn = <span class="ann">getTrackingConnection</span>();
+      <span class="kw">await</span> <span class="ann">startConnection</span>();
+
+      <span class="cm">// Tell the server which trailers we want updates for</span>
+      <span class="kw">await</span> conn.<span class="ann">invoke</span>(<span class="str">'SubscribeToTrailers'</span>, trailerIds);
+      <span class="kw">if</span> (isMounted) <span class="ann">setIsConnected</span>(<span class="kw">true</span>);
+
+      <span class="cm">// Server pushes updates — handler called per position update</span>
+      conn.<span class="ann">on</span>(<span class="str">'TrailerPositionUpdated'</span>, (position: <span class="cls">TrailerPosition</span>) => {
+        <span class="kw">if</span> (!isMounted) <span class="kw">return</span>;
+        <span class="ann">setPositions</span>(prev => <span class="kw">new</span> <span class="cls">Map</span>(prev).<span class="ann">set</span>(position.trailerId, position));
+      });
+    };
+
+    <span class="ann">subscribe</span>().<span class="ann">catch</span>(console.error);
+
+    <span class="kw">return</span> () => {                          <span class="cm">// Cleanup on unmount / trailerIds change</span>
+      isMounted = <span class="kw">false</span>;
+      <span class="kw">const</span> conn = <span class="ann">getTrackingConnection</span>();
+      conn.<span class="ann">off</span>(<span class="str">'TrailerPositionUpdated'</span>);   <span class="cm">// Remove listener — prevent memory leak</span>
+      conn.<span class="ann">invoke</span>(<span class="str">'UnsubscribeFromTrailers'</span>, trailerIds).<span class="ann">catch</span>(() => {});
+    };
+  }, [trailerIds.<span class="ann">join</span>(<span class="str">','</span>)]);   <span class="cm">// Stable dependency — re-subscribes if trailer set changes</span>
+
+  <span class="kw">return</span> { positions, isConnected };
+}
+
+<span class="cm">// Usage in component — completely decoupled from SignalR internals</span>
+<span class="kw">const</span> { positions, isConnected } = <span class="ann">useTrailerTracking</span>([<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>]);
+</code></pre>
+    </div>
+
+    <div class="callout callout-amber">
+      <strong>Common pitfall — duplicate event handlers:</strong> Calling <code>connection.on('event', handler)</code> inside a <code>useEffect</code> without <code>connection.off()</code> in the cleanup registers a new handler on every render without removing the old one. After 10 re-renders you have 10 handlers firing for every update. Always pair <code>on()</code> with <code>off()</code> in the cleanup function.
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the Trailer Management System we used SignalR. The backend had a TrackingHub that pushed GPS coordinates every 5 seconds per active trailer. On the frontend, I built a useTrailerTracking hook that managed the full connection lifecycle — connect, subscribe, receive updates, unsubscribe, disconnect. The Map component subscribed to position updates and called Leaflet's marker.setLatLng() directly rather than triggering React re-renders for every coordinate change, which kept the map smooth even with 50 trailers active simultaneously."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q4 — API Error Handling
+  ══════════════════════════════════════ -->
+  <section class="section" id="q4">
+    <div class="section-header">
+      <div class="q-num">04</div>
+      <h2 class="q-title">How do you handle API error handling in React consistently?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Summary:</strong> Consistent error handling has three layers — Axios interceptors catch and normalize HTTP errors globally, TanStack Query surfaces them as typed error state per query, and React Error Boundaries catch render-time crashes. No try/catch scattered across components.
+    </div>
+
+    <div class="pipeline">
+      <span class="pipe-step">API Call</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Axios Interceptor</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Normalize Error</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">TanStack Query</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Component / Toast</span>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — Axios instance with global interceptor</span>
+      </div>
+      <pre><code><span class="cm">// lib/apiClient.ts — single Axios instance used everywhere</span>
+<span class="kw">export const</span> <span class="prop">apiClient</span> = axios.<span class="ann">create</span>({
+  baseURL: import.meta.env.VITE_API_URL,
+  timeout: <span class="num">15_000</span>,
+  headers: { <span class="str">'Content-Type'</span>: <span class="str">'application/json'</span> },
+});
+
+<span class="cm">// Request interceptor — attach auth token to every outgoing request</span>
+apiClient.interceptors.request.<span class="ann">use</span>((config) => {
+  <span class="kw">const</span> token = authService.<span class="ann">getToken</span>();
+  <span class="kw">if</span> (token) config.headers.Authorization = <span class="str">`Bearer ${token}`</span>;
+  <span class="kw">return</span> config;
+});
+
+<span class="cm">// Response interceptor — normalize ALL errors before they reach the component</span>
+apiClient.interceptors.response.<span class="ann">use</span>(
+  (response) => response,                          <span class="cm">// 2xx — pass through unchanged</span>
+  <span class="kw">async</span> (error: <span class="cls">AxiosError</span>&lt;<span class="cls">ApiErrorResponse</span>&gt;) => {
+    <span class="kw">const</span> status  = error.response?.status;
+    <span class="kw">const</span> message = error.response?.data?.message ?? error.message;
+
+    <span class="kw">switch</span> (status) {
+      <span class="kw">case</span> <span class="num">401</span>:
+        <span class="cm">// Token expired — attempt refresh, retry once, else redirect to login</span>
+        <span class="kw">try</span> {
+          <span class="kw">await</span> authService.<span class="ann">refreshToken</span>();
+          <span class="kw">return</span> apiClient.<span class="ann">request</span>(error.config!);   <span class="cm">// Retry original request</span>
+        } <span class="kw">catch</span> {
+          authService.<span class="ann">logout</span>();
+          window.location.href = <span class="str">'/login'</span>;
+        }
+        <span class="kw">break</span>;
+      <span class="kw">case</span> <span class="num">403</span>:
+        toast.<span class="ann">error</span>(<span class="str">'You do not have permission to perform this action.'</span>);
+        <span class="kw">break</span>;
+      <span class="kw">case</span> <span class="num">422</span>:
+        <span class="cm">// Validation errors — let the calling query handle field-level display</span>
+        <span class="kw">break</span>;
+      <span class="kw">case</span> <span class="num">500</span>:
+        toast.<span class="ann">error</span>(<span class="str">'Server error — our team has been notified.'</span>);
+        <span class="kw">break</span>;
+    }
+
+    <span class="cm">// Normalize to a typed AppError — components never inspect AxiosError directly</span>
+    <span class="kw">return</span> <span class="cls">Promise</span>.<span class="ann">reject</span>(<span class="kw">new</span> <span class="cls">AppError</span>(message, status ?? <span class="num">0</span>, error.response?.data));
+  }
+);</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — Typed AppError class + global QueryClient config</span>
+      </div>
+      <pre><code><span class="cm">// Typed error class — all components deal with this, not raw AxiosError</span>
+<span class="kw">export class</span> <span class="cls">AppError</span> <span class="kw">extends</span> <span class="cls">Error</span> {
+  <span class="kw">constructor</span>(
+    message: <span class="kw">string</span>,
+    <span class="kw">public readonly</span> statusCode: <span class="kw">number</span>,
+    <span class="kw">public readonly</span> details?: <span class="cls">ValidationErrors</span>
+  ) {
+    <span class="kw">super</span>(message);
+    <span class="kw">this</span>.name = <span class="str">'AppError'</span>;
+  }
+
+  <span class="kw">get</span> <span class="ann">isValidationError</span>() { <span class="kw">return this</span>.statusCode === <span class="num">422</span>; }
+  <span class="kw">get</span> <span class="ann">isNotFound</span>()        { <span class="kw">return this</span>.statusCode === <span class="num">404</span>; }
+}
+
+<span class="cm">// Global TanStack Query config — one retry for non-4xx, immediate fail for client errors</span>
+<span class="kw">const</span> <span class="prop">queryClient</span> = <span class="kw">new</span> <span class="cls">QueryClient</span>({
+  defaultOptions: {
+    queries: {
+      retry: (failureCount, error) => {
+        <span class="kw">if</span> (error <span class="kw">instanceof</span> <span class="cls">AppError</span> &amp;&amp; error.statusCode &lt; <span class="num">500</span>)
+          <span class="kw">return false</span>;               <span class="cm">// 4xx errors: don't retry — they won't change</span>
+        <span class="kw">return</span> failureCount &lt; <span class="num">2</span>;      <span class="cm">// 5xx / network: retry up to 2 times</span>
+      },
+      throwOnError: <span class="kw">false</span>,           <span class="cm">// Components handle error state, not Error Boundaries</span>
+    },
+    mutations: {
+      <span class="ann">onError</span>: (error) => {          <span class="cm">// Global mutation error — show toast for unexpected errors</span>
+        <span class="kw">if</span> (error <span class="kw">instanceof</span> <span class="cls">AppError</span> &amp;&amp; !error.isValidationError)
+          toast.<span class="ann">error</span>(error.message);
+      },
+    },
+  },
+});</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — Handling validation errors inline + Error Boundary for crashes</span>
+      </div>
+      <pre><code><span class="cm">// Inline validation error handling in a mutation</span>
+<span class="kw">const</span> { <span class="prop">mutate</span>: saveTrailer, <span class="prop">error</span> } = <span class="ann">useUpdateTrailer</span>();
+
+<span class="kw">const</span> <span class="ann">handleSubmit</span> = (data: <span class="cls">TrailerFormData</span>) => {
+  <span class="ann">saveTrailer</span>(data, {
+    <span class="ann">onError</span>: (err) => {
+      <span class="kw">if</span> (err <span class="kw">instanceof</span> <span class="cls">AppError</span> &amp;&amp; err.isValidationError) {
+        <span class="cm">// Map server validation errors to React Hook Form fields</span>
+        <span class="cls">Object</span>.<span class="ann">entries</span>(err.details ?? {}).<span class="ann">forEach</span>(([field, msg]) =>
+          <span class="ann">setError</span>(field <span class="kw">as keyof</span> <span class="cls">TrailerFormData</span>, { message: msg })
+        );
+      }
+    },
+    <span class="ann">onSuccess</span>: () => toast.<span class="ann">success</span>(<span class="str">'Trailer updated successfully'</span>),
+  });
+};
+
+<span class="cm">// Error Boundary — catches render-time errors (not async errors)
+// Placed at route level to prevent full page crash on one widget failure</span>
+<span class="kw">export class</span> <span class="cls">RouteErrorBoundary</span> <span class="kw">extends</span> <span class="cls">React.Component</span>&lt;
+  { children: <span class="cls">React.ReactNode</span> }, { hasError: <span class="kw">boolean</span> }
+&gt; {
+  state = { hasError: <span class="kw">false</span> };
+  <span class="kw">static</span> <span class="ann">getDerivedStateFromError</span>() { <span class="kw">return</span> { hasError: <span class="kw">true</span> }; }
+  <span class="ann">componentDidCatch</span>(error: <span class="cls">Error</span>) { logger.<span class="ann">error</span>(error); }  <span class="cm">// Send to monitoring</span>
+  <span class="ann">render</span>() {
+    <span class="kw">return this</span>.state.hasError
+      ? &lt;<span class="cls">FallbackScreen</span> onReset={() => <span class="kw">this</span>.<span class="ann">setState</span>({ hasError: <span class="kw">false</span> })} /&gt;
+      : <span class="kw">this</span>.props.children;
+  }
+}</code></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the Trailer Management System we had one rule: no try/catch inside components. All error handling lived in three places — the Axios interceptor for HTTP normalization and auth refresh, the global QueryClient config for retry policy, and Error Boundaries at the route level. Components only checked the typed error state from their query hook. This meant a junior dev adding a new feature automatically got consistent error handling, 401 refresh, and toast notifications without writing a single line of error code themselves."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q5 — useEffect vs useLayoutEffect
+  ══════════════════════════════════════ -->
+  <section class="section" id="q5">
+    <div class="section-header">
+      <div class="q-num">05</div>
+      <h2 class="q-title">What is the difference between useEffect and useLayoutEffect?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>One-liner:</strong> Both run after a render — but <code>useEffect</code> runs asynchronously <em>after</em> the browser has painted. <code>useLayoutEffect</code> runs synchronously <em>before</em> the paint. Use <code>useLayoutEffect</code> only when you must read or mutate the DOM before the user sees anything.
+    </div>
+
+    <div class="pipeline">
+      <span class="pipe-step">React renders</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">DOM updated</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">useLayoutEffect</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">Browser paints</span>
+      <span class="pipe-arrow">→</span>
+      <span class="pipe-step">useEffect</span>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Aspect</th>
+            <th>useEffect</th>
+            <th>useLayoutEffect</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Timing</td>
+            <td>After browser paint — async</td>
+            <td class="td-yes">Before browser paint — synchronous</td>
+          </tr>
+          <tr>
+            <td>Blocks paint?</td>
+            <td class="td-yes">No — non-blocking</td>
+            <td class="td-no">Yes — blocks until complete</td>
+          </tr>
+          <tr>
+            <td>Use for</td>
+            <td style="color:var(--accent)">Fetch, subscriptions, timers — 95% of cases</td>
+            <td style="color:var(--amber)">DOM measurement, scroll position, tooltips</td>
+          </tr>
+          <tr>
+            <td>SSR (Next.js)?</td>
+            <td class="td-yes">✓ Safe — runs on client only</td>
+            <td class="td-no">⚠ Warning — no DOM on server</td>
+          </tr>
+          <tr>
+            <td>Performance risk</td>
+            <td class="td-yes">None — deferred</td>
+            <td class="td-no">Blocks paint if slow — visual delay</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — useEffect for async work (correct 95% use case)</span>
+      </div>
+      <pre><code><span class="cm">// ✓ useEffect — fetch, subscriptions, event listeners, timers
+// Runs AFTER paint — user sees the initial render first, then data loads in</span>
+
+<span class="kw">function</span> <span class="cls">TrailerDetail</span>({ id }: { id: <span class="kw">number</span> }) {
+  <span class="kw">const</span> [trailer, <span class="ann">setTrailer</span>] = <span class="ann">useState</span>&lt;<span class="cls">Trailer</span> | <span class="kw">null</span>&gt;(<span class="kw">null</span>);
+
+  <span class="ann">useEffect</span>(() => {
+    <span class="kw">let</span> <span class="prop">cancelled</span> = <span class="kw">false</span>;   <span class="cm">// Guard for React Strict Mode double-fire in dev</span>
+
+    trailerService.<span class="ann">getById</span>(id).<span class="ann">then</span>(data => {
+      <span class="kw">if</span> (!cancelled) <span class="ann">setTrailer</span>(data);
+    });
+
+    <span class="kw">return</span> () => { cancelled = <span class="kw">true</span>; };   <span class="cm">// Cleanup — ignore stale response</span>
+  }, [id]);   <span class="cm">// Re-runs when id changes</span>
+
+  <span class="kw">return</span> trailer ? &lt;<span class="cls">TrailerCard</span> trailer={trailer} /&gt; : &lt;<span class="cls">Skeleton</span> /&gt;;
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — useLayoutEffect for DOM measurement before paint</span>
+      </div>
+      <pre><code><span class="cm">// ✓ useLayoutEffect — read DOM dimensions, reposition elements before user sees them
+// If you used useEffect here, the tooltip would flash at the wrong position then jump</span>
+
+<span class="kw">function</span> <span class="cls">Tooltip</span>({ targetRef, content }: <span class="cls">TooltipProps</span>) {
+  <span class="kw">const</span> <span class="prop">tooltipRef</span> = <span class="ann">useRef</span>&lt;<span class="cls">HTMLDivElement</span>&gt;(<span class="kw">null</span>);
+  <span class="kw">const</span> [position, <span class="ann">setPosition</span>] = <span class="ann">useState</span>({ top: <span class="num">0</span>, left: <span class="num">0</span> });
+
+  <span class="ann">useLayoutEffect</span>(() => {
+    <span class="kw">if</span> (!targetRef.current || !tooltipRef.current) <span class="kw">return</span>;
+
+    <span class="cm">// Read DOM — getBoundingClientRect must run BEFORE paint to avoid flicker</span>
+    <span class="kw">const</span> targetRect  = targetRef.current.<span class="ann">getBoundingClientRect</span>();
+    <span class="kw">const</span> tooltipRect = tooltipRef.current.<span class="ann">getBoundingClientRect</span>();
+
+    <span class="ann">setPosition</span>({
+      top:  targetRect.bottom + <span class="num">8</span>,
+      left: targetRect.left + (targetRect.width / <span class="num">2</span>) - (tooltipRect.width / <span class="num">2</span>),
+    });
+  }, [targetRef]);  <span class="cm">// Recalculate if target changes</span>
+
+  <span class="kw">return</span> (
+    &lt;<span class="cls">div</span>
+      ref={tooltipRef}
+      style={{ position: <span class="str">'fixed'</span>, top: position.top, left: position.left }}
+    &gt;
+      {content}
+    &lt;/<span class="cls">div</span>&gt;
+  );
+}
+
+<span class="cm">// Other valid useLayoutEffect use cases:
+// - Restore scroll position when navigating back
+// - Measure element height to drive animation start values
+// - Synchronize a canvas size with its container dimensions
+// - Any "measure then render" pattern that must not flash</span></code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">TypeScript — SSR-safe useLayoutEffect for Next.js / SSR projects</span>
+      </div>
+      <pre><code><span class="cm">// useLayoutEffect throws a warning in SSR because there is no DOM on the server.
+// Solution: swap to useEffect on the server, use useLayoutEffect on the client</span>
+
+<span class="kw">import</span> { useEffect, useLayoutEffect } <span class="kw">from</span> <span class="str">'react'</span>;
+
+<span class="cm">// A drop-in safe alias — commonly named useIsomorphicLayoutEffect</span>
+<span class="kw">export const</span> <span class="prop">useIsomorphicLayoutEffect</span> =
+  <span class="kw">typeof</span> window !== <span class="str">'undefined'</span>
+    ? useLayoutEffect   <span class="cm">// Client — has DOM, use layout effect</span>
+    : useEffect;        <span class="cm">// Server — no DOM, use regular effect safely</span>
+
+<span class="cm">// Usage — exactly the same API, no other changes needed</span>
+<span class="kw">function</span> <span class="cls">Tooltip</span>() {
+  <span class="ann">useIsomorphicLayoutEffect</span>(() => {
+    <span class="cm">// DOM measurement code — works in both SSR and CSR</span>
+  }, []);
+}</code></pre>
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card preferred">
+        <div class="compare-card-label label-good">✓ Use useEffect when</div>
+        <ul style="font-size:14px; color:var(--text-secondary); padding-left:16px;">
+          <li>Fetching data from an API</li>
+          <li>Setting up event listeners or subscriptions</li>
+          <li>Starting timers or intervals</li>
+          <li>Logging or analytics calls</li>
+          <li>Updating non-visual external state</li>
+          <li><strong>Default choice — covers 95% of cases</strong></li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <div class="compare-card-label label-amber">⚠ Use useLayoutEffect when</div>
+        <ul style="font-size:14px; color:var(--text-secondary); padding-left:16px;">
+          <li>Reading DOM dimensions (<code>getBoundingClientRect</code>)</li>
+          <li>Positioning a tooltip or popover</li>
+          <li>Restoring scroll position</li>
+          <li>Synchronizing canvas size to container</li>
+          <li>Any "measure, then render" that would flicker</li>
+          <li><strong>SSR: use useIsomorphicLayoutEffect alias</strong></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the Trailer Management System we built a custom Tooltip component for the map — it appeared next to trailer markers and needed to be perfectly centered above them. Using useEffect caused a visible flicker: the tooltip rendered at position 0,0 then jumped to the correct position after paint. Switching to useLayoutEffect made the measurement and positioning happen before the browser painted, so the tooltip always appeared in the correct position immediately with no flash. That is the exact scenario useLayoutEffect exists for — everything else in the app used plain useEffect."</p>
+    </div>
+  </section>
+
+
+  <!-- ── FOOTER ── -->
+  <div class="divider"></div>
+  <div style="text-align: center; padding: 12px 0 32px;">
+    <div style="color: var(--text-muted); font-size: 13px; font-family: var(--font-mono); margin-bottom: 16px;">
+      React.js Frontend · Senior Interview Guide · 5 Questions
+    </div>
+    <a href="#top" class="back-top">↑ Back to top</a>
+  </div>
+
+</div>
+</body>
+</html>
