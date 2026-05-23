@@ -1,0 +1,804 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>WPF & Desktop Development — Senior Interview Guide</title>
+<link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+<div class="wrapper">
+
+  <!-- ── HEADER ── -->
+  <header id="top">
+    <div class="header-tag">
+      <span class="header-dot"></span>
+      Senior Level · 5+ Years Experience
+    </div>
+    <div class="header-meta">
+                <a href="home.html" class="toc-item"><span class="badge badge-green">WEBAPI</span></a>
+                <a href="ef_core.html" class="toc-item"><span class="badge badge-blue">EFCore</span></a>
+                <a href="sql.html" class="toc-item"><span class="badge badge-amber">SQLServer</span></a>
+                <a href="wpf_mvvm.html" class="toc-item"><span class="badge badge-green">WPF&MVVM</span></a>
+                <a href="react.html" class="toc-item"><span class="badge badge-blue">React.js</span></a>
+                <a href="azure_devops.html" class="toc-item"><span class="badge badge-amber">Azure&DevOps</span></a>
+                <a href="architecture_design.html" class="toc-item"><span class="badge badge-green">Archi&Design</span></a>
+                <a href="behavioral.html" class="toc-item"><span class="badge badge-blue">G.Behavioral</span></a>
+    </div>
+
+    <h1>WPF &amp; Desktop<br><span>Development</span></h1>
+    <div class="header-meta">
+      <span class="badge badge-green">● 5 Questions</span>
+      <span class="badge badge-blue">C# / WPF / MVVM</span>
+      <span class="badge badge-amber">Interview Ready</span>
+    </div>
+  </header>
+
+  <!-- ── TOC ── -->
+  <nav class="toc" aria-label="Table of contents">
+    <div class="toc-title">Table of Contents</div>
+    <div class="toc-grid">
+      <a href="#q1" class="toc-item"><span class="toc-num">01</span>MVVM Pattern — Model, View, ViewModel</a>
+      <a href="#q2" class="toc-item"><span class="toc-num">02</span>Data Binding &amp; INotifyPropertyChanged</a>
+      <a href="#q3" class="toc-item"><span class="toc-num">03</span>Command Pattern in the Rule Engine App</a>
+      <a href="#q4" class="toc-item"><span class="toc-num">04</span>Thread Safety — UI from Background Threads</a>
+      <a href="#q5" class="toc-item"><span class="toc-num">05</span>Interop vs Open XML — Key Challenges</a>
+    </div>
+  </nav>
+
+
+  <!-- ══════════════════════════════════════
+       Q1 — MVVM Pattern
+  ══════════════════════════════════════ -->
+  <section class="section" id="q1">
+    <div class="section-header">
+      <div class="q-num">01</div>
+      <h2 class="q-title">Explain the MVVM pattern — what are the responsibilities of Model, View, and ViewModel?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>One-liner:</strong> MVVM separates UI rendering (View) from UI logic (ViewModel) from business data (Model). The ViewModel knows nothing about the View — it exposes only observable state and commands. This makes every layer independently testable.
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-card-label" style="color: var(--accent)">Model</div>
+        <ul style="font-size: 14px; color: var(--text-secondary); padding-left: 16px;">
+          <li>Plain domain entities and DTOs</li>
+          <li>Business rules and validation logic</li>
+          <li>Data access — repository calls</li>
+          <li>Completely unaware of the UI</li>
+          <li>No references to WPF namespaces</li>
+          <li>Fully unit-testable in isolation</li>
+        </ul>
+      </div>
+      <div class="compare-card">
+        <div class="compare-card-label" style="color: var(--accent)">View</div>
+        <ul style="font-size: 14px; color: var(--text-secondary); padding-left: 16px;">
+          <li>XAML only — no business logic in code-behind</li>
+          <li>Binds to ViewModel properties</li>
+          <li>Triggers Commands on user interaction</li>
+          <li>DataContext set to a ViewModel instance</li>
+          <li>Code-behind limited to UI-only concerns</li>
+          <li>Should be replaceable without breaking logic</li>
+        </ul>
+      </div>
+      <div class="compare-card preferred">
+        <div class="compare-card-label" style="color: var(--accent)">ViewModel</div>
+        <ul style="font-size: 14px; color: var(--text-secondary); padding-left: 16px;">
+          <li>Implements <code>INotifyPropertyChanged</code></li>
+          <li>Exposes <code>ICommand</code> properties for actions</li>
+          <li>Transforms Model data for display</li>
+          <li>Mediates between View and Model</li>
+          <li>Handles loading state, error messages</li>
+          <li>Fully testable — no WPF UI required</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">MVVM — Full layer structure for Rule Engine app</span>
+      </div>
+      <pre><code><span class="cm">// ── MODEL — pure domain, no WPF dependency ──────────────────────────────</span>
+<span class="kw">public class</span> <span class="cls">Rule</span>
+{
+    <span class="kw">public int</span>    <span class="prop">Id</span>          { <span class="kw">get</span>; <span class="kw">init</span>; }
+    <span class="kw">public string</span> <span class="prop">Name</span>        { <span class="kw">get</span>; <span class="kw">set</span>; } = <span class="kw">default!</span>;
+    <span class="kw">public bool</span>   <span class="prop">IsActive</span>    { <span class="kw">get</span>; <span class="kw">set</span>; }
+    <span class="kw">public int</span>    <span class="prop">Priority</span>    { <span class="kw">get</span>; <span class="kw">set</span>; }
+
+    <span class="kw">public bool</span> <span class="ann">IsValid</span>() =>
+        !<span class="kw">string</span>.<span class="ann">IsNullOrWhiteSpace</span>(Name) &amp;&amp; Priority > <span class="num">0</span>;
+}
+
+<span class="cm">// ── VIEW MODEL — mediates, transforms, exposes observable state ──────────</span>
+<span class="kw">public class</span> <span class="cls">RuleListViewModel</span> : <span class="cls">BaseViewModel</span>
+{
+    <span class="kw">private readonly</span> <span class="cls">IRuleService</span> _ruleService;
+
+    <span class="kw">private</span> <span class="cls">ObservableCollection</span>&lt;<span class="cls">Rule</span>&gt; _rules = [];
+    <span class="kw">public</span>  <span class="cls">ObservableCollection</span>&lt;<span class="cls">Rule</span>&gt; <span class="prop">Rules</span>
+    {
+        <span class="kw">get</span> => _rules;
+        <span class="kw">set</span> => <span class="ann">SetProperty</span>(<span class="kw">ref</span> _rules, value);
+    }
+
+    <span class="kw">private bool</span> _isLoading;
+    <span class="kw">public bool</span>  <span class="prop">IsLoading</span>
+    {
+        <span class="kw">get</span> => _isLoading;
+        <span class="kw">set</span> => <span class="ann">SetProperty</span>(<span class="kw">ref</span> _isLoading, value);
+    }
+
+    <span class="kw">public</span> <span class="cls">ICommand</span> <span class="prop">LoadRulesCommand</span>  { <span class="kw">get</span>; }
+    <span class="kw">public</span> <span class="cls">ICommand</span> <span class="prop">DeleteRuleCommand</span>  { <span class="kw">get</span>; }
+
+    <span class="kw">public</span> <span class="cls">RuleListViewModel</span>(<span class="cls">IRuleService</span> ruleService)
+    {
+        _ruleService      = ruleService;
+        LoadRulesCommand  = <span class="kw">new</span> <span class="cls">AsyncRelayCommand</span>(<span class="ann">LoadRulesAsync</span>);
+        DeleteRuleCommand = <span class="kw">new</span> <span class="cls">RelayCommand</span>&lt;<span class="cls">Rule</span>&gt;(<span class="ann">DeleteRule</span>, r => r?.IsActive == <span class="kw">false</span>);
+    }
+
+    <span class="kw">private async</span> <span class="cls">Task</span> <span class="ann">LoadRulesAsync</span>()
+    {
+        IsLoading = <span class="kw">true</span>;
+        <span class="kw">var</span> data = <span class="kw">await</span> _ruleService.<span class="ann">GetAllAsync</span>();
+        Rules     = <span class="kw">new</span> <span class="cls">ObservableCollection</span>&lt;<span class="cls">Rule</span>&gt;(data);
+        IsLoading = <span class="kw">false</span>;
+    }
+}
+
+<span class="cm">// ── VIEW — XAML only, zero logic ─────────────────────────────────────────
+// &lt;ListView ItemsSource="{Binding Rules}" /&gt;
+// &lt;Button Command="{Binding LoadRulesCommand}" Content="Refresh" /&gt;
+// &lt;ProgressBar Visibility="{Binding IsLoading, Converter={...}}" /&gt;</span></code></pre>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Layer</th>
+            <th>Knows About</th>
+            <th>Does NOT Know About</th>
+            <th>Testable Without UI?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><strong>Model</strong></td>
+            <td>Domain logic, data shapes</td>
+            <td>WPF, ViewModel, View</td>
+            <td class="td-yes">✓ Yes — pure C#</td>
+          </tr>
+          <tr>
+            <td><strong>ViewModel</strong></td>
+            <td>Model, services, commands</td>
+            <td>View, XAML, UI controls</td>
+            <td class="td-yes">✓ Yes — mock services</td>
+          </tr>
+          <tr>
+            <td><strong>View</strong></td>
+            <td>ViewModel (via DataContext)</td>
+            <td>Model, service layer</td>
+            <td class="td-no">✗ Needs WPF runtime</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the Rule Engine desktop application, we enforced strict MVVM — ViewModels had zero references to any WPF type. All ViewModels were registered in the DI container and injected with services. This meant every ViewModel was fully unit-testable with xUnit and Moq — no WPF test harness needed. The View was just XAML with bindings. A junior developer on the team initially put a MessageBox call inside the ViewModel — we refactored it to a dialog service interface so it remained testable."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q2 — Data Binding & INotifyPropertyChanged
+  ══════════════════════════════════════ -->
+  <section class="section" id="q2">
+    <div class="section-header">
+      <div class="q-num">02</div>
+      <h2 class="q-title">How does data binding work in WPF? What is INotifyPropertyChanged?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Summary:</strong> WPF data binding creates a live connection between a UI control's property and a ViewModel property. <code>INotifyPropertyChanged</code> is the contract that tells the WPF binding engine "this property's value has changed — re-read it from me."
+    </div>
+
+    <div class="card">
+      <div class="card-label">Binding Modes — Know Each One</div>
+      <ul>
+        <li><strong>OneWay:</strong> ViewModel → View only. Use for display-only labels and read-only fields.</li>
+        <li><strong>TwoWay:</strong> ViewModel ↔ View. Use for TextBox, CheckBox — user input flows back to ViewModel.</li>
+        <li><strong>OneWayToSource:</strong> View → ViewModel only. Rare — used for specific input capture scenarios.</li>
+        <li><strong>OneTime:</strong> Reads once at binding initialization. Use for static data — most performant, zero overhead.</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — BaseViewModel implementing INotifyPropertyChanged correctly</span>
+      </div>
+      <pre><code><span class="cm">// Base class used by ALL ViewModels in the project</span>
+<span class="kw">public abstract class</span> <span class="cls">BaseViewModel</span> : <span class="cls">INotifyPropertyChanged</span>
+{
+    <span class="kw">public event</span> <span class="cls">PropertyChangedEventHandler</span>? <span class="prop">PropertyChanged</span>;
+
+    <span class="cm">// CallerMemberName — compiler fills in the property name automatically
+    // No magic strings: SetProperty(ref _name, value, "Name") ← old, fragile way</span>
+    <span class="kw">protected void</span> <span class="ann">OnPropertyChanged</span>(
+        [<span class="cls">CallerMemberName</span>] <span class="kw">string</span>? propertyName = <span class="kw">null</span>)
+        => PropertyChanged?.<span class="ann">Invoke</span>(<span class="kw">this</span>, <span class="kw">new</span> <span class="cls">PropertyChangedEventArgs</span>(propertyName));
+
+    <span class="cm">// SetProperty: only raises event if value actually changed — prevents redundant UI updates</span>
+    <span class="kw">protected bool</span> <span class="ann">SetProperty</span>&lt;T&gt;(<span class="kw">ref</span> T field, T value,
+        [<span class="cls">CallerMemberName</span>] <span class="kw">string</span>? propertyName = <span class="kw">null</span>)
+    {
+        <span class="kw">if</span> (<span class="cls">EqualityComparer</span>&lt;T&gt;.Default.<span class="ann">Equals</span>(field, value)) <span class="kw">return false</span>;
+        field = value;
+        <span class="ann">OnPropertyChanged</span>(propertyName);
+        <span class="kw">return true</span>;
+    }
+}
+
+<span class="cm">// ViewModel using the base class</span>
+<span class="kw">public class</span> <span class="cls">RuleEditViewModel</span> : <span class="cls">BaseViewModel</span>
+{
+    <span class="kw">private string</span> _ruleName = <span class="kw">string</span>.Empty;
+    <span class="kw">public string</span> <span class="prop">RuleName</span>
+    {
+        <span class="kw">get</span> => _ruleName;
+        <span class="kw">set</span>
+        {
+            <span class="kw">if</span> (<span class="ann">SetProperty</span>(<span class="kw">ref</span> _ruleName, value))
+            {
+                <span class="cm">// Dependent properties that need to refresh when RuleName changes</span>
+                <span class="ann">OnPropertyChanged</span>(<span class="kw">nameof</span>(WindowTitle));
+                (SaveCommand <span class="kw">as</span> <span class="cls">RelayCommand</span>)?.<span class="ann">RaiseCanExecuteChanged</span>();
+            }
+        }
+    }
+
+    <span class="kw">public string</span> <span class="prop">WindowTitle</span> => <span class="kw">string</span>.<span class="ann">IsNullOrEmpty</span>(RuleName)
+        ? <span class="str">"New Rule"</span>
+        : <span class="str">$"Edit — {RuleName}"</span>;  <span class="cm">// Computed property, driven by RuleName</span>
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">XAML — Binding modes and ObservableCollection usage</span>
+      </div>
+      <pre><code><span class="cm">&lt;!-- DataContext is set once — all child bindings inherit it --&gt;</span>
+&lt;<span class="cls">Window</span> <span class="prop">DataContext</span>="{<span class="cls">Binding</span> <span class="prop">Source</span>={<span class="cls">StaticResource</span> <span class="prop">Locator</span>},
+                            <span class="prop">Path</span>=RuleEditViewModel}"&gt;
+
+    <span class="cm">&lt;!-- TwoWay: user input flows back to ViewModel --&gt;</span>
+    &lt;<span class="cls">TextBox</span> <span class="prop">Text</span>="{<span class="cls">Binding</span> <span class="prop">RuleName</span>, <span class="prop">Mode</span>=TwoWay,
+                           <span class="prop">UpdateSourceTrigger</span>=PropertyChanged}" /&gt;
+
+    <span class="cm">&lt;!-- OneWay: display only, ViewModel drives the value --&gt;</span>
+    &lt;<span class="cls">TextBlock</span> <span class="prop">Text</span>="{<span class="cls">Binding</span> <span class="prop">WindowTitle</span>, <span class="prop">Mode</span>=OneWay}" /&gt;
+
+    <span class="cm">&lt;!-- ObservableCollection: ListView auto-refreshes on Add/Remove --&gt;</span>
+    &lt;<span class="cls">ListView</span> <span class="prop">ItemsSource</span>="{<span class="cls">Binding</span> <span class="prop">Rules</span>}"
+              <span class="prop">SelectedItem</span>="{<span class="cls">Binding</span> <span class="prop">SelectedRule</span>, <span class="prop">Mode</span>=TwoWay}" /&gt;
+
+    <span class="cm">&lt;!-- IsLoading spinner — bound to bool with converter --&gt;</span>
+    &lt;<span class="cls">ProgressBar</span> <span class="prop">IsIndeterminate</span>="True"
+                  <span class="prop">Visibility</span>="{<span class="cls">Binding</span> <span class="prop">IsLoading</span>,
+                               <span class="prop">Converter</span>={<span class="cls">StaticResource</span> <span class="prop">BoolToVisibilityConverter</span>}}" /&gt;
+&lt;/<span class="cls">Window</span>&gt;</code></pre>
+    </div>
+
+    <div class="callout callout-amber">
+      <strong>ObservableCollection vs List:</strong> Use <code>ObservableCollection&lt;T&gt;</code> for any collection bound to the UI. It implements <code>INotifyCollectionChanged</code> — the ListView automatically re-renders when items are added or removed. Replacing the entire list with <code>List&lt;T&gt;</code> requires raising <code>PropertyChanged</code> on the property itself, which is less efficient for large sets.
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q3 — Command Pattern in WPF
+  ══════════════════════════════════════ -->
+  <section class="section" id="q3">
+    <div class="section-header">
+      <div class="q-num">03</div>
+      <h2 class="q-title">What is the Command pattern in WPF? How did you use it in the Rule Engine app?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Summary:</strong> The Command pattern decouples a UI action (button click) from the logic that handles it. In WPF, <code>ICommand</code> has two responsibilities — <code>Execute</code> (what happens) and <code>CanExecute</code> (whether the button is enabled). The View never calls business logic directly.
+    </div>
+
+    <div class="card">
+      <div class="card-label">ICommand Contract — Three Members</div>
+      <ul>
+        <li><strong>Execute(object? parameter):</strong> Runs the action when the button is clicked.</li>
+        <li><strong>CanExecute(object? parameter):</strong> Returns true/false — WPF automatically enables or disables the button. Zero code-behind needed.</li>
+        <li><strong>CanExecuteChanged (event):</strong> Fires when the enabled/disabled state should be re-evaluated. Raise this when dependent state changes.</li>
+      </ul>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — RelayCommand implementation (no third-party library)</span>
+      </div>
+      <pre><code><span class="cm">// Generic RelayCommand — covers 95% of use cases without pulling in MVVM toolkits</span>
+<span class="kw">public class</span> <span class="cls">RelayCommand</span>&lt;T&gt; : <span class="cls">ICommand</span>
+{
+    <span class="kw">private readonly</span> <span class="cls">Action</span>&lt;T?&gt;    _execute;
+    <span class="kw">private readonly</span> <span class="cls">Func</span>&lt;T?, <span class="kw">bool</span>&gt;? _canExecute;
+
+    <span class="kw">public</span> <span class="cls">RelayCommand</span>(<span class="cls">Action</span>&lt;T?&gt; execute, <span class="cls">Func</span>&lt;T?, <span class="kw">bool</span>&gt;? canExecute = <span class="kw">null</span>)
+    {
+        _execute    = execute    ?? <span class="kw">throw new</span> <span class="cls">ArgumentNullException</span>(<span class="kw">nameof</span>(execute));
+        _canExecute = canExecute;
+    }
+
+    <span class="kw">public event</span> <span class="cls">EventHandler</span>? <span class="prop">CanExecuteChanged</span>
+    {
+        <span class="kw">add</span>    => <span class="cls">CommandManager</span>.RequerySuggested += value;   <span class="cm">// WPF auto-polls CanExecute</span>
+        <span class="kw">remove</span> => <span class="cls">CommandManager</span>.RequerySuggested -= value;
+    }
+
+    <span class="kw">public bool</span> <span class="ann">CanExecute</span>(<span class="kw">object</span>? parameter) =>
+        _canExecute == <span class="kw">null</span> || _canExecute(<span class="kw">parameter is</span> T t ? t : <span class="kw">default</span>);
+
+    <span class="kw">public void</span> <span class="ann">Execute</span>(<span class="kw">object</span>? parameter) =>
+        _execute(<span class="kw">parameter is</span> T t ? t : <span class="kw">default</span>);
+
+    <span class="cm">// Call this manually when CanExecute depends on non-WPF state</span>
+    <span class="kw">public void</span> <span class="ann">RaiseCanExecuteChanged</span>() =>
+        <span class="cls">CommandManager</span>.<span class="ann">InvalidateRequerySuggested</span>();
+}
+
+<span class="cm">// Async variant — critical for loading/save operations (prevents UI freeze)</span>
+<span class="kw">public class</span> <span class="cls">AsyncRelayCommand</span> : <span class="cls">ICommand</span>
+{
+    <span class="kw">private readonly</span> <span class="cls">Func</span>&lt;<span class="cls">Task</span>&gt; _execute;
+    <span class="kw">private bool</span> _isExecuting;
+
+    <span class="kw">public</span> <span class="cls">AsyncRelayCommand</span>(<span class="cls">Func</span>&lt;<span class="cls">Task</span>&gt; execute) => _execute = execute;
+
+    <span class="kw">public event</span> <span class="cls">EventHandler</span>? <span class="prop">CanExecuteChanged</span>
+    {
+        <span class="kw">add</span>    => <span class="cls">CommandManager</span>.RequerySuggested += value;
+        <span class="kw">remove</span> => <span class="cls">CommandManager</span>.RequerySuggested -= value;
+    }
+
+    <span class="kw">public bool</span> <span class="ann">CanExecute</span>(<span class="kw">object</span>? _) => !_isExecuting;  <span class="cm">// Disabled while running</span>
+
+    <span class="kw">public async void</span> <span class="ann">Execute</span>(<span class="kw">object</span>? _)
+    {
+        _isExecuting = <span class="kw">true</span>;
+        <span class="cls">CommandManager</span>.<span class="ann">InvalidateRequerySuggested</span>();  <span class="cm">// Disable button immediately</span>
+        <span class="kw">try</span>   { <span class="kw">await</span> _execute(); }
+        <span class="kw">finally</span>
+        {
+            _isExecuting = <span class="kw">false</span>;
+            <span class="cls">CommandManager</span>.<span class="ann">InvalidateRequerySuggested</span>(); <span class="cm">// Re-enable after done</span>
+        }
+    }
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Commands used in Rule Engine ViewModel</span>
+      </div>
+      <pre><code><span class="kw">public class</span> <span class="cls">RuleEditorViewModel</span> : <span class="cls">BaseViewModel</span>
+{
+    <span class="kw">private</span> <span class="cls">Rule</span>? _selectedRule;
+    <span class="kw">public</span>  <span class="cls">Rule</span>? <span class="prop">SelectedRule</span>
+    {
+        <span class="kw">get</span> => _selectedRule;
+        <span class="kw">set</span>
+        {
+            <span class="ann">SetProperty</span>(<span class="kw">ref</span> _selectedRule, value);
+            <span class="cm">// CanExecute of these commands depends on SelectedRule</span>
+            (DeleteCommand <span class="kw">as</span> <span class="cls">RelayCommand</span>&lt;<span class="cls">Rule</span>&gt;)?.<span class="ann">RaiseCanExecuteChanged</span>();
+            (ActivateCommand <span class="kw">as</span> <span class="cls">RelayCommand</span>&lt;<span class="cls">Rule</span>&gt;)?.<span class="ann">RaiseCanExecuteChanged</span>();
+        }
+    }
+
+    <span class="kw">public</span> <span class="cls">ICommand</span> <span class="prop">SaveCommand</span>     { <span class="kw">get</span>; }
+    <span class="kw">public</span> <span class="cls">ICommand</span> <span class="prop">DeleteCommand</span>   { <span class="kw">get</span>; }
+    <span class="kw">public</span> <span class="cls">ICommand</span> <span class="prop">ActivateCommand</span> { <span class="kw">get</span>; }
+    <span class="kw">public</span> <span class="cls">ICommand</span> <span class="prop">ExportCommand</span>   { <span class="kw">get</span>; }
+
+    <span class="kw">public</span> <span class="cls">RuleEditorViewModel</span>(<span class="cls">IRuleService</span> ruleService)
+    {
+        <span class="cm">// Save — only enabled when a rule is selected AND has a valid name</span>
+        SaveCommand = <span class="kw">new</span> <span class="cls">AsyncRelayCommand</span>(<span class="ann">SaveRuleAsync</span>);
+
+        <span class="cm">// Delete — only enabled when selected rule is inactive (business rule)</span>
+        DeleteCommand = <span class="kw">new</span> <span class="cls">RelayCommand</span>&lt;<span class="cls">Rule</span>&gt;(
+            <span class="kw">execute</span>:    r => ruleService.<span class="ann">DeleteAsync</span>(r!.Id),
+            <span class="kw">canExecute</span>: r => r != <span class="kw">null</span> &amp;&amp; !r.IsActive   <span class="cm">// Can't delete active rules</span>
+        );
+
+        <span class="cm">// Activate — only enabled for inactive rules</span>
+        ActivateCommand = <span class="kw">new</span> <span class="cls">RelayCommand</span>&lt;<span class="cls">Rule</span>&gt;(
+            <span class="kw">execute</span>:    r => ruleService.<span class="ann">ActivateAsync</span>(r!.Id),
+            <span class="kw">canExecute</span>: r => r != <span class="kw">null</span> &amp;&amp; !r.IsActive
+        );
+
+        <span class="cm">// Export — always enabled, no condition needed</span>
+        ExportCommand = <span class="kw">new</span> <span class="cls">AsyncRelayCommand</span>(<span class="ann">ExportToExcelAsync</span>);
+    }
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">XAML — Binding Commands with CommandParameter</span>
+      </div>
+      <pre><code><span class="cm">&lt;!-- Button auto-disables when CanExecute returns false — no code-behind needed --&gt;</span>
+&lt;<span class="cls">Button</span> <span class="prop">Content</span>="Save Rule"
+        <span class="prop">Command</span>="{<span class="cls">Binding</span> <span class="prop">SaveCommand</span>}" /&gt;
+
+&lt;<span class="cls">Button</span> <span class="prop">Content</span>="Delete"
+        <span class="prop">Command</span>="{<span class="cls">Binding</span> <span class="prop">DeleteCommand</span>}"
+        <span class="prop">CommandParameter</span>="{<span class="cls">Binding</span> <span class="prop">SelectedRule</span>}" /&gt;
+
+<span class="cm">&lt;!-- ListView row-level command — each row passes its own Rule as parameter --&gt;</span>
+&lt;<span class="cls">ListView</span> <span class="prop">ItemsSource</span>="{<span class="cls">Binding</span> <span class="prop">Rules</span>}"&gt;
+    &lt;<span class="cls">ListView.ItemTemplate</span>&gt;
+        &lt;<span class="cls">DataTemplate</span>&gt;
+            &lt;<span class="cls">Button</span> <span class="prop">Content</span>="Activate"
+                    <span class="prop">Command</span>="{<span class="cls">Binding</span> <span class="prop">DataContext.ActivateCommand</span>,
+                               <span class="prop">RelativeSource</span>={<span class="cls">RelativeSource</span> <span class="prop">AncestorType</span>=<span class="cls">ListView</span>}}"
+                    <span class="prop">CommandParameter</span>="{<span class="cls">Binding</span>}" /&gt;
+        &lt;/<span class="cls">DataTemplate</span>&gt;
+    &lt;/<span class="cls">ListView.ItemTemplate</span>&gt;
+&lt;/<span class="cls">ListView</span>&gt;</code></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the Rule Engine app we had 8 commands per screen — Save, Delete, Activate, Deactivate, Export, Import, Preview, and Reset. We built our own RelayCommand and AsyncRelayCommand base classes rather than pulling in a full MVVM toolkit, which kept our dependency footprint minimal. CanExecute logic enforced business rules visually — you couldn't delete an active rule because the Delete button was disabled by CanExecute, not by a runtime exception. This gave users clear affordance and removed a whole class of invalid-state bugs."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q4 — Thread Safety in WPF
+  ══════════════════════════════════════ -->
+  <section class="section" id="q4">
+    <div class="section-header">
+      <div class="q-num">04</div>
+      <h2 class="q-title">How did you manage thread safety in WPF when updating UI from background threads?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Core rule:</strong> WPF controls can only be read or written from the UI thread (the thread that created them). Touching a UI element from a background thread throws an <code>InvalidOperationException</code>. Always marshal UI updates back to the dispatcher thread.
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Approach</th>
+            <th>When to Use</th>
+            <th>Modern?</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><code>Dispatcher.Invoke()</code></td>
+            <td>Synchronous marshal — blocks caller until UI update completes</td>
+            <td style="color: var(--amber)">Legacy — avoid in new code</td>
+          </tr>
+          <tr>
+            <td><code>Dispatcher.BeginInvoke()</code></td>
+            <td>Fire-and-forget marshal — non-blocking but no await support</td>
+            <td style="color: var(--amber)">Legacy — avoid in new code</td>
+          </tr>
+          <tr>
+            <td><code>async/await</code> on UI thread</td>
+            <td>Start async work, continuation automatically returns to UI thread</td>
+            <td class="td-yes">✓ Preferred approach</td>
+          </tr>
+          <tr>
+            <td><code>Progress&lt;T&gt;</code></td>
+            <td>Report incremental progress from background task to UI</td>
+            <td class="td-yes">✓ Preferred for progress updates</td>
+          </tr>
+          <tr>
+            <td><code>SynchronizationContext</code></td>
+            <td>Capture UI context for use inside library or non-async code</td>
+            <td class="td-yes">✓ Useful in framework code</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — The wrong way vs the right way</span>
+      </div>
+      <pre><code><span class="cm">// ❌ WRONG — touches UI label from background thread — InvalidOperationException</span>
+<span class="cls">Task</span>.<span class="ann">Run</span>(() =>
+{
+    <span class="kw">var</span> data = _service.<span class="ann">GetHeavyData</span>();
+    StatusLabel.Content = <span class="str">"Done"</span>;    <span class="cm">// ← CRASH: wrong thread</span>
+    Rules.<span class="ann">Add</span>(data);                  <span class="cm">// ← CRASH: ObservableCollection cross-thread</span>
+});
+
+<span class="cm">// ❌ LEGACY — Dispatcher.Invoke works but blocks the background thread</span>
+<span class="cls">Task</span>.<span class="ann">Run</span>(() =>
+{
+    <span class="kw">var</span> data = _service.<span class="ann">GetHeavyData</span>();
+    <span class="cls">Application</span>.Current.Dispatcher.<span class="ann">Invoke</span>(() =>
+    {
+        StatusLabel.Content = <span class="str">"Done"</span>;  <span class="cm">// Works, but blocks background thread until done</span>
+    });
+});
+
+<span class="cm">// ✓ MODERN — async/await: background work on thread pool,
+//   continuation resumes on UI thread automatically (no Dispatcher needed)</span>
+<span class="kw">private async void</span> <span class="ann">OnLoadButtonClick</span>(<span class="kw">object</span> sender, <span class="cls">RoutedEventArgs</span> e)
+{
+    IsLoading = <span class="kw">true</span>;                                    <span class="cm">// UI thread ✓</span>
+    <span class="kw">var</span> data = <span class="kw">await</span> <span class="cls">Task</span>.<span class="ann">Run</span>(() => _service.<span class="ann">GetHeavyData</span>()); <span class="cm">// Thread pool</span>
+    Rules     = <span class="kw">new</span> <span class="cls">ObservableCollection</span>&lt;<span class="cls">Rule</span>&gt;(data);    <span class="cm">// UI thread ✓ (await returned here)</span>
+    IsLoading = <span class="kw">false</span>;                                   <span class="cm">// UI thread ✓</span>
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Progress&lt;T&gt; for incremental background reporting</span>
+      </div>
+      <pre><code><span class="cm">// Progress&lt;T&gt; captures the SynchronizationContext at construction time (UI thread)
+// and automatically marshals ProgressChanged back to it — no Dispatcher needed</span>
+<span class="kw">private async</span> <span class="cls">Task</span> <span class="ann">ImportRulesAsync</span>(<span class="kw">string</span> filePath)
+{
+    <span class="kw">var</span> progress = <span class="kw">new</span> <span class="cls">Progress</span>&lt;<span class="kw">int</span>&gt;(percent =>
+    {
+        ImportProgress = percent;                   <span class="cm">// Safe — runs on UI thread</span>
+        StatusMessage  = <span class="str">$"Importing... {percent}%"</span>;
+    });
+
+    <span class="kw">var</span> importedRules = <span class="kw">await</span> <span class="cls">Task</span>.<span class="ann">Run</span>(() =>
+        _importService.<span class="ann">ImportAsync</span>(filePath, progress)  <span class="cm">// Background work</span>
+    );
+
+    Rules = <span class="kw">new</span> <span class="cls">ObservableCollection</span>&lt;<span class="cls">Rule</span>&gt;(importedRules); <span class="cm">// UI thread after await</span>
+    StatusMessage = <span class="str">$"Imported {importedRules.Count} rules successfully."</span>;
+}
+
+<span class="cm">// The service calls progress.Report() from the background thread safely</span>
+<span class="kw">public</span> <span class="cls">IEnumerable</span>&lt;<span class="cls">Rule</span>&gt; <span class="ann">ImportAsync</span>(<span class="kw">string</span> path, <span class="cls">IProgress</span>&lt;<span class="kw">int</span>&gt; progress)
+{
+    <span class="kw">var</span> lines = <span class="cls">File</span>.<span class="ann">ReadAllLines</span>(path);
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; lines.Length; i++)
+    {
+        <span class="cm">// ... parse line ...</span>
+        progress.<span class="ann">Report</span>((<span class="kw">int</span>)((i + <span class="num">1</span>) / (<span class="kw">double</span>)lines.Length * <span class="num">100</span>));
+    }
+}</code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — ObservableCollection thread-safety for parallel updates</span>
+      </div>
+      <pre><code><span class="cm">// ObservableCollection is NOT thread-safe for Add/Remove from background threads.
+// Solution A: Accumulate on background thread, assign new collection on UI thread</span>
+<span class="kw">var</span> results = <span class="kw">await</span> <span class="cls">Task</span>.<span class="ann">Run</span>(() => _service.<span class="ann">GetAllAsync</span>());  <span class="cm">// List&lt;T&gt; on bg thread</span>
+Rules = <span class="kw">new</span> <span class="cls">ObservableCollection</span>&lt;<span class="cls">Rule</span>&gt;(results);            <span class="cm">// Single assign on UI thread</span>
+
+<span class="cm">// Solution B: Dispatcher-aware ObservableCollection for real-time additions
+// (custom subclass used in the Rule Engine for live log streaming)</span>
+<span class="kw">public class</span> <span class="cls">ThreadSafeObservableCollection</span>&lt;T&gt; : <span class="cls">ObservableCollection</span>&lt;T&gt;
+{
+    <span class="kw">protected override void</span> <span class="ann">OnCollectionChanged</span>(<span class="cls">NotifyCollectionChangedEventArgs</span> e)
+    {
+        <span class="kw">if</span> (<span class="cls">Application</span>.Current?.Dispatcher.<span class="ann">CheckAccess</span>() == <span class="kw">true</span>)
+            <span class="kw">base</span>.<span class="ann">OnCollectionChanged</span>(e);                       <span class="cm">// Already on UI thread</span>
+        <span class="kw">else</span>
+            <span class="cls">Application</span>.Current.Dispatcher.<span class="ann">Invoke</span>(() =>
+                <span class="kw">base</span>.<span class="ann">OnCollectionChanged</span>(e));                  <span class="cm">// Marshal to UI thread</span>
+    }
+}</code></pre>
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"In the Rule Engine app, we had a rule validation engine that processed hundreds of rules in parallel on a background thread. Results streamed into the UI as they completed. We used a ThreadSafeObservableCollection that overrides OnCollectionChanged to check and marshal to the dispatcher. For the progress bar and status message, we used Progress&lt;T&gt; — it captures the UI SynchronizationContext at creation, so all Report() calls automatically land on the UI thread. We completely avoided Dispatcher.Invoke in ViewModel code — that would mean the ViewModel knows it's running in WPF, breaking testability."</p>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+
+  <!-- ══════════════════════════════════════
+       Q5 — Interop vs Open XML
+  ══════════════════════════════════════ -->
+  <section class="section" id="q5">
+    <div class="section-header">
+      <div class="q-num">05</div>
+      <h2 class="q-title">Why did you replace Interop with Open XML? What were the key challenges?</h2>
+    </div>
+
+    <div class="callout callout-blue">
+      <strong>Context:</strong> Microsoft.Office.Interop.Excel automates a running Excel process via COM. Open XML SDK reads and writes the raw <code>.xlsx</code> ZIP/XML format directly — no Office installation, no COM objects, no Excel process required.
+    </div>
+
+    <div class="compare-grid">
+      <div class="compare-card">
+        <div class="compare-card-label label-bad">❌ Interop — Why We Removed It</div>
+        <ul style="font-size: 14px; color: var(--text-secondary); padding-left: 16px;">
+          <li>Requires Microsoft Office installed on every machine</li>
+          <li>Fails on server environments (no Office on Azure/IIS)</li>
+          <li>COM objects must be manually released — memory leaks if you forget</li>
+          <li>Excel process hangs silently on unhandled exceptions</li>
+          <li>Very slow — drives a real Excel UI in the background</li>
+          <li>Microsoft explicitly warns against Interop in server-side code</li>
+        </ul>
+      </div>
+      <div class="compare-card preferred">
+        <div class="compare-card-label label-good">✓ Open XML — Why We Chose It</div>
+        <ul style="font-size: 14px; color: var(--text-secondary); padding-left: 16px;">
+          <li>No Office dependency — works anywhere .NET runs</li>
+          <li>Safe in Azure App Services, IIS, Docker containers</li>
+          <li>No COM marshaling — no memory leak surface</li>
+          <li>5–10× faster for large files (no Excel UI overhead)</li>
+          <li>Full control over XML structure and styling</li>
+          <li>NuGet package: <code>DocumentFormat.OpenXml</code></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — The Interop memory leak problem (why it breaks servers)</span>
+      </div>
+      <pre><code><span class="cm">// ❌ Classic Interop code — looks clean, leaks COM objects</span>
+<span class="kw">var</span> excel    = <span class="kw">new</span> <span class="cls">Excel.Application</span>();
+<span class="kw">var</span> workbook = excel.Workbooks.<span class="ann">Add</span>();
+<span class="kw">var</span> sheet    = (<span class="cls">Excel.Worksheet</span>)workbook.Sheets[<span class="num">1</span>];
+
+sheet.Cells[<span class="num">1</span>, <span class="num">1</span>] = <span class="str">"RegistrationNumber"</span>;  <span class="cm">// Works on dev machine, crashes on server</span>
+
+workbook.<span class="ann">SaveAs</span>(<span class="str">@"C:\report.xlsx"</span>);
+workbook.<span class="ann">Close</span>();
+excel.<span class="ann">Quit</span>();
+
+<span class="cm">// Problem: intermediate objects (Sheets, Cells, Range) are also COM objects.
+// Each one needs Marshal.ReleaseComObject() — forgetting even one leaks an Excel process.
+// On servers: Excel processes pile up, RAM fills, IIS crashes.
+
+// The "two-dot rule": excel.Workbooks.Add() touches two COM objects in one line.
+// You can't release the intermediate Workbooks reference.
+// This is why Microsoft says: DO NOT use Interop in server-side or service code.</span></code></pre>
+    </div>
+
+    <div class="code-block">
+      <div class="code-bar">
+        <div class="code-dots"><span></span><span></span><span></span></div>
+        <span class="code-lang">C# — Open XML SDK: generate styled .xlsx with headers and data rows</span>
+      </div>
+      <pre><code><span class="kw">using</span> <span class="cls">DocumentFormat.OpenXml</span>;
+<span class="kw">using</span> <span class="cls">DocumentFormat.OpenXml.Packaging</span>;
+<span class="kw">using</span> <span class="cls">DocumentFormat.OpenXml.Spreadsheet</span>;
+
+<span class="kw">public class</span> <span class="cls">ExcelExportService</span> : <span class="cls">IExcelExportService</span>
+{
+    <span class="kw">public byte</span>[] <span class="ann">ExportRules</span>(<span class="cls">IEnumerable</span>&lt;<span class="cls">Rule</span>&gt; rules)
+    {
+        <span class="kw">using var</span> stream = <span class="kw">new</span> <span class="cls">MemoryStream</span>();
+        <span class="kw">using</span> (<span class="kw">var</span> document = <span class="cls">SpreadsheetDocument</span>.<span class="ann">Create</span>(stream,
+            <span class="cls">SpreadsheetDocumentType</span>.Workbook))
+        {
+            <span class="kw">var</span> workbookPart  = document.<span class="ann">AddWorkbookPart</span>();
+            workbookPart.Workbook = <span class="kw">new</span> <span class="cls">Workbook</span>();
+
+            <span class="kw">var</span> worksheetPart = workbookPart.<span class="ann">AddNewPart</span>&lt;<span class="cls">WorksheetPart</span>&gt;();
+            <span class="kw">var</span> sheetData     = <span class="kw">new</span> <span class="cls">SheetData</span>();
+            worksheetPart.Worksheet = <span class="kw">new</span> <span class="cls">Worksheet</span>(sheetData);
+
+            <span class="cm">// Register the worksheet in the workbook</span>
+            workbookPart.Workbook.<span class="ann">AppendChild</span>(<span class="kw">new</span> <span class="cls">Sheets</span>()).<span class="ann">AppendChild</span>(<span class="kw">new</span> <span class="cls">Sheet</span>
+            {
+                Id      = workbookPart.<span class="ann">GetIdOfPart</span>(worksheetPart),
+                SheetId = <span class="num">1</span>, Name = <span class="str">"Rules"</span>
+            });
+
+            <span class="cm">// Header row</span>
+            sheetData.<span class="ann">AppendChild</span>(<span class="ann">BuildHeaderRow</span>(<span class="str">"Id"</span>, <span class="str">"Name"</span>, <span class="str">"Priority"</span>, <span class="str">"IsActive"</span>));
+
+            <span class="cm">// Data rows</span>
+            <span class="kw">foreach</span> (<span class="kw">var</span> rule <span class="kw">in</span> rules)
+                sheetData.<span class="ann">AppendChild</span>(<span class="ann">BuildDataRow</span>(
+                    rule.Id.<span class="ann">ToString</span>(), rule.Name,
+                    rule.Priority.<span class="ann">ToString</span>(), rule.IsActive.<span class="ann">ToString</span>()));
+
+            workbookPart.Workbook.<span class="ann">Save</span>();
+        }
+        <span class="kw">return</span> stream.<span class="ann">ToArray</span>();
+    }
+
+    <span class="kw">private static</span> <span class="cls">Row</span> <span class="ann">BuildHeaderRow</span>(<span class="kw">params string</span>[] headers)
+    {
+        <span class="kw">var</span> row = <span class="kw">new</span> <span class="cls">Row</span>();
+        <span class="kw">foreach</span> (<span class="kw">var</span> h <span class="kw">in</span> headers)
+            row.<span class="ann">AppendChild</span>(<span class="kw">new</span> <span class="cls">Cell</span>
+            {
+                DataType  = <span class="cls">CellValues</span>.String,
+                CellValue = <span class="kw">new</span> <span class="cls">CellValue</span>(h),
+                StyleIndex = <span class="num">1</span>   <span class="cm">// Bold style defined in stylesheet</span>
+            });
+        <span class="kw">return</span> row;
+    }
+
+    <span class="kw">private static</span> <span class="cls">Row</span> <span class="ann">BuildDataRow</span>(<span class="kw">params string</span>[] values)
+    {
+        <span class="kw">var</span> row = <span class="kw">new</span> <span class="cls">Row</span>();
+        <span class="kw">foreach</span> (<span class="kw">var</span> v <span class="kw">in</span> values)
+            row.<span class="ann">AppendChild</span>(<span class="kw">new</span> <span class="cls">Cell</span>
+            {
+                DataType  = <span class="cls">CellValues</span>.String,
+                CellValue = <span class="kw">new</span> <span class="cls">CellValue</span>(v)
+            });
+        <span class="kw">return</span> row;
+    }
+}</code></pre>
+    </div>
+
+    <div class="card">
+      <div class="card-label">Key Challenges When Migrating from Interop to Open XML</div>
+      <ul>
+        <li><strong>Verbose API:</strong> Open XML mirrors raw OOXML XML elements — much more code than <code>sheet.Cells[1,1] = "value"</code>. We built a thin wrapper (<code>ExcelBuilder</code>) to hide the verbosity from the rest of the codebase.</li>
+        <li><strong>No formula evaluation:</strong> Open XML writes formulas as strings — it does not calculate them. If you write <code>=SUM(A1:A10)</code>, the result cell shows 0 until Excel recalculates on open. We pre-calculated values server-side and wrote the computed result instead.</li>
+        <li><strong>Shared Strings Table:</strong> String cell values in Open XML are stored in a separate <code>SharedStringTable</code> to reduce file size. Skipping it works but produces larger files and can break Excel compatibility for large exports.</li>
+        <li><strong>Date serialization:</strong> Dates in Open XML are stored as numeric OA dates, not strings. You must apply a number format style (<code>StyleIndex</code>) to display them correctly in Excel. Easy to miss in testing if your test data uses short date ranges.</li>
+        <li><strong>Styling complexity:</strong> Fonts, fills, borders, and number formats are each defined in separate stylesheet parts and referenced by index. The indirection is error-prone — we wrote a <code>StylesheetBuilder</code> helper that pre-registered all styles at workbook creation time.</li>
+      </ul>
+    </div>
+
+    <div class="callout callout-purple">
+      <strong>Alternative — ClosedXML:</strong> For teams where Open XML verbosity is a blocker, <code>ClosedXML</code> is a higher-level wrapper over Open XML SDK that brings back the Interop-like <code>ws.Cell("A1").Value = "Name"</code> syntax — while still having no Office dependency. We evaluated it but chose raw Open XML for maximum control over file size and streaming in our export service.
+    </div>
+
+    <div class="tip-box">
+      <div class="tip-label">🎤 Interview Answer</div>
+      <p>"We replaced Interop in the Rule Engine export feature after it started silently hanging on our Azure deployment — no Office on the server. The migration to Open XML took about a week. The biggest challenge was styling: I had initially ignored the SharedStringTable and StylesheetBuilder, which produced files that opened with warnings in Excel. Once I wrapped all style registration into a builder class that ran at workbook initialization, the output was clean. Export time for 10,000 rule records went from 18 seconds with Interop to 1.2 seconds with Open XML — because we eliminated the COM automation overhead entirely."</p>
+    </div>
+  </section>
+
+
+  <!-- ── FOOTER ── -->
+  <div class="divider"></div>
+  <div style="text-align: center; padding: 12px 0 32px;">
+    <div style="color: var(--text-muted); font-size: 13px; font-family: var(--font-mono); margin-bottom: 16px;">
+      WPF &amp; Desktop Development · Senior Interview Guide · 5 Questions
+    </div>
+    <a href="#top" class="back-top">↑ Back to top</a>
+  </div>
+
+</div>
+</body>
+</html>
