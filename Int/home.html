@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <link rel="stylesheet" href="style.css">
+    <title></title>
+</head>
+<body>
+
+    <div class="wrapper">
+
+        <!-- ── HEADER ── -->
+        <header id="top">
+            <div class="header-tag">
+                <span class="header-dot"></span>
+                Senior Level · 5+ Years Experience
+            </div>
+            <div class="header-meta">
+                <a href="Home.html" class="toc-item"><span class="badge badge-green">WEBAPI</span></a>
+                <a href="Ef Core.html" class="toc-item"><span class="badge badge-blue">EFCore</span></a>
+                <a href="sql.html" class="toc-item"><span class="badge badge-amber">SQLServer</span></a>
+                <a href="wpf_mvvm.html" class="toc-item"><span class="badge badge-green">WPF&MVVM</span></a>
+                <a href="react.html" class="toc-item"><span class="badge badge-blue">React.js</span></a>
+                <a href="azure_devops.html" class="toc-item"><span class="badge badge-amber">Azure&DevOps</span></a>
+                <a href="architecture_design.html" class="toc-item"><span class="badge badge-green">Archi&Design</span></a>
+                <a href="behavioral.html" class="toc-item"><span class="badge badge-blue">G.Behavioral</span></a>
+            </div>
+            <h1>ASP.NET Core<br><span>Web API</span></h1>
+            <div class="header-meta">
+                <span class="badge badge-green">● 7 Questions</span>
+                <span class="badge badge-blue">C# / .NET</span>
+                <span class="badge badge-amber">Interview Ready</span>
+            </div>
+        </header>
+        <div id="WebAPI">
+            <!-- ── TOC ── -->
+            <nav class="toc" aria-label="Table of contents">
+                <div class="toc-title">Table of Contents</div>
+                <div class="toc-grid">
+                    <a href="#q1" class="toc-item"><span class="toc-num">01</span>.NET Framework vs .NET Core</a>
+                    <a href="#q2" class="toc-item"><span class="toc-num">02</span>Middleware Pipeline</a>
+                    <a href="#q3" class="toc-item"><span class="toc-num">03</span>JWT Authentication</a>
+                    <a href="#q4" class="toc-item"><span class="toc-num">04</span>Authentication vs Authorization · RBAC</a>
+                    <a href="#q5" class="toc-item"><span class="toc-num">05</span>Global Exception Handling</a>
+                    <a href="#q6" class="toc-item"><span class="toc-num">06</span>IActionResult vs ActionResult&lt;T&gt;</a>
+                    <a href="#q7" class="toc-item"><span class="toc-num">07</span>API Versioning Strategies</a>
+                </div>
+            </nav>
+
+            <!-- ══════════════════════════════════════
+         Q1 — .NET Framework vs .NET Core
+    ══════════════════════════════════════ -->
+            <section class="section" id="q1" style="animation-delay:0.1s">
+                <div class="section-header">
+                    <div class="q-num">01</div>
+                    <h2 class="q-title">.NET Framework vs .NET Core — What's the difference and when to choose?</h2>
+                </div>
+
+                <div class="callout callout-blue">
+                    <strong>One-liner:</strong> Framework is Windows-only, legacy. Core is cross-platform, modern, and the future. For any new project — always choose .NET Core.
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>.NET Framework</th>
+                                <th>.NET Core / .NET 5+</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Platform</td>
+                                <td style="color:var(--red)">Windows only</td>
+                                <td class="td-yes">Cross-platform</td>
+                            </tr>
+                            <tr>
+                                <td>Performance</td>
+                                <td style="color:var(--text-muted)">Lower</td>
+                                <td class="td-yes">Significantly higher (Kestrel, Span&lt;T&gt;)</td>
+                            </tr>
+                            <tr>
+                                <td>Deployment</td>
+                                <td style="color:var(--text-muted)">GAC / IIS bound</td>
+                                <td class="td-yes">Self-contained, Docker-friendly</td>
+                            </tr>
+                            <tr>
+                                <td>Open Source</td>
+                                <td class="td-no">No</td>
+                                <td class="td-yes">Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Future Support</td>
+                                <td style="color:var(--amber)">Maintenance only</td>
+                                <td class="td-yes">Active development</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-label">🎤 How to say it in an interview</div>
+                    <p>"In my projects, I've worked on both. We had a legacy monolith on .NET Framework 4.8 — tightly coupled to IIS and Windows services. When we started greenfield projects like the Trailer Management System, we chose .NET Core because we needed containerized deployment on Linux-based Azure App Services, better performance under load, and access to the modern middleware pipeline. Migration from Framework to Core is also something I've guided — the biggest pain points are HttpContext changes, removed APIs, and third-party library compatibility."</p>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Decision Rule</div>
+                    <ul>
+                        <li><strong>Choose .NET Framework:</strong> Maintaining legacy systems, heavy WCF usage, or COM interop required.</li>
+                        <li><strong>Choose .NET Core:</strong> Anything new. Period.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <!-- ══════════════════════════════════════
+         Q2 — Middleware Pipeline
+    ══════════════════════════════════════ -->
+            <section class="section" id="q2" style="animation-delay:0.15s">
+                <div class="section-header">
+                    <div class="q-num">02</div>
+                    <h2 class="q-title">How does the Middleware Pipeline work in ASP.NET Core?</h2>
+                </div>
+
+                <div class="callout callout-blue">
+                    <strong>Summary:</strong> Middleware is a chain of delegates — each one can short-circuit or pass control to the next via <code>next()</code>. Every middleware runs twice: once on request, once on response.
+                </div>
+
+                <div class="pipeline">
+                    <span class="pipe-step">Request</span>
+                    <span class="pipe-arrow">→</span>
+                    <span class="pipe-step">ExceptionHandler</span>
+                    <span class="pipe-arrow">→</span>
+                    <span class="pipe-step">Authentication</span>
+                    <span class="pipe-arrow">→</span>
+                    <span class="pipe-step">Authorization</span>
+                    <span class="pipe-arrow">→</span>
+                    <span class="pipe-step">RateLimiting</span>
+                    <span class="pipe-arrow">→</span>
+                    <span class="pipe-step">Endpoint</span>
+                    <br style="flex-basis:100%" />
+                    <span class="pipe-step">Response</span>
+                    <span class="pipe-arrow">←</span>
+                    <span class="pipe-step">ExceptionHandler</span>
+                    <span class="pipe-arrow">←</span>
+                    <span class="pipe-step">Authentication</span>
+                    <span class="pipe-arrow">←</span>
+                    <span class="pipe-step">Authorization</span>
+                    <span class="pipe-arrow">←</span>
+                    <span class="pipe-step">RateLimiting</span>
+                    <span class="pipe-arrow">←</span>
+                    <span class="pipe-step">Endpoint</span>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-bar">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span class="code-lang">Program.cs — Order matters critically</span>
+                    </div>
+                    <pre><code><span class="cm">// Order is NOT optional — a classic mistake junior devs make</span>
+app.<span class="ann">UseExceptionHandler</span>(<span class="str">"/error"</span>);   <span class="cm">// Must be first to catch all</span>
+app.<span class="ann">UseHttpsRedirection</span>();
+app.<span class="ann">UseAuthentication</span>();             <span class="cm">// Who are you?</span>
+app.<span class="ann">UseAuthorization</span>();              <span class="cm">// What can you do?</span>
+app.<span class="ann">UseRateLimiting</span>();               <span class="cm">// Custom middleware</span>
+app.<span class="ann">MapControllers</span>();</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-bar">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span class="code-lang">RequestLoggingMiddleware.cs — Real project example</span>
+                    </div>
+                    <pre><code><span class="kw">public class</span> <span class="cls">RequestLoggingMiddleware</span>
+{
+                    <span class="kw">private readonly</span> <span class="cls">RequestDelegate</span> _next;
+                    <span class="kw">private readonly</span> <span class="cls">ILogger</span>&lt;<span class="cls">RequestLoggingMiddleware</span>&gt; _logger;
+
+                    <span class="kw">public</span> <span class="cls">RequestLoggingMiddleware</span>(<span class="cls">RequestDelegate</span> next,
+                    <span class="cls">ILogger</span>&lt;<span class="cls">RequestLoggingMiddleware</span>&gt; logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+                    <span class="kw">public async</span> <span class="cls">Task</span> <span class="ann">InvokeAsync</span>(<span class="cls">HttpContext</span> context)
+    {
+                    <span class="kw">var</span> stopwatch = <span class="cls">Stopwatch</span>.<span class="ann">StartNew</span>();
+
+        _logger.<span class="ann">LogInformation</span>(<span class="str">"Incoming: {Method} {Path}"</span>,
+            context.Request.Method, context.Request.Path);
+
+                    <span class="kw">await</span> _next(context); <span class="cm">// Pass to next middleware</span>
+
+        stopwatch.<span class="ann">Stop</span>();
+        _logger.<span class="ann">LogInformation</span>(<span class="str">"Completed: {StatusCode} in {ElapsedMs}ms"</span>,
+            context.Response.StatusCode, stopwatch.ElapsedMilliseconds);
+    }
+}
+
+<span class="cm">// Extension method — clean registration pattern</span>
+<span class="kw">public static class</span> <span class="cls">MiddlewareExtensions</span>
+{
+                    <span class="kw">public static</span> <span class="cls">IApplicationBuilder</span> <span class="ann">UseRequestLogging</span>(
+                    <span class="kw">this</span> <span class="cls">IApplicationBuilder</span> app)
+        =&gt; app.<span class="ann">UseMiddleware</span>&lt;<span class="cls">RequestLoggingMiddleware</span>&gt;();
+}</code></pre>
+                </div>
+
+                <div class="callout callout-amber">
+                    <strong>Key Interview Point:</strong> UseAuthentication() must always come before UseAuthorization() — this ordering mistake is one of the most common junior errors.
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <!-- ══════════════════════════════════════
+         Q3 — JWT Authentication
+    ══════════════════════════════════════ -->
+            <section class="section" id="q3" style="animation-delay:0.2s">
+                <div class="section-header">
+                    <div class="q-num">03</div>
+                    <h2 class="q-title">How did you implement JWT Authentication in the Trailer Management System?</h2>
+                </div>
+
+                <div class="callout callout-blue">
+                    <strong>Summary:</strong> JWT is a self-contained, stateless token with three parts: Header, Payload (Claims), Signature. No database lookup needed per request.
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Key Components</div>
+                    <ul>
+                        <li><strong>Issuer (iss):</strong> Who created the token — your auth server (e.g., <code>https://trailerapi.domain.com</code>)</li>
+                        <li><strong>Audience (aud):</strong> Who the token is intended for — your consuming API</li>
+                        <li><strong>Claims:</strong> Business data embedded in payload — <code>userId</code>, <code>role</code>, <code>branchId</code></li>
+                        <li><strong>Expiry (exp):</strong> Short-lived (15–60 min) + Refresh Token for renewal</li>
+                        <li><strong>ClockSkew:</strong> Set to <code>TimeSpan.Zero</code> — removes the default 5-minute drift allowance</li>
+                    </ul>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-bar">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span class="code-lang">JwtTokenService.cs — Token generation</span>
+                    </div>
+                    <pre><code><span class="kw">public class</span> <span class="cls">JwtTokenService</span> : <span class="cls">IJwtTokenService</span>
+{
+                    <span class="kw">private readonly</span> <span class="cls">JwtSettings</span> _settings;
+
+                    <span class="kw">public string</span> <span class="ann">GenerateToken</span>(<span class="cls">ApplicationUser</span> user, <span class="cls">IList</span>&lt;<span class="kw">string</span>&gt; roles)
+    {
+                    <span class="kw">var</span> claims = <span class="kw">new</span> <span class="cls">List</span>&lt;<span class="cls">Claim</span>&gt;
+        {
+                    <span class="kw">new</span>(<span class="cls">JwtRegisteredClaimNames</span>.Sub, user.Id),
+                    <span class="kw">new</span>(<span class="cls">JwtRegisteredClaimNames</span>.Email, user.Email),
+                    <span class="kw">new</span>(<span class="cls">JwtRegisteredClaimNames</span>.Jti, <span class="cls">Guid</span>.<span class="ann">NewGuid</span>().<span class="ann">ToString</span>()),
+                    <span class="kw">new</span>(<span class="str">"branchId"</span>, user.BranchId.<span class="ann">ToString</span>()), <span class="cm">// Custom business claim</span>
+        };
+
+                    <span class="cm">// Embed roles as claims</span>
+        claims.<span class="ann">AddRange</span>(roles.<span class="ann">Select</span>(r =&gt; <span class="kw">new</span> <span class="cls">Claim</span>(<span class="cls">ClaimTypes</span>.Role, r)));
+
+                    <span class="kw">var</span> key = <span class="kw">new</span> <span class="cls">SymmetricSecurityKey</span>(
+                    <span class="cls">Encoding</span>.UTF8.<span class="ann">GetBytes</span>(_settings.SecretKey));
+                    <span class="kw">var</span> creds = <span class="kw">new</span> <span class="cls">SigningCredentials</span>(key, <span class="cls">SecurityAlgorithms</span>.HmacSha256);
+
+                    <span class="kw">var</span> token = <span class="kw">new</span> <span class="cls">JwtSecurityToken</span>(
+            issuer: _settings.Issuer,
+            audience: _settings.Audience,
+            claims: claims,
+            expires: <span class="cls">DateTime</span>.UtcNow.<span class="ann">AddMinutes</span>(_settings.ExpiryMinutes),
+            signingCredentials: creds
+        );
+
+                    <span class="kw">return new</span> <span class="cls">JwtSecurityTokenHandler</span>().<span class="ann">WriteToken</span>(token);
+    }
+}</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-bar">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span class="code-lang">Program.cs — JWT registration</span>
+                    </div>
+                    <pre><code>builder.Services.<span class="ann">AddAuthentication</span>(<span class="cls">JwtBearerDefaults</span>.AuthenticationScheme)
+    .<span class="ann">AddJwtBearer</span>(options =&gt;
+    {
+        options.TokenValidationParameters = <span class="kw">new</span> <span class="cls">TokenValidationParameters</span>
+        {
+            ValidateIssuer = <span class="kw">true</span>,
+            ValidateAudience = <span class="kw">true</span>,
+            ValidateLifetime = <span class="kw">true</span>,
+            ValidateIssuerSigningKey = <span class="kw">true</span>,
+            ValidIssuer = jwtSettings.Issuer,
+            ValidAudience = jwtSettings.Audience,
+            IssuerSigningKey = <span class="kw">new</span> <span class="cls">SymmetricSecurityKey</span>(
+                    <span class="cls">Encoding</span>.UTF8.<span class="ann">GetBytes</span>(jwtSettings.SecretKey)),
+            ClockSkew = <span class="cls">TimeSpan</span>.Zero <span class="cm">// Don't allow 5-min default drift</span>
+        };
+    });</code></pre>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <!-- ══════════════════════════════════════
+         Q4 — Authentication vs Authorization
+    ══════════════════════════════════════ -->
+            <section class="section" id="q4" style="animation-delay:0.2s">
+                <div class="section-header">
+                    <div class="q-num">04</div>
+                    <h2 class="q-title">Authentication vs Authorization — How did you handle RBAC in the Rule Engine?</h2>
+                </div>
+
+                <div class="compare-grid">
+                    <div class="compare-card">
+                        <div class="compare-card-label" style="color:var(--accent)">Authentication</div>
+                        <p style="font-size:14px; color:var(--text-secondary); margin:0"><strong>"Who are you?"</strong> — Verifies identity via JWT, cookies, API keys, etc. Runs first in the pipeline.</p>
+                    </div>
+                    <div class="compare-card preferred">
+                        <div class="compare-card-label" style="color:var(--purple)">Authorization</div>
+                        <p style="font-size:14px; color:var(--text-secondary); margin:0"><strong>"What can you do?"</strong> — Enforces permissions after identity is confirmed. Role-based, policy-based, or claim-based.</p>
+                    </div>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-bar">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span class="code-lang">Policy-based RBAC — Rule Engine Application</span>
+                    </div>
+                    <pre><code><span class="cm">// Roles: Admin, RuleManager, Viewer</span>
+<span class="cm">// Policy-based is more maintainable than [Authorize(Roles="...")] strings</span>
+builder.Services.<span class="ann">AddAuthorization</span>(options =&gt;
+{
+    options.<span class="ann">AddPolicy</span>(<span class="str">"CanManageRules"</span>, policy =&gt;
+        policy.<span class="ann">RequireRole</span>(<span class="str">"Admin"</span>, <span class="str">"RuleManager"</span>));
+
+    options.<span class="ann">AddPolicy</span>(<span class="str">"CanViewReports"</span>, policy =&gt;
+        policy.<span class="ann">RequireAuthenticatedUser</span>()
+              .<span class="ann">RequireClaim</span>(<span class="str">"branchId"</span>)); <span class="cm">// Must have branch assignment</span>
+});
+
+<span class="cm">// Controller usage</span>
+[<span class="cls">Authorize</span>(Policy = <span class="str">"CanManageRules"</span>)]
+[<span class="cls">HttpPost</span>(<span class="str">"rules"</span>)]
+<span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">IActionResult</span>&gt; <span class="ann">CreateRule</span>([<span class="cls">FromBody</span>] <span class="cls">CreateRuleRequest</span> request)
+{ ... }</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-bar">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span class="code-lang">Custom Authorization Handler — Fine-grained branch access control</span>
+                    </div>
+                    <pre><code><span class="kw">public class</span> <span class="cls">BranchAccessRequirement</span> : <span class="cls">IAuthorizationRequirement</span> { }
+
+<span class="kw">public class</span> <span class="cls">BranchAccessHandler</span>
+    : <span class="cls">AuthorizationHandler</span>&lt;<span class="cls">BranchAccessRequirement</span>&gt;
+{
+                    <span class="kw">protected override</span> <span class="cls">Task</span> <span class="ann">HandleRequirementAsync</span>(
+                    <span class="cls">AuthorizationHandlerContext</span> context,
+                    <span class="cls">BranchAccessRequirement</span> requirement)
+    {
+                    <span class="kw">var</span> branchClaim = context.User.<span class="ann">FindFirst</span>(<span class="str">"branchId"</span>);
+                    <span class="kw">if</span> (branchClaim != <span class="kw">null</span>)
+            context.<span class="ann">Succeed</span>(requirement);
+
+                    <span class="kw">return</span> <span class="cls">Task</span>.CompletedTask;
+    }
+}</code></pre>
+                </div>
+
+                <div class="callout callout-purple">
+                    <strong>Why policy-based over role strings?</strong> Role strings hardcoded in attributes are brittle. Policies are testable, centrally defined, and business-meaningful — changing a policy definition in one place updates all endpoints automatically.
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <!-- ══════════════════════════════════════
+         Q5 — Global Exception Handling
+    ══════════════════════════════════════ -->
+            <section class="section" id="q5" style="animation-delay:0.2s">
+                <div class="section-header">
+                    <div class="q-num">05</div>
+                    <h2 class="q-title">Global Exception Handling — Middleware vs. Filters</h2>
+                </div>
+
+                <div class="callout callout-blue">
+                    <strong>Rule of thumb:</strong> Use middleware for global/unhandled exceptions. Use filters only for controller-scoped, action-level overrides.
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Aspect</th>
+                                <th>Middleware</th>
+                                <th>Exception Filter</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td>Scope</td>
+                                <td class="td-yes">Entire pipeline</td>
+                                <td style="color:var(--amber)">Controllers/Actions only</td>
+                            </tr>
+                            <tr>
+                                <td>Catches routing errors</td>
+                                <td class="td-yes">✓ Yes</td>
+                                <td class="td-no">✗ No</td>
+                            </tr>
+                            <tr>
+                                <td>Access to HttpContext</td>
+                                <td class="td-yes">Full access</td>
+                                <td class="td-yes">Yes</td>
+                            </tr>
+                            <tr>
+                                <td>Best for</td>
+                                <td style="color:var(--accent)">Global handler (preferred)</td>
+                                <td style="color:var(--text-secondary)">Domain-specific overrides</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-bar">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span class="code-lang">GlobalExceptionMiddleware.cs</span>
+                    </div>
+                    <pre><code><span class="kw">public class</span> <span class="cls">GlobalExceptionMiddleware</span>
+{
+                    <span class="kw">private readonly</span> <span class="cls">RequestDelegate</span> _next;
+                    <span class="kw">private readonly</span> <span class="cls">ILogger</span>&lt;<span class="cls">GlobalExceptionMiddleware</span>&gt; _logger;
+
+                    <span class="kw">public</span> <span class="cls">GlobalExceptionMiddleware</span>(<span class="cls">RequestDelegate</span> next,
+                    <span class="cls">ILogger</span>&lt;<span class="cls">GlobalExceptionMiddleware</span>&gt; logger)
+    {
+        _next = next;
+        _logger = logger;
+    }
+
+                    <span class="kw">public async</span> <span class="cls">Task</span> <span class="ann">InvokeAsync</span>(<span class="cls">HttpContext</span> context)
+    {
+                    <span class="kw">try</span>
+        {
+                    <span class="kw">await</span> _next(context);
+        }
+                    <span class="kw">catch</span> (<span class="cls">Exception</span> ex)
+        {
+            _logger.<span class="ann">LogError</span>(ex, <span class="str">"Unhandled exception for {Path}"</span>,
+                context.Request.Path);
+                    <span class="kw">await</span> <span class="ann">HandleExceptionAsync</span>(context, ex);
+        }
+    }
+
+                    <span class="kw">private static async</span> <span class="cls">Task</span> <span class="ann">HandleExceptionAsync</span>(
+                    <span class="cls">HttpContext</span> context, <span class="cls">Exception</span> ex)
+    {
+                    <span class="kw">var</span> (statusCode, message) = ex <span class="kw">switch</span>
+        {
+                    <span class="cls">NotFoundException</span> e    =&gt; (<span class="num">404</span>, e.Message),
+                    <span class="cls">ValidationException</span> e  =&gt; (<span class="num">400</span>, e.Message),
+                    <span class="cls">UnauthorizedAccessException</span> =&gt; (<span class="num">401</span>, <span class="str">"Unauthorized"</span>),
+            _                      =&gt; (<span class="num">500</span>, <span class="str">"An unexpected error occurred"</span>)
+        };
+
+        context.Response.ContentType = <span class="str">"application/json"</span>;
+        context.Response.StatusCode = statusCode;
+
+                    <span class="kw">var</span> response = <span class="kw">new</span> {
+            error = message,
+            traceId = context.TraceIdentifier
+        };
+                    <span class="kw">await</span> context.Response.<span class="ann">WriteAsJsonAsync</span>(response);
+    }
+}</code></pre>
+                </div>
+
+                <div class="callout callout-green">
+                    <strong>Why custom middleware over built-in UseExceptionHandler?</strong> Full control over response shape, logging correlation IDs, and mapping domain exceptions to HTTP status codes cleanly — without redirecting to an error controller.
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <!-- ══════════════════════════════════════
+         Q6 — IActionResult vs ActionResult<T>
+    ══════════════════════════════════════ -->
+            <section class="section" id="q6" style="animation-delay:0.2s">
+                <div class="section-header">
+                    <div class="q-num">06</div>
+                    <h2 class="q-title">IActionResult vs ActionResult&lt;T&gt; — What's the difference?</h2>
+                </div>
+
+                <div class="callout callout-green">
+                    <strong>Prefer ActionResult&lt;T&gt;</strong> — it's type-safe and enables automatic Swagger/OpenAPI schema generation. No need for <code>[ProducesResponseType]</code> decoration for the success case.
+                </div>
+
+                <div class="compare-grid">
+                    <div class="compare-card">
+                        <div class="compare-card-label label-bad">❌ IActionResult — Avoid</div>
+                        <div class="code-block" style="margin:0; font-size:12px;">
+                            <pre><code><span class="cm">// No compile-time type info
+// Swagger can't infer response schema</span>
+[<span class="cls">HttpGet</span>(<span class="str">"{id}"</span>)]
+<span class="kw">public</span> <span class="cls">IActionResult</span> <span class="ann">GetTrailer</span>(<span class="kw">int</span> id)
+{
+                            <span class="kw">var</span> trailer = _service.<span class="ann">GetById</span>(id);
+                            <span class="kw">if</span> (trailer == <span class="kw">null</span>) <span class="kw">return</span> <span class="ann">NotFound</span>();
+                            <span class="kw">return</span> <span class="ann">Ok</span>(trailer); <span class="cm">// Swagger doesn't know type</span>
+}</code></pre>
+                        </div>
+                    </div>
+                    <div class="compare-card preferred">
+                        <div class="compare-card-label label-good">✓ ActionResult&lt;T&gt; — Preferred</div>
+                        <div class="code-block" style="margin:0; font-size:12px;">
+                            <pre><code><span class="cm">// Type-safe, Swagger schema auto-generated
+// Implicit cast from T → 200 OK</span>
+[<span class="cls">HttpGet</span>(<span class="str">"{id}"</span>)]
+<span class="kw">public async</span> <span class="cls">Task</span>&lt;<span class="cls">ActionResult</span>&lt;<span class="cls">TrailerDto</span>&gt;&gt; <span class="ann">GetTrailer</span>(<span class="kw">int</span> id)
+{
+                            <span class="kw">var</span> trailer = <span class="kw">await</span> _service.<span class="ann">GetByIdAsync</span>(id);
+                            <span class="kw">if</span> (trailer == <span class="kw">null</span>) <span class="kw">return</span> <span class="ann">NotFound</span>();
+                            <span class="kw">return</span> trailer; <span class="cm">// Implicit Ok(trailer)</span>
+}</code></pre>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card">
+                    <div class="card-label">Key Benefits of ActionResult&lt;T&gt;</div>
+                    <ul>
+                        <li>Return <code>T</code> directly — it implicitly wraps in <code>200 OK</code></li>
+                        <li>Swagger generates the correct <code>$ref</code> schema for <code>TrailerDto</code> automatically</li>
+                        <li>Compile-time safety — the compiler knows the return type</li>
+                        <li>Use <code>IActionResult</code> only when one action legitimately returns multiple different types — rare in practice</li>
+                    </ul>
+                </div>
+            </section>
+
+            <div class="divider"></div>
+
+            <!-- ══════════════════════════════════════
+         Q7 — API Versioning
+    ══════════════════════════════════════ -->
+            <section class="section" id="q7" style="animation-delay:0.2s">
+                <div class="section-header">
+                    <div class="q-num">07</div>
+                    <h2 class="q-title">How do you version your APIs? What strategies have you used?</h2>
+                </div>
+
+                <div class="callout callout-blue">
+                    <strong>Summary:</strong> We used URL segment versioning as primary, with header versioning awareness. Both are supported simultaneously via <code>ApiVersionReader.Combine()</code>.
+                </div>
+
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Strategy</th>
+                                <th>Example</th>
+                                <th>Pros</th>
+                                <th>Cons</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><strong>URL Segment</strong></td>
+                                <td><code>/api/v1/trailers</code></td>
+                                <td style="color:var(--green)">Explicit, cacheable, easy to test</td>
+                                <td style="color:var(--text-muted)">URL changes</td>
+                            </tr>
+                            <tr>
+                                <td>Query String</td>
+                                <td><code>?api-version=1.0</code></td>
+                                <td style="color:var(--text-muted)">Backward compatible</td>
+                                <td style="color:var(--red)">Clutters URLs</td>
+                            </tr>
+                            <tr>
+                                <td>Header</td>
+                                <td><code>api-version: 1.0</code></td>
+                                <td style="color:var(--text-muted)">Clean URLs</td>
+                                <td style="color:var(--red)">Harder to test in browser</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-bar">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span class="code-lang">Program.cs — Versioning registration</span>
+                    </div>
+                    <pre><code><span class="cm">// Install: Microsoft.AspNetCore.Mvc.Versioning</span>
+builder.Services.<span class="ann">AddApiVersioning</span>(options =&gt;
+{
+    options.DefaultApiVersion = <span class="kw">new</span> <span class="cls">ApiVersion</span>(<span class="num">1</span>, <span class="num">0</span>);
+    options.AssumeDefaultVersionWhenUnspecified = <span class="kw">true</span>;
+    options.ReportApiVersions = <span class="kw">true</span>; <span class="cm">// Adds api-supported-versions header</span>
+    options.ApiVersionReader = <span class="cls">ApiVersionReader</span>.<span class="ann">Combine</span>(
+                    <span class="kw">new</span> <span class="cls">UrlSegmentApiVersionReader</span>(),
+                    <span class="kw">new</span> <span class="cls">HeaderApiVersionReader</span>(<span class="str">"api-version"</span>) <span class="cm">// Support both</span>
+    );
+});</code></pre>
+                </div>
+
+                <div class="code-block">
+                    <div class="code-bar">
+                        <div class="code-dots"><span></span><span></span><span></span></div>
+                        <span class="code-lang">Controllers — V1 and V2 side by side</span>
+                    </div>
+                    <pre><code>[<span class="cls">ApiController</span>]
+[<span class="cls">Route</span>(<span class="str">"api/v{version:apiVersion}/trailers"</span>)]
+[<span class="cls">ApiVersion</span>(<span class="str">"1.0"</span>)]
+<span class="kw">public class</span> <span class="cls">TrailersV1Controller</span> : <span class="cls">ControllerBase</span> { ... }
+
+[<span class="cls">ApiController</span>]
+[<span class="cls">Route</span>(<span class="str">"api/v{version:apiVersion}/trailers"</span>)]
+[<span class="cls">ApiVersion</span>(<span class="str">"2.0"</span>)]
+[<span class="cls">ApiVersion</span>(<span class="str">"1.0"</span>, Deprecated = <span class="kw">true</span>)]
+<span class="kw">public class</span> <span class="cls">TrailersV2Controller</span> : <span class="cls">ControllerBase</span>
+{
+                    <span class="cm">// V2 adds pagination, new filter fields, richer response schema</span>
+}</code></pre>
+                </div>
+
+                <div class="tip-box">
+                    <div class="tip-label">🎤 Real Decision Rationale</div>
+                    <p>"We chose URL segment versioning on the Trailer Management System because the API was consumed by a React frontend and a mobile app. URL-based versions are explicit in logs, easy to route in API Gateway (Azure APIM), and require zero client header configuration. We deprecated V1 with a 6-month sunset period, using the Deprecated attribute and a response header warning."</p>
+                </div>
+
+                <div class="callout callout-amber">
+                    <strong>Senior tip:</strong> Always deprecate — never delete immediately. Use <code>[ApiVersion("1.0", Deprecated = true)]</code> and communicate the sunset date in response headers so consumers have time to migrate.
+                </div>
+            </section>
+
+            <!-- ── FOOTER ── -->
+            <div class="divider"></div>
+            <div style="text-align:center; padding: 12px 0 32px;">
+                <div style="color:var(--text-muted); font-size:13px; font-family:var(--font-mono); margin-bottom:16px;">
+                    ASP.NET Core Web API · Senior Interview Guide · 7 Questions
+                </div>
+                <a href="#top" class="back-top">↑ Back to top</a>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
