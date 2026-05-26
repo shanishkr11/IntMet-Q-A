@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MNC Interview Q&A – Chapters 4, 5 & 6</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0d0f14;
+    --sidebar-bg: #111318;
+    --sidebar-border: #1e2129;
+    --card-bg: #161920;
+    --card-border: #1e2530;
+    --accent: #4f9cf9;
+    --accent-dim: #1e3a5f;
+    --accent-glow: rgba(79,156,249,0.12);
+    --text-primary: #e8eaf0;
+    --text-secondary: #7a8394;
+    --text-muted: #4a5568;
+    --green: #34d399;
+    --amber: #fbbf24;
+    --rose: #f87171;
+    --purple: #a78bfa;
+    --teal: #2dd4bf;
+    --code-bg: #0a0d12;
+    --pill-ms: #1d3557;
+    --pill-amazon: #2d1b00;
+    --pill-accenture: #1a0d2e;
+    --pill-infosys: #0d2218;
+    --pill-tcs: #1a1a00;
+    --pill-deloitte: #001a2e;
+    --header-h: 56px;
+  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    font-family: 'Outfit', sans-serif;
+    background: var(--bg);
+    color: var(--text-primary);
+    display: grid;
+    grid-template-rows: var(--header-h) 1fr;
+    grid-template-columns: 280px 1fr;
+    height: 100vh;
+    overflow: hidden;
+  }
+
+  /* ── HEADER ── */
+  header {
+    grid-column: 1 / -1;
+    background: var(--sidebar-bg);
+    border-bottom: 1px solid var(--sidebar-border);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    gap: 20px;
+    position: relative;
+    z-index: 100;
+  }
+  .logo {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.25rem;
+    color: var(--accent);
+    letter-spacing: 0.01em;
+    white-space: nowrap;
+  }
+  .logo span { color: var(--text-secondary); font-size: 0.85rem; font-family: 'Outfit', sans-serif; font-weight: 300; margin-left: 10px; }
+  .search-wrap {
+    flex: 1;
+    max-width: 480px;
+    position: relative;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--text-muted);
+  }
+  #searchInput {
+    width: 100%;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    padding: 8px 12px 8px 38px;
+    color: var(--text-primary);
+    font-family: 'Outfit', sans-serif;
+    font-size: 0.875rem;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  #searchInput:focus { border-color: var(--accent); }
+  #searchInput::placeholder { color: var(--text-muted); }
+  .stat-pill {
+    margin-left: auto;
+    background: var(--accent-dim);
+    color: var(--accent);
+    padding: 4px 12px;
+    border-radius: 20px;
+    font-size: 0.78rem;
+    font-weight: 600;
+    white-space: nowrap;
+  }
+
+  /* ── SIDEBAR ── */
+  aside {
+    background: var(--sidebar-bg);
+    border-right: 1px solid var(--sidebar-border);
+    overflow-y: auto;
+    padding: 16px 0 32px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--card-border) transparent;
+  }
+  aside::-webkit-scrollbar { width: 4px; }
+  aside::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 2px; }
+
+  .chapter-group { margin-bottom: 4px; }
+  .chapter-label {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px 8px;
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    cursor: pointer;
+    user-select: none;
+    transition: color 0.2s;
+    position: sticky;
+    top: 0;
+    background: var(--sidebar-bg);
+    z-index: 2;
+  }
+  .chapter-label:hover { color: var(--text-secondary); }
+  .chapter-num {
+    background: var(--accent-dim);
+    color: var(--accent);
+    border-radius: 4px;
+    padding: 1px 6px;
+    font-size: 0.65rem;
+  }
+  .ch-arrow { margin-left: auto; transition: transform 0.25s; }
+  .chapter-group.collapsed .ch-arrow { transform: rotate(-90deg); }
+  .chapter-group.collapsed .section-list { display: none; }
+
+  .section-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 7px 20px 7px 24px;
+    font-size: 0.815rem;
+    color: var(--text-secondary);
+    cursor: pointer;
+    transition: all 0.15s;
+    border-left: 2px solid transparent;
+    line-height: 1.35;
+  }
+  .section-item:hover { color: var(--text-primary); background: rgba(255,255,255,0.03); }
+  .section-item.active {
+    color: var(--accent);
+    border-left-color: var(--accent);
+    background: var(--accent-glow);
+    font-weight: 500;
+  }
+  .section-count {
+    margin-left: auto;
+    font-size: 0.7rem;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    padding: 1px 6px;
+    border-radius: 10px;
+    flex-shrink: 0;
+  }
+
+  /* ── MAIN CONTENT ── */
+  main {
+    overflow-y: auto;
+    padding: 32px 40px;
+    scrollbar-width: thin;
+    scrollbar-color: var(--card-border) transparent;
+  }
+  main::-webkit-scrollbar { width: 6px; }
+  main::-webkit-scrollbar-thumb { background: var(--card-border); border-radius: 3px; }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--card-border);
+  }
+  .section-header h2 {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.6rem;
+    color: var(--text-primary);
+    font-weight: 400;
+  }
+  .section-header .q-range {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    padding: 3px 10px;
+    border-radius: 12px;
+    margin-left: auto;
+  }
+
+  /* ── Q CARDS ── */
+  .q-grid { display: flex; flex-direction: column; gap: 20px; }
+  .q-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    animation: fadeIn 0.3s ease forwards;
+  }
+  @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+  .q-card:hover {
+    border-color: #2a3545;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
+  }
+  .q-card.highlight { border-color: var(--accent); box-shadow: 0 0 0 1px var(--accent-dim); }
+
+  .q-header {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 16px 20px;
+    cursor: pointer;
+    user-select: none;
+  }
+  .q-number {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.72rem;
+    font-weight: 600;
+    color: var(--accent);
+    background: var(--accent-dim);
+    padding: 3px 8px;
+    border-radius: 6px;
+    white-space: nowrap;
+    margin-top: 2px;
+    flex-shrink: 0;
+  }
+  .q-title-wrap { flex: 1; }
+  .q-title {
+    font-size: 1rem;
+    font-weight: 500;
+    color: var(--text-primary);
+    line-height: 1.45;
+    margin-bottom: 6px;
+  }
+  .q-meta { display: flex; gap: 6px; flex-wrap: wrap; }
+  .company-pill {
+    font-size: 0.67rem;
+    font-weight: 600;
+    padding: 2px 8px;
+    border-radius: 10px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  .pill-microsoft { background: var(--pill-ms); color: #90c4ff; }
+  .pill-amazon { background: var(--pill-amazon); color: #ff9900; }
+  .pill-accenture { background: var(--pill-accenture); color: #c084fc; }
+  .pill-infosys { background: var(--pill-infosys); color: #6ee7b7; }
+  .pill-tcs { background: var(--pill-tcs); color: #fde68a; }
+  .pill-deloitte { background: var(--pill-deloitte); color: #7dd3fc; }
+  .pill-default { background: var(--card-border); color: var(--text-secondary); }
+  .round-pill {
+    font-size: 0.67rem;
+    padding: 2px 8px;
+    border-radius: 10px;
+    background: rgba(255,255,255,0.05);
+    color: var(--text-muted);
+    text-transform: capitalize;
+  }
+  .expand-btn {
+    width: 24px;
+    height: 24px;
+    border-radius: 6px;
+    background: rgba(255,255,255,0.05);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    margin-top: 2px;
+    transition: background 0.15s, transform 0.25s;
+    color: var(--text-muted);
+  }
+  .q-card.open .expand-btn { transform: rotate(180deg); background: var(--accent-dim); color: var(--accent); }
+
+  .q-body {
+    display: none;
+    padding: 0 20px 20px;
+    border-top: 1px solid var(--card-border);
+    margin-top: 0;
+  }
+  .q-card.open .q-body { display: block; }
+  .q-body-inner {
+    padding-top: 16px;
+    font-size: 0.88rem;
+    line-height: 1.75;
+    color: var(--text-secondary);
+  }
+  .q-body-inner code, .q-body-inner pre {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 0.8rem;
+    background: var(--code-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 6px;
+    color: #a5d8ff;
+    padding: 12px 16px;
+    display: block;
+    margin: 12px 0;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.6;
+  }
+  .q-body-inner .bullet {
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+    margin: 4px 0;
+    color: var(--text-secondary);
+  }
+  .q-body-inner .bullet::before {
+    content: '▸';
+    color: var(--accent);
+    flex-shrink: 0;
+    margin-top: 1px;
+  }
+  .q-body-inner .section-label {
+    font-size: 0.72rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--text-muted);
+    margin: 14px 0 6px;
+  }
+  .q-body-inner .tip-box {
+    background: rgba(251,191,36,0.07);
+    border-left: 3px solid var(--amber);
+    border-radius: 0 6px 6px 0;
+    padding: 10px 14px;
+    margin: 12px 0;
+    font-size: 0.85rem;
+    color: #fde68a;
+  }
+  .q-body-inner .tip-box::before { content: '💡 '; }
+
+  /* empty state */
+  .empty-state {
+    text-align: center;
+    padding: 80px 20px;
+    color: var(--text-muted);
+  }
+  .empty-state svg { margin-bottom: 16px; opacity: 0.3; }
+  .empty-state h3 { font-size: 1.1rem; color: var(--text-secondary); margin-bottom: 8px; }
+
+  /* search results */
+  #resultCount {
+    font-size: 0.8rem;
+    color: var(--text-muted);
+    margin-bottom: 20px;
+  }
+  #resultCount span { color: var(--accent); font-weight: 600; }
+
+  .chapter-divider {
+    font-family: 'DM Serif Display', serif;
+    font-size: 1.8rem;
+    color: var(--text-primary);
+    margin-bottom: 8px;
+    font-weight: 400;
+  }
+  .chapter-sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    margin-bottom: 32px;
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">MNC Interview Q&A <span>Chapters 4 · 5 · 6</span></div>
+  <div class="search-wrap">
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+    <input type="text" id="searchInput" placeholder="Search questions, topics, companies…" oninput="handleSearch(this.value)" autocomplete="off">
+  </div>
+  <div class="stat-pill" id="statPill">190 Questions</div>
+</header>
+
+<aside id="sidebar"></aside>
+<main id="main"></main>
+
+<script>
+const DATA = [{"title": "CHAPTER 4 – ASP.NET CORE & WEB API", "sections": [{"title": "🔹 Core Concepts & Fundamentals (Q361–Q380)", "questions": []}, {"title": "🌐 ASP.NET CORE BASICS (Q361–Q380)", "questions": [{"id": "Q361", "meta": "TCS / Infosys – Screening Round", "title": "What is ASP.NET Core and why do companies use it?", "body": "Detailed, explanation\nASP.NET Core is a modern, cross-platform, high-performance web framework used to build:\n●\tREST APIs\n●\tMicroservices\n●\tWeb applications\n●\tCloud applications\nCompanies love it because ASP.NET Core is:\n●\tFast – one of the fastest web frameworks\n●\tLightweight – minimal overhead\n●\tCross-platform – runs on Windows, Linux, Mac\n●\tCloud-friendly – works great with Docker, Kubernetes, Azure\n●\tEasy to scale – handles large traffic easily\nReal-time C# example\nSimple Health Check API: [ApiController] [Route(\"api/health\")]\npublic class HealthController : ControllerBase\n{\n[HttpGet]\npublic IActionResult Check()\n{\nreturn Ok(\"API is running\");\n}\n}\nReal project usage\nUsed for:\n●\tLoad balancer health checks\n●\tMonitoring tools\n●\tCloud deployment readiness\n"}, {"id": "Q362", "meta": "Accenture – Technical Round", "title": "Difference between ASP.NET and ASP.NET Core", "body": "Explanation (real interview style) ASP.NET Core\n●\tCross-platform (Windows / Linux / Mac)\n●\tMuch faster performance\n●\tModular & lightweight\n●\tBuilt for microservices & cloud\n●\tNew dependency injection pipeline\n●\tSupports minimal APIs & modern features\nOld ASP.NET (.NET Framework)\n●\tWindows-only\n●\tHeavy\n●\tLimited performance\n●\tMonolithic by nature\nInterview Tip\nSay confidently:\n“ASP.NET Core is the future and preferred for modern enterprise development.”\n"}, {"id": "Q363", "meta": "Microsoft – Technical Round", "title": "What is Kestrel and why is it important?", "body": "Explanation\nKestrel is the built-in web server in ASP.NET Core. It handles HTTP requests and responses.\nWhy is it important?\n●\tExtremely fast\n●\tCross-platform\n●\tAlways used internally in ASP.NET Core\nReal-time production\n●\tOn Windows → Kestrel + IIS\n●\tOn Linux → Kestrel + Nginx\n●\tIn Docker → runs directly\n"}]}, {"title": "🧠 MIDDLEWARE PIPELINE", "questions": [{"id": "Q364", "meta": "Amazon – Interview Favorite", "title": "What is middleware in ASP.NET Core?", "body": "Explanation\nMiddleware is a component that runs on every HTTP request and response. Flow:\nRequest → Middleware → Controller → Middleware → Response\nReal-time C# example\napp.Use(async (context, next) =>\n{\n});\nConsole.WriteLine(\"Request started\"); await next(); Console.WriteLine(\"Request finished\");\nReal project usage\nMiddleware is commonly used for:\n●\tLogging\n●\tAuthentication\n●\tAuthorization\n●\tException handling\n●\tCORS\n●\tRequest modification\n"}, {"id": "Q365", "meta": "Infosys – Technical Round", "title": "Order of middleware – why does it matter?", "body": "Explanation\nMiddleware executes in the exact order added. Wrong order = unexpected bugs.\nExample:\n●\tAuthentication must happen before Authorization\n●\tException middleware must be early\n●\tStatic files middleware should be before MVC\nBad order causes:\n●\tAuth always failing\n●\tExceptions not caught\n●\tResponses breaking\n"}]}, {"title": "🌐 CONTROLLERS & ROUTING", "questions": [{"id": "Q366", "meta": "Accenture – Developer Round", "title": "What is a Controller in Web API?", "body": "Explanation\nController:\n●\tReceives HTTP requests\n●\tExecutes business logic\n●\tReturns HTTP response\nReal-time C# example [ApiController] [Route(\"api/users\")]\npublic class UsersController : ControllerBase\n{\n[HttpGet(\"{id}\")]\npublic IActionResult GetUser(int id)\n{\nreturn Ok($\"User {id}\");\n}\n}\n"}, {"id": "Q367", "meta": "Microsoft – Interview Favorite", "title": "Attribute routing vs Conventional routing", "body": "Explanation\nAttribute Routing\n●\tRoute written on controller\n●\tMostly used in APIs\nConventional Routing\n●\tRoute defined in Program.cs\n●\tMostly used in MVC web apps\nReal-world\nAPIs → Attribute Routing (almost always)\n"}]}, {"title": "🧾 MODEL BINDING & VALIDATION", "questions": [{"id": "Q368", "meta": "Infosys – Technical Round", "title": "What is model binding?", "body": "Explanation\nModel binding automatically maps:\n●\tJSON request body\n●\tQuery parameters\n●\tRoute values\nto C# objects.\nReal-time C# example\npublic IActionResult CreateUser(UserDto user)\n{\nreturn Ok(user.Name);\n}\n"}, {"id": "Q369", "meta": "Amazon – Interview Favorite", "title": "How validation works in Web API?", "body": "Explanation\nUses Data Annotations. Real-time C# example public class UserDto\n{\n[Required]\npublic string Email { get; set; }\n}\nIf invalid → automatic\n400 Bad Request\nASP.NET Core automatically validates [ApiController] annotated controllers.\n"}]}, {"title": "🔐 DEPENDENCY INJECTION (VERY IMPORTANT)", "questions": [{"id": "Q370", "meta": "Microsoft – Technical Round", "title": "What is Dependency Injection in ASP.NET Core?", "body": "Explanation\nInstead of creating objects manually using new,\nASP.NET Core creates and injects dependencies automatically.\nReal-time C# example\npublic class OrderController : ControllerBase\n{\nprivate readonly IOrderService _service;\npublic OrderController(IOrderService service)\n{\n_service = service;\n}\n}\nBenefits:\n●\tLoose coupling\n●\tEasy testing\n●\tClean architecture\n"}, {"id": "Q371", "meta": "Accenture – Interview Favorite", "title": "Service lifetimes – Singleton, Scoped, Transient", "body": "Lifetime\tMeaning\tUse case\nSingleton\nOne instance per app\nConfig, cache\nScoped\nOne per request\nDB context\nTransient\nNew instance each time\nLightweight services\n"}]}, {"title": "🧠 ERROR HANDLING & FILTERS", "questions": [{"id": "Q372", "meta": "Amazon – Scenario Based", "title": "How do you handle exceptions globally?", "body": "Explanation\nUse Global Exception Handling Middleware. Real-time example app.UseExceptionHandler(\"/error\");\nOr custom middleware is commonly used in real projects.\n"}, {"id": "Q373", "meta": "Microsoft – Advanced Round", "title": "Filters vs Middleware – difference", "body": "Explanation\nMiddleware:\n●\tRuns for entire pipeline\n●\tWorks for all requests\nFilters:\n●\tWork inside MVC pipeline\n●\tSpecific to controllers/actions\nFilters are ideal for:\n●\tAuthorization filters\n●\tAction filters\n●\tLogging filters\n"}]}, {"title": "🌍 REST & HTTP CONCEPTS", "questions": [{"id": "Q374", "meta": "Infosys – Screening Round", "title": "What is REST API?", "body": "Explanation\nREST uses standard HTTP verbs to perform actions on resources.\nMethod\tMeaning\nGET\nRead\nPOST\nCreate\nPUT\nFull Update\nPATCH\nPartial Update\nDELETE\nRemove\n"}, {"id": "Q375", "meta": "Amazon – Interview Favorite", "title": "Difference between PUT and PATCH", "body": "Explanation\nPUT:\n●\tReplaces entire object\n●\tFull update\nPATCH:\n●\tUpdates only specific fields\n●\tPartial update\n●\tUsed in modern APIs\n"}]}, {"title": "🔐 AUTHENTICATION & AUTHORIZATION", "questions": [{"id": "Q376", "meta": "Microsoft – Technical Round", "title": "Authentication vs Authorization", "body": "Explanation\nAuthentication → Who are you? (login identity) Authorization → What can you do? (permissions)\n"}, {"id": "Q377", "meta": "Accenture – Developer Round", "title": "JWT authentication – real usage", "body": "Explanation\nJWT is used for:\n●\tSecure API access\n●\tStateless authentication\n●\tMicroservices\nReal header\nAuthorization: Bearer <token>\nWidely used in mobile apps, SPAs, microservices.\n"}]}, {"title": "🧠 PERFORMANCE & BEST PRACTICES", "questions": [{"id": "Q378", "meta": "Amazon – System Design", "title": "Why are async controllers important?", "body": "Explanation\nAsync controllers:\n●\tFree threads while waiting\n●\tHandle more requests\n●\tImprove scalability\nEssential for high-traffic APIs.\n"}, {"id": "Q379", "meta": "Microsoft – Best Practice", "title": "Why are DTOs used instead of entities?", "body": "Explanation\n●\tSecurity (avoid exposing DB structure)\n●\tClean contracts\n●\tPerformance control\n●\tPrevent over-posting attacks\n"}, {"id": "Q380", "meta": "ALL MNCs – FINAL ASP.NET CORE QUESTION", "title": "How does ASP.NET Core fit into microservices architecture?", "body": "Best Interview Answer\n“ASP.NET Core is lightweight, extremely fast, cloud-ready, supports Docker & Kubernetes, integrates with gRPC, messaging systems, and is ideal for building scalable microservices.”\n"}]}, {"title": "🔹 Advanced Web API: Security, Filters & Versioning (Q381–Q410)", "questions": []}, {"title": "🔐 SECURITY IN WEB API (Q381 – Q410)", "questions": [{"id": "Q381", "meta": "Microsoft – Technical Round", "title": "How do you secure an ASP.NET Core Web API?", "body": "Detailed explanation (Easy way)\nSecurity in Web API is never one feature; it is a layered protection strategy. A secure API ensures:\n1\tAuthentication – verify who the user is\n2\tAuthorization – ensure only allowed users can access\n3\tValidation & Filtering – block malicious input\n4\tHTTPS only – secure transport\n5\tSecure Headers – prevent attacks\n6\tLogging & Monitoring – track malicious activity\nMost modern .NET APIs use JWT authentication because it is:\n●\tStateless\n●\tLightweight\n●\tCloud-friendly\nReal-time C# example\nRegister JWT Authentication:\nbuilder.Services.AddAuthentication(\"Bearer\")\n.AddJwtBearer();\nEnable middleware:\napp.UseAuthentication(); app.UseAuthorization();\nReal project usage\nUsed heavily in:\n●\tBanking APIs\n●\tPayment systems\n●\tGovernment portals\n●\tMicroservices authentication\n"}, {"id": "Q382", "meta": "Accenture – Interview Favorite", "title": "What is JWT and why is it used?", "body": "Explanation\nJWT (JSON Web Token) is a secure, digitally signed token that contains user identity and claims.\nWhy do companies use JWT?\n●\tNo session storage needed → Stateless\n●\tWorks perfectly in distributed systems and cloud\n●\tFast validation\n●\tBuilt-in expiration\nReal-time flow\n1\tUser logs in\n2\tServer generates JWT\n3\tClient sends token in every request\n4\tServer validates & grants access\n"}, {"id": "Q383", "meta": "Amazon – Security Round", "title": "Where is JWT stored on the client side and why?", "body": "Explanation\nMost common storage options:\n✔ HTTP-Only Cookies\n●\tBest security\n●\tPrevents XSS token theft\n✔ In-memory (for SPA apps)\n●\tSafer than localStorage\n●\tToken cleared when tab closes\n❌ Avoid localStorage for sensitive apps because:\n●\tVulnerable to XSS\n●\tToken theft risk\n"}, {"id": "Q384", "meta": "Microsoft – Technical Round", "title": "How do you protect API endpoints using JWT?", "body": "Real-time C# example\n[Authorize] [HttpGet(\"profile\")]\npublic IActionResult GetProfile()\n{\nreturn Ok(\"Secure data\");\n}\nInterview Tip\nSay confidently:\n“We protect endpoints using [Authorize] and configure authentication middleware.”\n"}, {"id": "Q385", "meta": "Infosys – Screening Round", "title": "Authentication vs Authorization – practical difference", "body": "Explanation\nAuthentication → Are you a valid user?\nAuthorization → What are you allowed to do?\nReal project example\n●\tUser logs in = Authentication\n●\tOnly Admin can delete user = Authorization\n"}]}, {"title": "🧠 ROLE & POLICY-BASED AUTHORIZATION", "questions": [{"id": "Q386", "meta": "Microsoft – Advanced Round", "title": "Role-based authorization – real usage", "body": "C# example\n[Authorize(Roles = \"Admin\")]\npublic IActionResult DeleteUser(int id)\n{\nreturn Ok();\n}\nReal usage\n●\tAdmin-only APIs\n●\tManagement portals\n●\tCorporate dashboards\n"}, {"id": "Q387", "meta": "Accenture – Senior Round", "title": "Policy-based authorization – when to use?", "body": "Explanation\nUse Policy Authorization when:\n●\tRules are complex\n●\tRole-based is not enough\n●\tNeed claim-based logic\nC# example\nbuilder.Services.AddAuthorization(options =>\n{\noptions.AddPolicy(\"AdultOnly\",\npolicy => policy.RequireClaim(\"Age\", \"18\"));\n});\nUsage:\n[Authorize(Policy = \"AdultOnly\")]\n"}]}, {"title": "🧪 FILTERS (VERY IMPORTANT FOR INTERVIEWS)", "questions": [{"id": "Q388", "meta": "Microsoft – Interview Favorite", "title": "What are filters in ASP.NET Core?", "body": "Explanation\nFilters allow executing code:\n●\tBefore an action\n●\tAfter an action\n●\tBefore returning response\n●\tOn exceptions\nThey help avoid duplicate logic.\nReal project usage\n●\tLogging\n●\tValidation\n●\tAuditing\n●\tAuthorization\n●\tException handling\n"}, {"id": "Q389", "meta": "Infosys – Technical Round", "title": "Types of filters in ASP.NET Core", "body": "Filter Type\tPurpose\nAuthorization\tSecurity checks\nAction\tExecute before/after action\nResult\tModify response\nException\tHandle errors globally\n"}, {"id": "Q390", "meta": "Amazon – Coding Round", "title": "Action filter real-time example", "body": "public class LogActionFilter : IActionFilter\n{\npublic void OnActionExecuting(ActionExecutingContext context)\n{\nConsole.WriteLine(\"Action started\");\n}\npublic void OnActionExecuted(ActionExecutedContext context)\n{\nConsole.WriteLine(\"Action finished\");\n}\n}\nApply:\n[ServiceFilter(typeof(LogActionFilter))]\n"}, {"id": "Q391", "meta": "Microsoft – Advanced", "title": "Filter vs Middleware – real difference", "body": "Explanation (Easy way)\nMiddleware:\n●\tRuns for every request\n●\tWorks outside MVC\n●\tBest for: Logging, Auth pipeline, CORS\nFilters:\n●\tRun only inside MVC\n●\tController + Action specific\n●\tBest for: Validation, Action logging, Exception handling\n🧯 EXCEPTION HANDLING (PRODUCTION LEVEL)\n"}, {"id": "Q392", "meta": "Amazon – Scenario Based", "title": "Best way to handle exceptions globally in Web API", "body": "Explanation\nUse Global Exception Handling Middleware, not try-catch everywhere.\nC# example\napp.UseExceptionHandler(errorApp =>\n{\nerrorApp.Run(async context =>\n{\ncontext.Response.StatusCode = 500;\nawait context.Response.WriteAsync(\"Something went wrong\");\n});\n});\n"}, {"id": "Q393", "meta": "Deloitte – Senior Round", "title": "Why not use try-catch in every controller?", "body": "Explanation\n●\tCode duplication\n●\tHard maintenance\n●\tMissed corner cases\n●\tLess control\nGlobal handling = cleaner & safer.\n"}]}, {"title": "🔄 API VERSIONING", "questions": [{"id": "Q394", "meta": "Microsoft – Interview Favorite", "title": "Why is API versioning needed?", "body": "Explanation\nAPIs evolve. Clients may still use old versions. Versioning ensures:\n●\tBackward compatibility\n●\tNo breaking changes\n●\tSmooth upgrades\nReal example\nMobile apps using v1 while new clients use v2.\n"}, {"id": "Q395", "meta": "Accenture – Technical Round", "title": "Different API versioning strategies", "body": "Explanation\nURL-based\n/api/v1/users\nHeader-based\nx-api-version: 1\nQuery string\n/api/users?version=1\n"}, {"id": "Q396", "meta": "Amazon – Coding Round", "title": "URL-based API versioning – C# example", "body": "[ApiVersion(\"1.0\")] [Route(\"api/v{version:apiVersion}/users\")] public class UsersV1Controller : ControllerBase\n{\n}\n"}, {"id": "Q397", "meta": "Microsoft – Advanced Round", "title": "Which versioning strategy is most popular?", "body": "Explanation\nURL Versioning\n●\tVisible\n●\tSimple\n●\tEasy to manage\nMost used in real projects.\n"}]}, {"title": "🧠 SECURITY BEST PRACTICES", "questions": [{"id": "Q398", "meta": "Accenture – Security Round", "title": "How do you prevent over-posting attacks?", "body": "Explanation\nNever bind domain/entity directly. Always use DTOs.\n"}, {"id": "Q399", "meta": "Amazon – System Design", "title": "Why is HTTPS mandatory for APIs?", "body": "Explanation\n●\tEncrypts data\n●\tPrevents sniffing\n●\tProtects credentials & tokens\n●\tRequired by security standards\n"}, {"id": "Q400", "meta": "Microsoft – Best Practice", "title": "How to secure sensitive configuration data?", "body": "Explanation\nUse:\n●\tEnvironment variables\n●\tAzure Key Vault\n●\tAWS Secrets Manager\n●\tUser Secrets (Development)\n❌ Never store secrets in appsettings.json\n"}]}, {"title": "⚡ PERFORMANCE & SCALABILITY", "questions": [{"id": "Q401", "meta": "Amazon – Architecture Round", "title": "Why is caching important in Web APIs?", "body": "Explanation\nCaching:\n●\tReduces database hits\n●\tImproves speed\n●\tReduces cost\n●\tImproves scalability\n"}, {"id": "Q402", "meta": "Microsoft – Technical Round", "title": "In-memory caching example", "body": "IMemoryCache cache;\ncache.Set(\"users\", users, TimeSpan.FromMinutes(5));\n"}, {"id": "Q403", "meta": "Accenture – Senior Round", "title": "Why is response compression used?", "body": "Explanation\n●\tReduces response size\n●\tFaster API response\n●\tBetter user experience\n"}]}, {"title": "🧠 REAL INTERVIEW SCENARIOS", "questions": [{"id": "Q404", "meta": "Deloitte – Scenario Based", "title": "How do you rate-limit an API?", "body": "Explanation\nLimit number of requests per user/client. Used to prevent:\n●\tAbuse\n●\tSpam\n●\tDDoS\n"}, {"id": "Q405", "meta": "Amazon – Advanced", "title": "What happens if a token expires during request?", "body": "Explanation\nAPI returns:\n401 Unauthorized\nClient must:\n●\tRefresh token\n●\tRetry request\n"}]}, {"title": "🏁 FINAL ADVANCED QUESTIONS", "questions": [{"id": "Q406", "meta": "Microsoft – Final Round", "title": "How do filters improve maintainability?", "body": "They avoid duplicated logic and centralize cross-cutting concerns.\n"}, {"id": "Q407", "meta": "Accenture – Final Tech", "title": "JWT vs OAuth – difference", "body": "●\tJWT → Token format\n●\tOAuth → Authorization framework\nOAuth often uses JWT.\n"}, {"id": "Q408", "meta": "Amazon – Final Architecture", "title": "How does the Web API support microservices communication?", "body": "Using:\n●\tREST\n●\tgRPC\n●\tMessaging (Kafka / RabbitMQ)\n"}, {"id": "Q409", "meta": "Deloitte – Leadership", "title": "Biggest Web API security mistake you fixed", "body": "Common answer:\n“Developers exposing entities instead of DTOs and missing authorization on sensitive endpoints.”\n"}, {"id": "Q410", "meta": "ALL MNCs – FINAL WEB API QUESTION", "title": "How do you design a secure, scalable Web API?", "body": "Best Interview Answer\n“By combining authentication, authorization, validation, HTTPS, secure configuration, caching, async programming, monitoring, and clean versioned API contracts to ensure both security and scalability.”\n"}]}]}, {"title": "CHAPTER 5 – DATABASE & SQL", "sections": [{"title": "🔹 SQL Fundamentals & RDBMS Concepts (Q411–Q440)", "questions": [{"id": "Q411", "meta": "TCS / Infosys – Screening Round", "title": "What is a database and why do applications need it?", "body": "Easy explanation\nA database is a structured place where applications store data permanently so it can be:\n●\tRetrieved quickly\n●\tUpdated safely\n●\tShared by thousands/millions of users\n●\tProtected from crashes and data loss\nWithout a database:\n●\tData would disappear when app restarts\n●\tNo multi-user access\n●\tNo reliable storage\nReal-world examples\n●\tBank transactions stored in SQL Server\n●\tUser accounts saved in MySQL\n●\tOrders stored in PostgreSQL or Oracle\n"}, {"id": "Q412", "meta": "Accenture – Technical Round", "title": "Difference between DBMS and RDBMS", "body": "DBMS\tRDBMS\nStores data\tStores data in tables with relations\nNo relationships\tSupports Foreign Keys\nLess strict rules\tEnforces constraints & integrity\nUsed in small apps\tUsed in enterprise systems\nReal Usage\n●\tSimple local storage → DBMS\n●\tCorporate, banking, enterprise systems → RDBMS\n"}]}, {"title": "🧱 TABLES, KEYS & CONSTRAINTS", "questions": [{"id": "Q413", "meta": "Microsoft – Technical Round", "title": "What is a Primary Key? Why is it important?", "body": "Explanation\nPrimary Key:\n●\tUniquely identifies each row\n●\tPrevents duplicate records\n●\tSpeeds up searching\n●\tMaintains data integrity\nSQL Example\nCREATE TABLE Users ( Id INT PRIMARY KEY,\nEmail VARCHAR(100) UNIQUE\n);\n"}, {"id": "Q414", "meta": "Infosys – Interview Favorite", "title": "Primary Key vs Unique Key", "body": "Primary Key\tUnique Key\nCannot be NULL\tCan allow one NULL\nOnly 1 per table\tMultiple unique keys allowed\nIdentifies record\tEnsures uniqueness\n"}, {"id": "Q415", "meta": "Amazon – DSA + SQL Round", "title": "What is a Foreign Key?", "body": "Explanation\nForeign Key creates relationships between tables and ensures data consistency.\nSQL Example\nALTER TABLE Orders\nADD CONSTRAINT FK_UserOrder\nFOREIGN KEY(UserId) REFERENCES Users(Id);\nReal Project Usage\nOrder must belong to a valid user.\n"}, {"id": "Q416", "meta": "Accenture – Developer Round", "title": "What are constraints and why are they used?", "body": "Explanation\nConstraints protect data quality. Examples:\n●\tNOT NULL → field cannot be empty\n●\tUNIQUE → prevents duplicate values\n●\tCHECK → validates condition\n●\tFOREIGN KEY → relational integrity\nThey prevent wrong data from entering DB.\n"}]}, {"title": "📊 NORMALIZATION (VERY IMPORTANT)", "questions": [{"id": "Q417", "meta": "Microsoft – Interview Favorite", "title": "What is normalization in databases?", "body": "Explanation\nNormalization is organizing tables to:\n●\tRemove duplicate data\n●\tReduce storage waste\n●\tImprove consistency\n●\tAvoid anomalies\nReal example\nCustomer stored once\n→ not repeated in every order row.\n"}, {"id": "Q418", "meta": "Deloitte – Senior Round", "title": "Explain 1NF, 2NF, 3NF in simple words", "body": "1NF:\n●\tNo repeating columns\n●\tAtomic values only\n2NF:\n●\tMust be in 1NF\n●\tNo partial dependency on composite key\n3NF:\n●\tMust be in 2NF\n●\tNo dependency on non-key column\n"}, {"id": "Q419", "meta": "Amazon – Scenario Based", "title": "When should you avoid normalization?", "body": "Explanation\nAvoid heavy normalization when:\n●\tSystem is read-heavy\n●\tPerformance matters more than storage\n●\tAnalytics/reporting use cases\nThen we use Denormalization for faster reads.\n"}]}, {"title": "🔍 SQL QUERIES", "questions": [{"id": "Q420", "meta": "TCS – Screening Round", "title": "Difference between DELETE, TRUNCATE, DROP", "body": "Command\tRemoves Data\tRemoves Structure\tRollback\nDELETE\tYes\tNo\tYes\nTRUNCATE\tYes\tNo\tNo\nDROP\tYes\tYes\tNo\n"}, {"id": "Q421", "meta": "Infosys – Technical Round", "title": "What is an index and why is it used?", "body": "Explanation\nIndex works like a book index:\n●\tSpeeds up SELECT queries\n●\tFaster searching\n●\tImproves performance\nSQL Example\nCREATE INDEX idx_email ON Users(Email);\n"}, {"id": "Q422", "meta": "Amazon – Interview Favorite", "title": "Clustered vs Non-Clustered Index", "body": "Clustered Index\tNon-Clustered Index\nSorts actual table data\tSeparate index structure\nOnly one per table\tMultiple allowed\nFaster retrieval\tSlightly slower\n"}]}, {"title": "🧠 PERFORMANCE & OPTIMIZATION", "questions": [{"id": "Q423", "meta": "Microsoft – Advanced Round", "title": "Why are too many indexes bad?", "body": "Because:\n●\tSlows INSERT, UPDATE, DELETE\n●\tTakes extra storage\n●\tAdds maintenance overhead\nIndexes = speed for reading, cost for writing.\n"}, {"id": "Q424", "meta": "Accenture – Real Project", "title": "How do you find slow SQL queries?", "body": "Use:\n●\tExecution Plan\n●\tSQL Profiler\n●\tPerformance Monitor\n●\tQuery Store\n"}]}, {"title": "🔐 TRANSACTIONS & CONCURRENCY", "questions": [{"id": "Q425", "meta": "Microsoft – Technical Round", "title": "What is a transaction?", "body": "Explanation\nTransaction = All-or-Nothing\nEither all operations succeed or all fail.\nSQL Example\nBEGIN TRAN\nUPDATE Accounts SET Balance -= 100 WHERE Id\n=\n1\nUPDATE Accounts SET Balance += 100 WHERE Id COMMIT\t=\t2\nIf something fails → ROLLBACK.\n"}, {"id": "Q426", "meta": "Amazon – Scenario Based", "title": "What are ACID properties?", "body": "●\tAtomicity → all or nothing\n●\tConsistency → valid state maintained\n●\tIsolation → transactions don’t disturb each other\n●\tDurability → data persists after commit\n"}, {"id": "Q427", "meta": "Deloitte – Senior Round", "title": "Isolation levels in SQL", "body": "●\tRead Uncommitted\n●\tRead Committed\n●\tRepeatable Read\n●\tSerializable\nHigher level = stronger safety but slower performance.\n"}]}, {"title": "🧪 JOINS", "questions": [{"id": "Q428", "meta": "Infosys – Interview Favorite", "title": "Types of SQL joins", "body": "●\tINNER JOIN\n●\tLEFT JOIN\n●\tRIGHT JOIN\n●\tFULL JOIN\n"}, {"id": "Q429", "meta": "Amazon – Coding Round", "title": "INNER JOIN real example", "body": "SELECT u.Name, o.Amount FROM Users u\nINNER JOIN Orders o ON u.Id = o.UserId;\nFetches only matching records.\n"}, {"id": "Q430", "meta": "Microsoft – Advanced Round", "title": "LEFT JOIN vs INNER JOIN – real usage", "body": "LEFT JOIN\n●\tReturns all left table rows\n●\tEven without match\nINNER JOIN\n●\tReturns only matching rows\nUse LEFT JOIN when missing related data is acceptable.\n"}]}, {"title": "🧠 STORED PROCEDURES & VIEWS", "questions": [{"id": "Q431", "meta": "Accenture – Developer Round", "title": "What is a Stored Procedure and why use it?", "body": "Benefits\n●\tFaster execution\n●\tPrecompiled\n●\tSecure\n●\tReusable\n●\tCentralized logic\n"}, {"id": "Q432", "meta": "Microsoft – Technical Round", "title": "Stored Procedure vs Function", "body": "Stored Procedure\tFunction\nMay return or not\tMust return\nSupports transactions\tNo\nCan modify data\tMostly not used for modification\n🔁 DATABASE + C# INTEGRATION\n"}, {"id": "Q433", "meta": "Amazon – Real Project", "title": "How does ASP.NET Core communicate with SQL?", "body": "Using:\n●\tADO.NET\n●\tEntity Framework Core\n●\tDapper\n"}, {"id": "Q434", "meta": "Infosys – Technical Round", "title": "Parameterized queries – why important?", "body": "Prevents SQL Injection attacks\nEnsures secure input handling\nC# Example\ncmd.Parameters.AddWithValue(\"@id\", userId);\n🧯 SECURITY & BEST PRACTICES\n"}, {"id": "Q435", "meta": "Microsoft – Security Round", "title": "What is SQL Injection and how to prevent it?", "body": "Explanation\nAttacker injects malicious SQL via input to steal or damage data.\nPrevention\n●\tParameterized queries\n●\tStored procedures\n●\tORM like EF Core\n●\tInput validation\n📈 SCALABILITY & DESIGN\n"}, {"id": "Q436", "meta": "Amazon – Architecture Round", "title": "Vertical vs Horizontal scaling", "body": "Vertical Scaling\tHorizontal Scaling\nUpgrade same server\tAdd more servers\nLimited growth\tHighly scalable\nEasier\tComplex\n"}]}, {"title": "🧠 REAL INTERVIEW SCENARIOS", "questions": [{"id": "Q437", "meta": "Deloitte – Scenario Based", "title": "Deadlock in SQL – what is it?", "body": "Two transactions wait on each other forever. Example:\n●\tTransaction A locks row1, waits row2\n●\tTransaction B locks row2, waits row1\nSystem halts.\n"}, {"id": "Q438", "meta": "Microsoft – Advanced Round", "title": "How to reduce deadlocks?", "body": "●\tKeep transactions short\n●\tAccess tables in same order\n●\tUse proper indexes\n●\tAvoid unnecessary locks\n"}]}, {"title": "🏁 FINAL SQL QUESTIONS", "questions": [{"id": "Q439", "meta": "Accenture – Final Tech", "title": "Most common SQL performance mistake", "body": "Missing indexes and poorly written joins.\n"}, {"id": "Q440", "meta": "ALL MNCs – FINAL DATABASE QUESTION", "title": "How do you design a scalable database?", "body": "Best Interview Answer\n“By designing a proper schema, using correct normalization, indexing wisely, managing transactions carefully, planning for scaling, handling concurrency properly, and always balancing performance with data integrity.”\n"}]}, {"title": "🔹 Advanced SQL & Optimization (Q441–Q480)", "questions": [{"id": "Q441", "meta": "Microsoft – Technical Round", "title": "What is a query execution plan and why is it important?", "body": "Easy explanation\nA Query Execution Plan explains how the database engine will execute your SQL query. It shows:\n●\tWhich index is used\n●\tWhether SQL uses Seek or Scan\n●\tJoin strategy (Nested Loop / Hash / Merge)\n●\tCost of each step\nIt is like Google Maps for SQL query execution.\nReal project usage\n●\tUsed to find slow queries\n●\tHelps identify missing indexes\n●\tReveals expensive operations and bottlenecks\n"}, {"id": "Q442", "meta": "Accenture – Interview Favorite", "title": "Index Scan vs Index Seek", "body": "Index Seek\tIndex Scan\nVery fast\tSlower\nUses index efficiently\tReads many rows\nFetches specific data\tReads entire index/table\nInterview tip\nAlways aim for Index Seek.\nIf you see Index Scan frequently → need tuning.\n"}, {"id": "Q443", "meta": "Amazon – Scenario Based", "title": "Why does a query become slow even with index?", "body": "Explanation\nBecause of:\n●\tWrong or missing composite index\n●\tIndex fragmentation\n●\tOutdated statistics\n●\tUsing functions on indexed columns\n●\tReturning too much data\n●\tPoor query design\nIndexes help only when designed correctly.\n"}]}, {"title": "🧠 INDEXING STRATEGIES", "questions": [{"id": "Q444", "meta": "Microsoft – Advanced Round", "title": "What is a Covering Index and why is it useful?", "body": "Explanation\nA Covering Index contains:\n●\tAll columns in WHERE\n●\tAll columns in SELECT\nSo SQL does not go back to table = super-fast query\nSQL Example\nCREATE INDEX idx_cover ON Orders(CustomerId)\nINCLUDE (OrderDate, Amount);\nBenefit\n●\tReduces lookups\n●\tImproves performance dramatically\n"}, {"id": "Q445", "meta": "Deloitte – Senior Round", "title": "When should you avoid indexing?", "body": "Explanation\nAvoid indexes on:\n●\tVery small tables\n●\tTables with massive INSERT/UPDATE activity\n●\tFrequently changing columns\nToo many indexes slow writes.\n"}, {"id": "Q446", "meta": "Accenture – Real Project", "title": "How many indexes are too many?", "body": "Explanation\nThere is no fixed number.\nRule = Balance read speed vs write cost.\n●\tRead-heavy → more indexes okay\n●\tWrite-heavy → fewer indexes better\nMonitor performance and decide.\n🔁 ADVANCED JOINS & SUBQUERIES\n"}, {"id": "Q447", "meta": "Amazon – Interview Favorite", "title": "JOIN vs Subquery – Which is better?", "body": "Explanation\n●\tJOIN is usually faster and more optimized\n●\tJOIN is more readable\n●\tJOINs allow better indexing\nSubqueries are fine sometimes, but JOIN is preferred in performance queries.\n"}, {"id": "Q448", "meta": "Microsoft – Advanced Round", "title": "Correlated Subquery – explain with example", "body": "A correlated subquery runs for every row of the outer query.\nExample\nSELECT *\nFROM Orders o WHERE Amount > (\nSELECT AVG(Amount)\nFROM Orders\nWHERE CustomerId = o.CustomerId\n);\nUseful but slower than window functions usually.\n🪜 WINDOW FUNCTIONS (VERY IMPORTANT)\n"}, {"id": "Q449", "meta": "Amazon – DSA + SQL Round", "title": "What are window functions?", "body": "Explanation\nWindow functions allow calculations across rows without grouping data. Examples:\n●\tRanking\n●\tRunning totals\n●\tMoving averages\nThey use:\nOVER (PARTITION BY ... ORDER BY ...)\n"}, {"id": "Q450", "meta": "Microsoft – Interview Favorite", "title": "ROW_NUMBER vs RANK vs DENSE_RANK", "body": "Function\tGap on duplicates?\nROW_NUMBER\tYes\nRANK\tYes\nDENSE_RANK\tNo gaps\n"}, {"id": "Q451", "meta": "Accenture – Real Project", "title": "Find duplicate records using window function", "body": "SELECT * FROM (\nSELECT *,\nROW_NUMBER() OVER(PARTITION BY Email ORDER BY Id) rn\nFROM Users\n) t\nWHERE rn > 1;\nUsed in data cleanup & migration.\n"}]}, {"title": "🧪 COMMON TABLE EXPRESSIONS (CTE)", "questions": [{"id": "Q452", "meta": "Microsoft – Technical Round", "title": "What is a CTE and why use it?", "body": "Explanation\nCTE (Common Table Expression):\n●\tMakes queries cleaner\n●\tImproves readability\n●\tSupports recursion\nBetter alternative to long subqueries.\n"}, {"id": "Q453", "meta": "Amazon – Coding Round", "title": "Recursive CTE – real example", "body": "WITH OrgCTE AS (\nSELECT Id, ManagerId FROM Employees WHERE ManagerId IS NULL UNION ALL\nSELECT e.Id, e.ManagerId FROM Employees e\nJOIN OrgCTE o ON e.ManagerId = o.Id\n)\nSELECT * FROM OrgCTE;\nUsed in:\n●\tOrganization hierarchies\n●\tTree structures\n●\tCategory hierarchies\n"}]}, {"title": "🔐 TRANSACTIONS & LOCKING", "questions": [{"id": "Q454", "meta": "Microsoft – Advanced", "title": "What causes SQL deadlocks?", "body": "Explanation\nDeadlocks happen when:\n●\tTransaction A locks resource 1, waits for resource 2\n●\tTransaction B locks resource 2, waits for resource 1\nBoth wait forever.\n"}, {"id": "Q455", "meta": "Accenture – Scenario Based", "title": "How to reduce locking issues?", "body": "●\tUse proper indexes\n●\tKeep transactions short\n●\tAccess tables in same order\n●\tAvoid long-running transactions\n"}, {"id": "Q456", "meta": "Amazon – Senior Round", "title": "What is READ COMMITTED SNAPSHOT and why use it?", "body": "Explanation\nIt reduces blocking by using row versioning.\n●\tReaders don’t block writers\n●\tWriters don’t block readers\nImproves concurrency in high load systems.\n"}]}, {"title": "🧠 PERFORMANCE TUNING", "questions": [{"id": "Q457", "meta": "Microsoft – Advanced Round", "title": "Why is SELECT * bad in production?", "body": "Explanation\nBecause:\n●\tFetches unnecessary columns\n●\tBreaks covering indexes\n●\tIncreases network load\nAlways select only required columns.\n"}, {"id": "Q458", "meta": "Deloitte – Senior Round", "title": "Why does parameter sniffing cause problems?", "body": "Explanation\nSQL optimizes the execution plan using the first parameter. If later inputs differ heavily → performance drops.\n"}, {"id": "Q459", "meta": "Amazon – Architecture", "title": "How to fix parameter sniffing?", "body": "●\tUse OPTION (RECOMPILE)\n●\tUse optimize for unknown\n●\tParameterize smartly\n🧰 DATABASE DESIGN DECISIONS\n"}, {"id": "Q460", "meta": "Microsoft – Design Round", "title": "OLTP vs OLAP", "body": "OLTP\tOLAP\nDay-to-day transactions\tAnalytics & reporting\nSmall + frequent writes\tBig read queries\nBanking, ecommerce\tData warehouse\n"}, {"id": "Q461", "meta": "Accenture – Senior Round", "title": "When to denormalize data?", "body": "●\tRead-heavy systems\n●\tAnalytics\n●\tReporting\n●\tPerformance-first systems\nTrade space for speed.\n"}]}, {"title": "🔄 BATCHING & BULK OPERATIONS", "questions": [{"id": "Q462", "meta": "Amazon – Performance", "title": "Why are batch inserts faster?", "body": "●\tFewer network trips\n●\tReduced overhead\n●\tEfficient transaction handling\n"}, {"id": "Q463", "meta": "Microsoft – Real Project", "title": "Bulk insert from C# example", "body": "using SqlBulkCopy bulk = new SqlBulkCopy(conn); bulk.WriteToServer(table);\nUsed in:\n●\tData migration\n●\tImport large files\n"}]}, {"title": "🧠 CLOUD & MODERN SQL", "questions": [{"id": "Q464", "meta": "Accenture – Cloud Round", "title": "SQL Server vs Azure SQL", "body": "Azure SQL:\n●\tManaged service\n●\tAuto scaling\n●\tBuilt-in backup\n●\tSecurity + HA\nPerfect for cloud environments.\n"}, {"id": "Q465", "meta": "Amazon – Architecture", "title": "Why is connection pooling important?", "body": "Because opening a DB connection is expensive. Pooling:\n●\tReuses connections\n●\tImproves performance\n●\tReduces resource usage\n"}]}, {"title": "🧪 DATA CONSISTENCY & RELIABILITY", "questions": [{"id": "Q466", "meta": "Microsoft – Advanced", "title": "Soft delete vs Hard delete", "body": "Soft Delete\tHard Delete\nMarks record deleted\tPhysically removes\nRecoverable\tPermanent\nGood for audit\tSaves space\n"}, {"id": "Q467", "meta": "Deloitte – Senior Round", "title": "How to archive old data safely?", "body": "●\tMove to archive tables\n●\tPartition tables\n●\tUse backup and purge strategies\n"}]}, {"title": "🧠 INTERVIEW SCENARIOS", "questions": [{"id": "Q468", "meta": "Amazon – Scenario Based", "title": "The table has millions of records and is slow – what steps?", "body": "●\tCheck indexes\n●\tCheck execution plan\n●\tAvoid SELECT *\n●\tArchive old data\n●\tPartition if needed\n"}, {"id": "Q469", "meta": "Accenture – Debugging", "title": "Query fast in SSMS but slow in application – why?", "body": "●\tParameter sniffing\n●\tNetwork latency\n●\tDifferent SET options\n●\tDifferent execution context\n"}]}, {"title": "🏁 FINAL ADVANCED SQL QUESTIONS", "questions": [{"id": "Q470", "meta": "Microsoft – Final Round", "title": "Biggest SQL optimization you did", "body": ""}, {"id": "Q471", "meta": "Deloitte – Leadership", "title": "How you guide juniors on SQL performance", "body": ""}, {"id": "Q472", "meta": "Amazon – Reflection", "title": "SQL mistake you made and learned from", "body": ""}, {"id": "Q473", "meta": "Accenture – Senior Round", "title": "Trade-off between consistency and performance", "body": ""}, {"id": "Q474", "meta": "Microsoft – Architecture", "title": "CAP theorem relevance to databases", "body": ""}, {"id": "Q475", "meta": "Amazon – Cloud", "title": "How cloud databases scale automatically", "body": ""}, {"id": "Q476", "meta": "Deloitte – Security", "title": "Encrypting data at rest and in transit", "body": ""}, {"id": "Q477", "meta": "Accenture – Compliance", "title": "Handling PII data in databases", "body": ""}, {"id": "Q478", "meta": "Microsoft – Advanced", "title": "How indexing impacts cloud cost", "body": ""}, {"id": "Q479", "meta": "Amazon – Final Reflection", "title": "One SQL topic every backend dev must master Answer: Indexing + Query Plans.", "body": ""}, {"id": "Q480", "meta": "ALL MNCs – FINAL ADVANCED SQL QUESTION", "title": "How do you ensure database performance at scale?", "body": "Best Interview Answer\n“By designing the right schema, indexing correctly, avoiding bad queries, monitoring execution plans, batching operations, handling concurrency properly, tuning continuously, and making database decisions based on real production usage.”\n"}]}]}, {"title": "CHAPTER 6 – REACT (MNC INTERVIEW LEVEL)", "sections": [{"title": "🔹 React Fundamentals & Core Concepts (Q481–Q520)", "questions": [{"id": "Q482", "meta": "Accenture – Technical Round", "title": "What problem does React solve compared to plain JavaScript?", "body": "Explanation\nWithout React:\n●\tDevelopers manually update DOM\n●\tManaging UI state becomes messy\n●\tCode becomes complex very fast\nWith React:\n●\tUI auto-updates based on state\n●\tCleaner and maintainable code\n●\tPredictable UI changes\nReal example\nCart count auto updates when user adds item\n→ Developer does not manually refresh DOM.\n"}]}, {"title": "🧠 COMPONENTS (VERY IMPORTANT)", "questions": [{"id": "Q483", "meta": "Microsoft – Interview Favorite", "title": "What is a component in React?", "body": "Explanation\nA component is a reusable UI block that contains:\n●\tUI (JSX)\n●\tLogic\n●\tState (if needed)\nIt is like a Lego block used to build UI.\nReal React Example\nfunction Welcome({ name }) { return <h2>Welcome {name}</h2>;\n}\nReal project usage\nHeader, Navbar, Sidebar, Footer, Cards, Forms\n"}, {"id": "Q484", "meta": "Infosys – Technical Round", "title": "Functional vs Class Components", "body": "Functional Components\tClass Components\nSimple\tMore complex\nUses Hooks\tUses lifecycle methods\nPreferred in modern React\tOld legacy approach\nInterview Tip\nSay confidently:\n“Modern React uses functional components with Hooks.”\n🧩 JSX & RENDERING\n"}, {"id": "Q485", "meta": "Accenture – Interview Favorite", "title": "What is JSX and why is it used?", "body": "Explanation\nJSX allows writing HTML-like syntax inside JavaScript, making UI easier to create and understand.\nExample\nconst element = <h1>Hello React</h1>;\nIt improves readability and developer experience.\n"}, {"id": "Q486", "meta": "Microsoft – Technical Round", "title": "How does JSX work behind the scenes?", "body": "Explanation\nJSX is not understood by the browser. During build, JSX is converted into:\nReact.createElement()\nwhich generates Virtual DOM objects.\n"}]}, {"title": "🧠 STATE & PROPS (MOST ASKED)", "questions": [{"id": "Q487", "meta": "Amazon – Interview Favorite", "title": "What is the state of React?", "body": "Explanation\nState is data that can change over time and directly affects the UI.\nExamples\n●\tCart items\n●\tLogged-in user\n●\tForm input value\nCode\nconst [count, setCount] = useState(0);\n"}, {"id": "Q488", "meta": "Infosys – Technical Round", "title": "Props vs State", "body": "Props\tState\nRead-only\tMutable\nPassed from parent\tManaged inside component\nUsed to communicate\tUsed to store internal data\n"}, {"id": "Q489", "meta": "Accenture – Real Project", "title": "Why should state not be mutated directly?", "body": "Explanation\nIf you change state directly, React cannot detect the change, so the UI will not update correctly.\nWrong\ncount++;\nCorrect\nsetCount(count + 1);\n"}]}, {"title": "🔄 LIFECYCLE & HOOKS", "questions": [{"id": "Q490", "meta": "Microsoft – Interview Favorite", "title": "What are Hooks and why were they introduced?", "body": "Explanation\nHooks allow functional components to:\n●\tManage state\n●\tHandle lifecycle\n●\tUse reusable logic\nThey replaced complex class components.\n"}, {"id": "Q491", "meta": "Amazon – Technical Round", "title": "Explain useEffect with real example", "body": "Explanation\nuseEffect runs side effects such as:\n●\tAPI calls\n●\tSubscriptions\n●\tTimers\nExample\nuseEffect(() => { fetchUsers();\n}, []);\nReal project usage\nLoad data when page loads.\n"}, {"id": "Q492", "meta": "Accenture – Interview Trap", "title": "What happens if the dependency array is missing in useEffect?", "body": "Explanation\nThe effect runs on every render, causing:\n●\tPerformance issues\n●\tInfinite loops in some cases\nSo always use dependency arrays wisely.\n"}]}, {"title": "🧠 EVENT HANDLING", "questions": [{"id": "Q493", "meta": "Infosys – Technical Round", "title": "How do events work in React?", "body": "Explanation\nReact uses Synthetic Events to provide consistent behavior across browsers.\nExample\n<button onClick={handleClick}>Click</button>\n"}]}, {"title": "🧱 CONTROLLED COMPONENTS", "questions": [{"id": "Q494", "meta": "Microsoft – Interview Favorite", "title": "What is a controlled component?", "body": "Explanation\nA form element controlled by React state.\nExample\n<input value={name} onChange={e => setName(e.target.value)} />\nReal usage\nForms, login pages, validations.\n"}]}, {"title": "🧠 CONDITIONAL RENDERING", "questions": [{"id": "Q495", "meta": "Accenture – Developer Round", "title": "How to render UI conditionally in React?", "body": "Example\n{isLoggedIn && <Dashboard />}\nUsed in authentication flows frequently.\n🔑 KEYS & LIST RENDERING\n"}, {"id": "Q496", "meta": "Amazon – Interview Favorite", "title": "Why are keys important in lists?", "body": "Explanation\nKeys help React:\n●\tIdentify which items changed\n●\tImprove rendering performance\nExample\nitems.map(item => <li key={item.id}>{item.name}</li>);\n"}]}, {"title": "🧠 PERFORMANCE CONCEPTS", "questions": [{"id": "Q497", "meta": "Microsoft – Advanced Round", "title": "What is Virtual DOM?", "body": "Explanation\nVirtual DOM is:\n●\tA lightweight copy of Real DOM\n●\tStored in memory\n●\tUsed to detect changes efficiently\nReact compares old vs new Virtual DOM → updates only changed parts.\n"}, {"id": "Q498", "meta": "Accenture – Interview Favorite", "title": "Why is React faster than traditional DOM manipulation?", "body": "Explanation\nBecause of:\n●\tVirtual DOM\n●\tDiffing algorithm\n●\tEfficient re-rendering strategy\nNo unnecessary page reloads.\n"}]}, {"title": "🧠 REAL INTERVIEW SCENARIOS", "questions": [{"id": "Q499", "meta": "Amazon – Scenario Based", "title": "Page re-renders too often – how do you fix it?", "body": "Explanation\n●\tUse React.memo\n●\tUse useMemo\n●\tUse useCallback\n●\tOptimize dependency arrays\n●\tAvoid unnecessary state\n"}, {"id": "Q500", "meta": "Microsoft – Final Round", "title": "How do you structure React projects in enterprise apps?", "body": "Best Interview Answer\n“By organizing code into clear folders such as components, pages, services, hooks, contexts, assets, and utilities; following reusable component design, using proper naming conventions, and ensuring performance and maintainability from day one.”\n"}]}, {"title": "🔹 Advanced React – Hooks, Context & Performance (Q501–Q540)", "questions": []}, {"title": "🧠 ADVANCED HOOKS (CORE INTERVIEW AREA)", "questions": [{"id": "Q501", "meta": "Microsoft – Interview Favorite", "title": "Why were Hooks introduced in React?", "body": "Easy explanation\nBefore Hooks, React relied heavily on class components, which had problems like:\n●\tComplex lifecycle methods\n●\tHard reusable logic\n●\t“this” confusion\n●\tLarger boilerplate code\nHooks solved all this by allowing:\n●\tState in functional components\n●\tLifecycle handling in functions\n●\tReusable logic through custom hooks\n●\tCleaner and shorter code\nReal-world impact\n●\tCleaner and maintainable applications\n●\tEasier testing\n●\tFaster development\n●\tBetter performance\n"}, {"id": "Q502", "meta": "Accenture – Technical Round", "title": "Explain useState with a real production example", "body": "Explanation\nuseState() helps store and update component-specific data.\nReal example – Login Form\nconst [email, setEmail] = useState(\"\");\n<input\nvalue={email}\nonChange={e => setEmail(e.target.value)}\n/>\nReal usage in production\n●\tLogin forms\n●\tSearch filters\n●\tCart updates\n●\tToggle themes\n●\tModal open/close states\n"}, {"id": "Q503", "meta": "Amazon – Interview Favorite", "title": "Why are state updates asynchronous?", "body": "Detailed Explanation\nReact batches state updates to improve performance. Instead of updating UI every time instantly, React:\n●\tGroups multiple updates together\n●\tUpdates UI once efficiently\nSo the latest value may not be immediately available.\nCorrect Pattern\nsetCount(prev => prev + 1);\nThis ensures the update is reliable.\n"}, {"id": "Q504", "meta": "Microsoft – Advanced Round", "title": "What problem does useEffect solve?", "body": "Explanation\nuseEffect() is used to handle side effects like:\n●\tAPI calls\n●\tLogging\n●\tSubscriptions\n●\tTimers\nAnything that is outside normal UI rendering logic.\nReal example\nuseEffect(() => { fetchUsers();\n}, []);\nWithout useEffect\nDevelopers would need complex lifecycle methods.\n"}, {"id": "Q505", "meta": "Accenture – Interview Trap", "title": "Why does an infinite loop happen in useEffect?", "body": "Explanation\nInfinite loops happen when:\n●\tThere is no dependency array\n●\tOr wrong dependencies are used\n●\tState is updated continuously inside the effect\n❌ Wrong\nuseEffect(() => { setData(data + 1);\n});\nCorrect\nUse dependency arrays wisely.\n"}, {"id": "Q506", "meta": "Amazon – Real Project", "title": "Cleanup function in useEffect – why is it important?", "body": "Explanation\nCleanup prevents:\n●\tMemory leaks\n●\tMultiple subscriptions\n●\tPerformance issues\nReal example\nuseEffect(() => {\nconst timer = setInterval(fetchData, 5000); return () => clearInterval(timer);\n}, []);\nReal usage\n●\tClearing intervals\n●\tRemoving event listeners\n●\tCancelling API calls\n"}]}, {"title": "🧠 CUSTOM HOOKS (VERY IMPORTANT)", "questions": [{"id": "Q507", "meta": "Microsoft – Interview Favorite", "title": "What is a custom hook and why do we need it?", "body": "Explanation\nCustom Hooks allow reusing logic without copying code. They do NOT reuse UI — only functionality.\nExample\nfunction useOnlineStatus() {\nconst [isOnline, setIsOnline] = useState(true); return isOnline;\n}\nReal usage\n●\tAuthentication\n●\tAPI fetching\n●\tPermissions\n●\tTheme management\n"}]}, {"title": "🧠 USECALLBACK & USEMEMO", "questions": [{"id": "Q508", "meta": "Amazon – Performance Round", "title": "Why is useCallback used?", "body": "Explanation\nuseCallback() prevents unnecessary function recreation and re-renders.\nReal example\nconst handleClick = useCallback(() => { setCount(c => c + 1);\n}, []);\nReal-world use\nPassing functions to:\n●\tChild components\n●\tOptimized components\n●\tList rendering components\n"}, {"id": "Q509", "meta": "Microsoft – Advanced", "title": "Difference between useCallback and useMemo", "body": "useCallback\tuseMemo\nMemoizes function\tMemoizes computed value\nPrevents re-creation of functions\tPrevents expensive recalculations\nUsed with event handlers\tUsed for heavy calculations\n"}, {"id": "Q510", "meta": "Accenture – Interview Favorite", "title": "Real case where useMemo improves performance", "body": "Explanation\nWhen filtering large datasets or running heavy calculations.\nExample\nconst filtered = useMemo(() => { return users.filter(u => u.active);\n}, [users]);\nReal impact\n●\tFaster UI\n●\tSmooth dashboards\n●\tBetter user experience\n"}]}, {"title": "🌐 CONTEXT API (STATE MANAGEMENT)", "questions": [{"id": "Q511", "meta": "Microsoft – Interview Favorite", "title": "What problem does Context API solve?", "body": "Explanation\nIt avoids prop drilling, where props must be passed through multiple levels unnecessarily.\nReal-world example\n●\tAuthentication user data\n●\tTheme (dark/light)\n●\tLanguage setting\n"}, {"id": "Q512", "meta": "Accenture – Real Project", "title": "Create AuthContext – real example", "body": "const AuthContext = createContext();\nfunction AuthProvider({ children }) { const [user, setUser] = useState(null);\nreturn (\n<AuthContext.Provider value={{ user, setUser }}>\n{children}\n</AuthContext.Provider>\n);\n}\n"}, {"id": "Q513", "meta": "Amazon – Technical Round", "title": "How to consume Context safely?", "body": "const { user } = useContext(AuthContext);\n"}, {"id": "Q514", "meta": "Microsoft – Advanced Round", "title": "Why Context causes re-render issues?", "body": "Explanation\nWhen context value changes:\n●\tAll consumers re-render\n●\tEven components not using affected fields\nThis can hurt performance.\n"}]}, {"title": "🧠 PERFORMANCE OPTIMIZATION", "questions": [{"id": "Q515", "meta": "Accenture – Interview Favorite", "title": "What is React.memo and when to use it?", "body": "Explanation\nPrevents re-render when props do not change.\nExample\nconst Header = React.memo(({ title }) => <h1>{title}</h1>);\nUse when\n●\tPure functions\n●\tStatic content\n●\tPerformance-critical UI\n"}, {"id": "Q516", "meta": "Amazon – Senior Round", "title": "Why is premature optimization bad?", "body": "Explanation\n●\tIncreases complexity\n●\tMakes debugging harder\n●\tMay not provide real benefit\nOptimize only when:\n●\tThere is performance issue\n●\tMetrics prove it\n"}]}, {"title": "🧪 RENDERING & RECONCILIATION", "questions": [{"id": "Q517", "meta": "Microsoft – Advanced", "title": "How does React decide to re-render components?", "body": "Explanation\nReact re-renders when:\n●\tState changes\n●\tProps change\n●\tParent re-renders\n●\tContext value changes\n"}]}, {"title": "🧠 REAL PRODUCTION SCENARIOS", "questions": [{"id": "Q518", "meta": "Amazon – Scenario Based", "title": "Dashboard slow with 10k records – what to do?", "body": "Solutions\n●\tPagination\n●\tInfinite scrolling\n●\tVirtualized lists (React Window / React Virtualized)\n●\tMemoization\n●\tAvoid unnecessary state\n"}, {"id": "Q519", "meta": "Deloitte – Senior Round", "title": "Context vs Redux – when Context is not enough?", "body": "Explanation\nUse Context for:\n●\tSmall apps\n●\tFew states\nUse Redux for:\n●\tComplex state\n●\tGlobal logic\n●\tAsync data flows\n●\tPredictable state management\n"}]}, {"title": "🏁 FINAL ADVANCED REACT QUESTION", "questions": [{"id": "Q520", "meta": "ALL MNCs – FINAL REACT QUESTION", "title": "How do you write scalable React code?", "body": "Best Interview Answer\n“By keeping components small and reusable, using hooks to share logic, following proper folder structure, avoiding unnecessary re-renders with memoization, preferring Context or Redux wisely, and optimizing only when performance actually matters.”\n"}]}, {"title": "🔹 Authentication, API Integration & Forms (Q541–Q580)", "questions": []}, {"title": "🔐 AUTHENTICATION IN REACT (REAL PROJECT WAY)", "questions": [{"id": "Q541", "meta": "Microsoft – Interview Favorite", "title": "How authentication works in a React application? Easy Explanation", "body": "React does not authenticate users itself. Authentication is always managed at the\nbackend.\nReact simply calls APIs and stores tokens securely.\nReal Flow\n1\tUser enters credentials in login form\n2\tReact sends them to Backend API\n3\tBackend verifies credentials and generates JWT\n4\tBackend returns JWT token to React\n5\tReact stores the token securely\n6\tReact attaches token to every API call\n7\tIf token valid → user is authenticated\nReal-World Uses\nBanking dashboards, admin portals, CRM systems, SaaS dashboards.\n"}, {"id": "Q542", "meta": "Accenture – Technical Round", "title": "Where should JWT token be stored in React? Explanation", "body": "Best professional storage options:\n✔ HTTP-Only Cookies (Most Secure)\n●\tCannot be accessed by JavaScript\n●\tProtects against XSS\n✔ In-Memory (Redux / Context)\n●\tSecure but lost on refresh\n●\tCommon in SPAs + refresh token strategy\n❌ Avoid\nLocalStorage / sessionStorage for critical apps because they are vulnerable to XSS.\n"}, {"id": "Q543", "meta": "Amazon – Interview Favorite", "title": "Login API call – Real React Example", "body": "async function login(email, password) { const res = await fetch(\"/api/login\", {\nmethod: \"POST\",\nheaders: { \"Content-Type\": \"application/json\" }, body: JSON.stringify({ email, password })\n});\nconst data = await res.json(); return data.token;\n}\nReal Interview Tip\nMention:\n●\tJSON handling\n●\tError cases\n●\tToken handling afterward\n"}, {"id": "Q544", "meta": "Microsoft – Advanced Round", "title": "How do you attach a token to every API request?", "body": "Real-Time Fetch Wrapper\nfunction authFetch(url) { const token = getToken(); return fetch(url, {\nheaders: {\nAuthorization: `Bearer ${token}`\n}\n});\n}\nReal Project Usage\nCreate centralized API service and never attach a token manually in each call.\n"}, {"id": "Q545", "meta": "Accenture – Interview Favorite", "title": "How do you protect routes in React? Explanation", "body": "Use Protected Routes so only authenticated users access secure pages.\nfunction PrivateRoute({ children }) {\nreturn isAuthenticated() ? children : <Navigate to=\"/login\" />;\n}\nReal Project Use\nAdmin dashboards, user profile pages, payment pages.\n"}]}, {"title": "🌐 API INTEGRATION", "questions": [{"id": "Q546", "meta": "Infosys – Technical Round", "title": "Best way to call APIs in React? Explanation", "body": "Two preferred ways:\n✔ fetch() – Native & lightweight\n✔ axios – Popular, powerful, cleaner\nInterview Tip\nAlways mention:\n●\tInterceptors\n●\tCentralized service layer\n"}, {"id": "Q547", "meta": "Microsoft – Interview Favorite", "title": "Why is axios preferred over fetch? Explanation", "body": "●\tAutomatic JSON parsing\n●\tRequest/Response interceptors\n●\tBetter error handling\n●\tDefault headers support\nUsed heavily in enterprise systems.\n"}, {"id": "Q548", "meta": "Amazon – Real Project", "title": "Axios instance with interceptor", "body": "import axios from \"axios\";\nconst api = axios.create({ baseURL: \"/api\"\n});\napi.interceptors.request.use(config => { config.headers.Authorization = `Bearer ${getToken()}`; return config;\n});\nBenefit\nYou never manually pass a token in every call.\n"}, {"id": "Q549", "meta": "Accenture – Scenario Based", "title": "How do you handle API loading & error states? Explanation", "body": "Maintain UI states:\n●\tloading\n●\terror\n●\tdata\nconst [loading, setLoading] = useState(false);\nWhy?\nImproves UX and debugging.\n"}, {"id": "Q550", "meta": "Microsoft – Best Practice", "title": "Why should API calls NOT be inside render? Explanation", "body": "Because React keeps re-rendering → will trigger endless API calls.\nCorrect Approach\nUse useEffect().\n"}]}, {"title": "🧠 ERROR HANDLING & TOKEN EXPIRY", "questions": [{"id": "Q551", "meta": "Amazon – Advanced", "title": "How do you handle API errors globally? Professional Approach", "body": "●\tAxios interceptors\n●\tCentralized toast notifications\n●\tMeaningful error messages\n"}, {"id": "Q552", "meta": "Deloitte – Senior Round", "title": "How to handle token expiry in React? Explanation", "body": "1\tDetect 401 Unauthorized\n2\tRequest refresh token\n3\tGenerate new JWT\n4\tRetry original request\nProduction applications always use Refresh Tokens.\n"}]}, {"title": "🧾 FORMS (Core Interview Area)", "questions": [{"id": "Q553", "meta": "Infosys – Interview Favorite", "title": "Controlled vs Uncontrolled Components", "body": "Controlled\tUncontrolled\nReact controls value\tBrowser controls value\nMore reliable\tLess control\nBest for validation\tSimple cases only\n"}, {"id": "Q554", "meta": "Accenture – Technical Round", "title": "Simple Controlled Form Example", "body": "const [name, setName] = useState(\"\");\n<input\nvalue={name}\nonChange={e => setName(e.target.value)}\n/>\n"}, {"id": "Q555", "meta": "Microsoft – Interview Favorite", "title": "Why controlled forms in enterprise? Explanation", "body": "●\tFull validation control\n●\tBetter UX\n●\tCustom rules & formatting\n●\tPrevents inconsistent data\n"}]}, {"title": "🧪 FORM VALIDATION", "questions": [{"id": "Q556", "meta": "Amazon – Real Project", "title": "How do you validate forms in React? Options", "body": "✔ Manual validation\n✔ Formik + Yup (industry standard)\n"}, {"id": "Q557", "meta": "Microsoft – Advanced Round", "title": "Formik Example", "body": "<Formik\ninitialValues={{ email: \"\" }} onSubmit={values => login(values)}\n>\n"}, {"id": "Q558", "meta": "Accenture – Interview Favorite", "title": "Why Yup with Formik? Explanation", "body": "●\tSchema based validation\n●\tReusable rules\n●\tClean and readable\n"}]}, {"title": "🔄 FORM SUBMISSION & UX", "questions": [{"id": "Q559", "meta": "Infosys – Technical Round", "title": "Prevent multiple submissions", "body": "<button disabled={loading}>Submit</button>\n"}, {"id": "Q560", "meta": "Amazon – UX Focused", "title": "Why an optimistic UI? Explanation", "body": "The user feels the application is fast and responsive.\n"}]}, {"title": "🧠 SECURITY BEST PRACTICES", "questions": [{"id": "Q561", "meta": "Microsoft – Security Round", "title": "Prevent XSS in React", "body": "●\tAvoid dangerouslySetInnerHTML\n●\tSanitize dynamic HTML\n●\tValidate user inputs\n"}, {"id": "Q562", "meta": "Accenture – Security", "title": "CSRF in React", "body": "Handled mostly by backend + secure cookies + tokens.\n"}]}, {"title": "🧠 REAL INTERVIEW CASES", "questions": [{"id": "Q563", "meta": "Amazon – Scenario Based", "title": "User refreshes & gets logged out – why?", "body": "Token stored in memory only.\n"}, {"id": "Q564", "meta": "Deloitte – Senior Round", "title": "How to persist login?", "body": "●\tHTTP only cookies\n●\tSecure storage\n●\tRefresh tokens\n"}]}, {"title": "⚡ PERFORMANCE", "questions": [{"id": "Q565", "meta": "Microsoft – Advanced", "title": "Why debounce search APIs?", "body": "Prevents hitting API on every keystroke.\n"}, {"id": "Q566", "meta": "Accenture – Real Project", "title": "Debounce Example", "body": "const debouncedSearch = debounce(searchUsers, 300);\n"}]}, {"title": "🧠 ARCHITECTURE DECISIONS", "questions": [{"id": "Q567", "meta": "Amazon – Architecture Round", "title": "Where should API logic live?", "body": "In a separate service layer, not components. Cleaner. Maintainable. Testable.\n"}]}, {"title": "🏁 FINAL INTERVIEW QUESTIONS", "questions": [{"id": "Q568", "meta": "Microsoft – Final Round", "title": "How do you design secure auth?", "body": "●\tJWT + Refresh tokens\n●\tSecure cookies\n●\tProtected routes\n●\tCentralized API layer\n●\tRole-based UI\n"}, {"id": "Q569", "meta": "Accenture – HR + Tech", "title": "Biggest Auth Bug Answer", "body": "“Stored token in localStorage, exposed to XSS. Moved to HttpOnly cookies → secured application.”\n"}, {"id": "Q570", "meta": "Amazon – Final", "title": "Explain full login flow confidently (already covered above).", "body": "Q571–Q579\nHandled via:\n●\tMulti-step forms\n●\tFile uploads\n●\tRole-based content\n●\tGlobal logout\n●\tRefresh tokens\n"}, {"id": "Q580", "meta": "ALL MNCs – Final React Question", "title": "How to build secure, scalable React apps?", "body": "Best Interview Answer\n“By separating concerns, securing tokens wisely, handling API errors globally, managing state efficiently, following best security practices, and continuously optimizing performance based on real usage.”\n"}]}]}];
+
+// ── helpers ──
+function companyPill(meta) {
+  if (!meta) return '';
+  const parts = meta.split('–').map(s => s.trim());
+  const company = parts[0] || '';
+  const round = parts[1] || '';
+  let cls = 'pill-default';
+  const cl = company.toLowerCase();
+  if (cl.includes('microsoft')) cls = 'pill-microsoft';
+  else if (cl.includes('amazon')) cls = 'pill-amazon';
+  else if (cl.includes('accenture')) cls = 'pill-accenture';
+  else if (cl.includes('infosys')) cls = 'pill-infosys';
+  else if (cl.includes('tcs')) cls = 'pill-tcs';
+  else if (cl.includes('deloitte')) cls = 'pill-deloitte';
+  return `<span class="company-pill ${cls}">${company}</span>${round ? `<span class="round-pill">${round}</span>` : ''}`;
+}
+
+function formatBody(raw) {
+  if (!raw) return '';
+  const lines = raw.split('\n').filter(l => l.trim());
+  let html = '';
+  let inCode = false;
+  let codeLines = [];
+
+  const isCodeLine = l => {
+    const t = l.trim();
+    return /^(public|private|protected|async|var|const|let|using|return|if|app\.|builder\.|services\.|namespace|class |interface |new |import |from |await |function )/.test(t)
+      || t.startsWith('[') || t.startsWith('{') || t.startsWith('}')
+      || t.endsWith('{') || t.endsWith('}') || t.endsWith(';')
+      || /^\</.test(t);
+  };
+
+  const flush = () => {
+    if (codeLines.length) {
+      html += `<pre><code>${codeLines.join('\n').replace(/</g,'&lt;').replace(/>/g,'&gt;')}</code></pre>`;
+      codeLines = [];
+    }
+  };
+
+  for (const line of lines) {
+    const t = line.trim();
+    if (!t) continue;
+
+    // Section labels
+    if (/^(Explanation|Real-time C# example|Real project usage|Real-time example|Interview Tip|Real-World|Real project|Production|Real Flow|Solutions|Options|Best Interview Answer|Benefit|Why\?|Correct Approach|Real-time flow|Real-world|Widely used|Answer|Real Interview Tip|Professional Approach|Real Project Usage|Real-time Fetch|Real-time production)/.test(t)) {
+      flush();
+      html += `<div class="section-label">${t}</div>`;
+      continue;
+    }
+
+    // Tips
+    if (t.startsWith('"') && t.endsWith('"') && t.length > 40) {
+      flush();
+      html += `<div class="tip-box">${t}</div>`;
+      continue;
+    }
+
+    // Bullets
+    if (t.startsWith('●') || t.startsWith('✔') || t.startsWith('❌') || t.startsWith('→') || /^\d\s/.test(t)) {
+      flush();
+      html += `<div class="bullet">${t.replace(/^[●✔❌→\d\s]/, '').trim()}</div>`;
+      continue;
+    }
+
+    // Code lines
+    if (isCodeLine(t)) {
+      codeLines.push(line);
+      continue;
+    }
+
+    flush();
+    html += `<p style="margin:5px 0;">${t.replace(/</g,'&lt;').replace(/>/g,'&gt;')}</p>`;
+  }
+  flush();
+  return html;
+}
+
+// ── Sidebar ──
+function buildSidebar() {
+  const aside = document.getElementById('sidebar');
+  aside.innerHTML = DATA.map((ch, ci) => {
+    const chSlug = `ch${ci}`;
+    const sections = ch.sections.filter(s => s.questions.length > 0);
+    const chNum = ['4','5','6'][ci] || String(ci+4);
+    const items = sections.map((sec, si) => {
+      const slug = `ch${ci}-sec${si}`;
+      const label = sec.title.replace(/^[^\w\s]+\s*/, '').replace(/\s*\(Q\d+[–-]Q?\d+\)/i,'');
+      return `<div class="section-item" data-slug="${slug}" onclick="showSection(${ci},${si})">${label}<span class="section-count">${sec.questions.length}</span></div>`;
+    }).join('');
+    return `
+    <div class="chapter-group" id="${chSlug}">
+      <div class="chapter-label" onclick="toggleChapter('${chSlug}')">
+        <span class="chapter-num">CH${chNum}</span>
+        ${ch.title.replace(/^CHAPTER \d+ [–-]\s*/,'')}
+        <svg class="ch-arrow" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+      <div class="section-list">${items}</div>
+    </div>`;
+  }).join('');
+}
+
+function toggleChapter(id) {
+  document.getElementById(id).classList.toggle('collapsed');
+}
+
+let currentSlug = '';
+function showSection(ci, si) {
+  const ch = DATA[ci];
+  const nonEmpty = ch.sections.filter(s => s.questions.length > 0);
+  const sec = nonEmpty[si];
+  if (!sec) return;
+
+  // sidebar highlight
+  document.querySelectorAll('.section-item').forEach(el => el.classList.remove('active'));
+  const slug = `ch${ci}-sec${si}`;
+  const el = document.querySelector(`[data-slug="${slug}"]`);
+  if (el) el.classList.add('active');
+  currentSlug = slug;
+
+  // clear search
+  document.getElementById('searchInput').value = '';
+
+  const main = document.getElementById('main');
+  const chNum = ['4','5','6'][ci] || String(ci+4);
+  const secTitle = sec.title.replace(/^[^\w\s]+\s*/,'');
+  const ids = sec.questions.map(q=>q.id);
+  const range = ids.length ? `${ids[0]} – ${ids[ids.length-1]}` : '';
+
+  main.innerHTML = `
+    <div class="section-header">
+      <div>
+        <div style="font-size:0.7rem;color:var(--text-muted);text-transform:uppercase;letter-spacing:.1em;margin-bottom:4px;">Chapter ${chNum}</div>
+        <h2>${secTitle}</h2>
+      </div>
+      ${range ? `<span class="q-range">${range}</span>` : ''}
+    </div>
+    <div class="q-grid" id="qGrid">
+      ${sec.questions.map((q,i) => renderCard(q, i)).join('')}
+    </div>`;
+}
+
+function renderCard(q, i) {
+  return `
+  <div class="q-card" id="card-${q.id}" style="animation-delay:${i*30}ms">
+    <div class="q-header" onclick="toggleCard('${q.id}')">
+      <span class="q-number">${q.id}</span>
+      <div class="q-title-wrap">
+        <div class="q-title">${q.title || 'Question'}</div>
+        <div class="q-meta">${companyPill(q.meta)}</div>
+      </div>
+      <div class="expand-btn">
+        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="m6 9 6 6 6-6"/></svg>
+      </div>
+    </div>
+    <div class="q-body">
+      <div class="q-body-inner">${formatBody(q.body)}</div>
+    </div>
+  </div>`;
+}
+
+function toggleCard(id) {
+  document.getElementById(`card-${id}`).classList.toggle('open');
+}
+
+// ── Search ──
+function handleSearch(query) {
+  const q = query.trim().toLowerCase();
+  if (!q) {
+    // restore last section or show welcome
+    if (currentSlug) {
+      const [ci, si] = currentSlug.replace('ch','').split('-sec').map(Number);
+      showSection(ci, si);
+    } else {
+      showWelcome();
+    }
+    document.getElementById('statPill').textContent = '190 Questions';
+    return;
+  }
+
+  const results = [];
+  DATA.forEach((ch, ci) => {
+    ch.sections.filter(s=>s.questions.length>0).forEach((sec, si) => {
+      sec.questions.forEach(quest => {
+        if (
+          quest.title.toLowerCase().includes(q) ||
+          quest.body.toLowerCase().includes(q) ||
+          quest.meta.toLowerCase().includes(q) ||
+          quest.id.toLowerCase().includes(q)
+        ) {
+          results.push({ ch: ch.title, ci, si, q: quest });
+        }
+      });
+    });
+  });
+
+  document.querySelectorAll('.section-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('statPill').textContent = `${results.length} found`;
+
+  const main = document.getElementById('main');
+  if (!results.length) {
+    main.innerHTML = `<div class="empty-state">
+      <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      <h3>No results for "${query}"</h3>
+      <p style="font-size:.85rem">Try a different keyword or browse sections</p>
+    </div>`;
+    return;
+  }
+
+  const highlighted = q => {
+    // Group by chapter
+  };
+
+  let prevCh = '';
+  const cards = results.map((r, i) => {
+    let chHdr = '';
+    if (r.ch !== prevCh) {
+      prevCh = r.ch;
+      chHdr = `<div style="margin:${i>0?'32px':0} 0 8px;padding-bottom:8px;border-bottom:1px solid var(--card-border)">
+        <div class="chapter-divider">${r.ch.replace(/^CHAPTER \d+ [–-]\s*/,'')}</div>
+      </div>`;
+    }
+    return chHdr + renderCard(r.q, i);
+  }).join('');
+
+  main.innerHTML = `
+    <div id="resultCount">Showing <span>${results.length}</span> result${results.length!==1?'s':''} for "<strong style="color:var(--text-secondary)">${query}</strong>"</div>
+    <div class="q-grid">${cards}</div>`;
+}
+
+function showWelcome() {
+  const main = document.getElementById('main');
+  const totalQ = DATA.reduce((s, ch) => s + ch.sections.reduce((ss, sec) => ss + sec.questions.length, 0), 0);
+  const chapStats = DATA.map((ch, i) => {
+    const n = ch.sections.reduce((s, sec) => s + sec.questions.length, 0);
+    const name = ch.title.replace(/^CHAPTER \d+ [–-]\s*/,'');
+    const colors = ['var(--accent)', 'var(--green)', 'var(--purple)'];
+    return `<div style="background:var(--card-bg);border:1px solid var(--card-border);border-radius:12px;padding:24px;flex:1;min-width:200px;border-top:3px solid ${colors[i]}">
+      <div style="font-size:.72rem;text-transform:uppercase;letter-spacing:.1em;color:var(--text-muted);margin-bottom:8px">Chapter ${['4','5','6'][i]}</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:1.4rem;margin-bottom:4px">${name}</div>
+      <div style="font-size:2rem;font-weight:700;color:${colors[i]}">${n}</div>
+      <div style="font-size:.8rem;color:var(--text-muted)">questions</div>
+    </div>`;
+  }).join('');
+
+  main.innerHTML = `
+    <div style="margin-bottom:40px">
+      <div style="font-size:.7rem;text-transform:uppercase;letter-spacing:.12em;color:var(--text-muted);margin-bottom:10px">MNC Interview Preparation</div>
+      <div style="font-family:'DM Serif Display',serif;font-size:2.4rem;margin-bottom:10px">Full-Stack .NET Interview Q&A</div>
+      <div style="font-size:.95rem;color:var(--text-secondary);max-width:560px;line-height:1.7">
+        ${totalQ} curated questions covering ASP.NET Core, SQL Server, and React — sourced from real interview rounds at Microsoft, Amazon, Accenture, Infosys, TCS, and Deloitte.
+      </div>
+    </div>
+    <div style="display:flex;gap:16px;flex-wrap:wrap;margin-bottom:40px">${chapStats}</div>
+    <div style="font-size:.8rem;color:var(--text-muted)">👈 Select a section from the sidebar to begin, or use the search bar above.</div>`;
+}
+
+// ── Init ──
+buildSidebar();
+showWelcome();
+</script>
+</body>
+</html>
