@@ -1,0 +1,1883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>.NET Full Stack Interview Q&A — Kaara</title>
+<style>
+  :root {
+    --bg: #0f1117;
+    --surface: #1a1d27;
+    --surface2: #222536;
+    --border: rgba(255,255,255,0.07);
+    --accent: #6c6ef7;
+    --accent2: #4ecdc4;
+    --text: #e8e9f0;
+    --muted: #8b8fa8;
+    --q-bg: #1e2135;
+    --a-bg: #151820;
+    --tag-bg: rgba(108,110,247,0.12);
+    --tag-text: #a5a6f8;
+    --tip-bg: rgba(78,205,196,0.08);
+    --tip-text: #4ecdc4;
+    --radius: 10px;
+    --radius-sm: 6px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    font-size: 15px;
+    line-height: 1.7;
+  }
+  a { color: var(--accent); text-decoration: none; }
+
+  /* Header */
+  header {
+    background: linear-gradient(135deg, #1a1d2e 0%, #12141f 100%);
+    border-bottom: 1px solid var(--border);
+    padding: 2.5rem 2rem 2rem;
+    text-align: center;
+  }
+  header .badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: .08em;
+    text-transform: uppercase;
+    color: var(--accent);
+    background: var(--tag-bg);
+    padding: 4px 12px;
+    border-radius: 20px;
+    border: 1px solid rgba(108,110,247,0.2);
+    margin-bottom: 1rem;
+  }
+  header h1 {
+    font-size: 28px;
+    font-weight: 600;
+    color: #fff;
+    margin-bottom: .4rem;
+  }
+  header p {
+    color: var(--muted);
+    font-size: 14px;
+    max-width: 480px;
+    margin: 0 auto;
+  }
+  .stats {
+    display: flex;
+    justify-content: center;
+    gap: 2rem;
+    margin-top: 1.5rem;
+  }
+  .stat { text-align: center; }
+  .stat .num { font-size: 22px; font-weight: 700; color: var(--accent); }
+  .stat .lbl { font-size: 12px; color: var(--muted); }
+
+  /* Nav */
+  .toc {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(15,17,23,0.95);
+    backdrop-filter: blur(10px);
+    border-bottom: 1px solid var(--border);
+    padding: .6rem 1rem;
+    overflow-x: auto;
+    white-space: nowrap;
+    scrollbar-width: none;
+  }
+  .toc::-webkit-scrollbar { display: none; }
+  .toc a {
+    display: inline-block;
+    font-size: 12px;
+    font-weight: 500;
+    color: var(--muted);
+    padding: 4px 10px;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    margin-right: 4px;
+    transition: all .15s;
+  }
+  .toc a:hover { color: var(--text); border-color: var(--border); }
+
+  /* Main layout */
+  main { max-width: 860px; margin: 0 auto; padding: 2rem 1.5rem 4rem; }
+
+  /* Section */
+  .section {
+    margin-bottom: 3rem;
+    scroll-margin-top: 60px;
+  }
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 1.2rem;
+    padding-bottom: .8rem;
+    border-bottom: 1px solid var(--border);
+  }
+  .section-icon {
+    width: 36px; height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--tag-bg);
+    border: 1px solid rgba(108,110,247,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 16px;
+    flex-shrink: 0;
+  }
+  .section-header h2 {
+    font-size: 18px;
+    font-weight: 600;
+    color: #fff;
+  }
+  .section-num {
+    margin-left: auto;
+    font-size: 12px;
+    color: var(--muted);
+    flex-shrink: 0;
+  }
+
+  /* Concepts */
+  .concepts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+    margin-bottom: 1.2rem;
+  }
+  .concept {
+    font-size: 12px;
+    padding: 3px 9px;
+    border-radius: 20px;
+    background: var(--tag-bg);
+    color: var(--tag-text);
+    border: 1px solid rgba(108,110,247,0.15);
+  }
+
+  /* Q&A card */
+  .qa-card {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    margin-bottom: 10px;
+    overflow: hidden;
+  }
+  .qa-q {
+    padding: .85rem 1.1rem;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    user-select: none;
+    transition: background .15s;
+  }
+  .qa-q:hover { background: var(--surface2); }
+  .qa-q .qnum {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--accent);
+    background: var(--tag-bg);
+    padding: 2px 7px;
+    border-radius: 4px;
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+  .qa-q .qtext { flex: 1; }
+  .qa-q .arrow {
+    color: var(--muted);
+    font-size: 12px;
+    margin-top: 3px;
+    flex-shrink: 0;
+    transition: transform .2s;
+  }
+  .qa-card.open .arrow { transform: rotate(90deg); }
+  .qa-a {
+    display: none;
+    padding: .9rem 1.1rem 1rem 1.1rem;
+    border-top: 1px solid var(--border);
+    background: var(--a-bg);
+    font-size: 14px;
+    color: #c5c7d8;
+    line-height: 1.75;
+  }
+  .qa-card.open .qa-a { display: block; }
+  .qa-a code {
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 12.5px;
+    background: rgba(255,255,255,0.06);
+    padding: 1px 5px;
+    border-radius: 3px;
+    color: #a5f3c5;
+  }
+  .qa-a pre {
+    background: #0d0f18;
+    border: 1px solid var(--border);
+    border-radius: var(--radius-sm);
+    padding: .9rem 1rem;
+    font-family: 'Cascadia Code', 'Fira Code', monospace;
+    font-size: 12.5px;
+    color: #c5f0a4;
+    overflow-x: auto;
+    margin: .6rem 0;
+    line-height: 1.6;
+  }
+  .qa-a strong { color: var(--text); font-weight: 600; }
+  .qa-a ul { padding-left: 1.2rem; margin: .4rem 0; }
+  .qa-a li { margin-bottom: .25rem; }
+
+  /* Tip */
+  .tip {
+    background: var(--tip-bg);
+    border: 1px solid rgba(78,205,196,0.15);
+    border-radius: var(--radius-sm);
+    padding: .7rem 1rem;
+    font-size: 13px;
+    color: var(--tip-text);
+    margin-top: 10px;
+    display: flex;
+    gap: 8px;
+    align-items: flex-start;
+  }
+  .tip .tip-icon { flex-shrink: 0; }
+
+  /* expand all */
+  .controls {
+    display: flex;
+    justify-content: flex-end;
+    gap: 8px;
+    margin-bottom: 1.5rem;
+  }
+  .btn {
+    font-size: 12px;
+    padding: 5px 12px;
+    border-radius: 6px;
+    border: 1px solid var(--border);
+    background: var(--surface);
+    color: var(--muted);
+    cursor: pointer;
+    transition: all .15s;
+  }
+  .btn:hover { color: var(--text); border-color: rgba(108,110,247,0.4); }
+
+  /* print */
+  @media print {
+    body { background: #fff; color: #111; }
+    header { background: #f5f5f5; }
+    .toc { display: none; }
+    .qa-a { display: block !important; }
+    .controls { display: none; }
+    .qa-q { cursor: default; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="badge">Interview Prep · 2025</div>
+  <h1>.NET Full Stack Developer</h1>
+  <p>Senior-level Q&amp;A covering all 12 key topics for the Kaara interview. Click any question to reveal the answer.</p>
+  <div class="stats">
+    <div class="stat"><div class="num">12</div><div class="lbl">Topics</div></div>
+    <div class="stat"><div class="num">60</div><div class="lbl">Questions</div></div>
+    <div class="stat"><div class="num">5+</div><div class="lbl">Years level</div></div>
+  </div>
+</header>
+
+<nav class="toc">
+  <a href="#middleware">Middleware</a>
+  <a href="#jwt">JWT Auth</a>
+  <a href="#ef">EF Core</a>
+  <a href="#linq">LINQ</a>
+  <a href="#react">React Hooks</a>
+  <a href="#appservice">App Services</a>
+  <a href="#functions">Az Functions</a>
+  <a href="#clean">Clean Arch</a>
+  <a href="#ddd">DDD</a>
+  <a href="#cqrs">CQRS</a>
+  <a href="#ai">AI Integration</a>
+  <a href="#sysdesign">System Design</a>
+</nav>
+
+<main>
+<div class="controls">
+  <button class="btn" onclick="toggleAll(true)">Expand all</button>
+  <button class="btn" onclick="toggleAll(false)">Collapse all</button>
+</div>
+
+<!-- 1. MIDDLEWARE -->
+<section class="section" id="middleware">
+  <div class="section-header">
+    <div class="section-icon">🔗</div>
+    <h2>ASP.NET Core Middleware</h2>
+    <span class="section-num">01 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">Request pipeline</span>
+    <span class="concept">Use / Run / Map</span>
+    <span class="concept">Short-circuiting</span>
+    <span class="concept">IMiddleware</span>
+    <span class="concept">Exception handling</span>
+    <span class="concept">Correlation IDs</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span>
+      <span class="qtext">Walk me through the ASP.NET Core request pipeline.</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      The ASP.NET Core pipeline is a chain of middleware components. Each component can execute logic <strong>before</strong> calling <code>next()</code> (inbound) and <strong>after</strong> (outbound). The pipeline is configured in <code>Program.cs</code> using the <code>IApplicationBuilder</code> (or <code>WebApplication</code>) extension methods.<br><br>
+      <strong>Key methods:</strong>
+      <ul>
+        <li><code>Use()</code> — adds middleware that <em>can</em> call the next component. Most common.</li>
+        <li><code>Run()</code> — terminal middleware. Does <strong>not</strong> call next; short-circuits the pipeline.</li>
+        <li><code>Map()</code> / <code>MapWhen()</code> — branches the pipeline based on path or condition.</li>
+      </ul>
+      <strong>Ordering matters critically.</strong> Example: <code>UseAuthentication()</code> must come before <code>UseAuthorization()</code>. Logging middleware should be first so it captures all requests.
+      <pre>app.UseExceptionHandler("/error"); // outermost — catches all
+app.UseHttpsRedirection();
+app.UseStaticFiles();
+app.UseRouting();
+app.UseAuthentication();        // identity must be established
+app.UseAuthorization();         // then permissions checked
+app.MapControllers();</pre>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span>
+      <span class="qtext">How would you write middleware to log all requests with a correlation ID?</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <pre>public class CorrelationMiddleware : IMiddleware
+{
+    private readonly ILogger&lt;CorrelationMiddleware&gt; _logger;
+    public CorrelationMiddleware(ILogger&lt;CorrelationMiddleware&gt; logger)
+        => _logger = logger;
+
+    public async Task InvokeAsync(HttpContext ctx, RequestDelegate next)
+    {
+        var correlationId = ctx.Request.Headers["X-Correlation-Id"]
+                            .FirstOrDefault() ?? Guid.NewGuid().ToString();
+
+        ctx.Response.Headers["X-Correlation-Id"] = correlationId;
+
+        using (_logger.BeginScope(new { CorrelationId = correlationId }))
+        {
+            _logger.LogInformation("→ {Method} {Path}", ctx.Request.Method, ctx.Request.Path);
+            await next(ctx);
+            _logger.LogInformation("← {StatusCode}", ctx.Response.StatusCode);
+        }
+    }
+}</pre>
+      Register with <code>builder.Services.AddTransient&lt;CorrelationMiddleware&gt;()</code> and <code>app.UseMiddleware&lt;CorrelationMiddleware&gt;()</code>. Using <code>IMiddleware</code> (instead of convention-based) gives you proper DI scoping.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span>
+      <span class="qtext">What's the difference between Use() and Run()?</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong><code>Use()</code></strong> receives a <code>RequestDelegate next</code> parameter and <em>can</em> call it to pass control to the next middleware. It enables both pre- and post-processing.<br><br>
+      <strong><code>Run()</code></strong> is a terminal — it has no <code>next</code> parameter and <strong>always short-circuits</strong> the pipeline. Any middleware registered <em>after</em> <code>Run()</code> is unreachable.<br><br>
+      A common gotcha: calling <code>app.Use()</code> without calling <code>await next(context)</code> behaves like <code>Run()</code> — it silently swallows the rest of the pipeline.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span>
+      <span class="qtext">How does UseExceptionHandler differ from custom exception middleware?</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <code>UseExceptionHandler</code> is a built-in middleware that catches unhandled exceptions and re-executes the pipeline to a specified error endpoint. It's production-safe and handles edge cases like response already started.<br><br>
+      <strong>Custom exception middleware</strong> gives you more control — you can serialize structured JSON error responses, map domain exceptions to HTTP status codes, and add correlation IDs without re-executing an error endpoint.
+      <pre>public async Task InvokeAsync(HttpContext ctx, RequestDelegate next)
+{
+    try { await next(ctx); }
+    catch (DomainException ex)
+    {
+        ctx.Response.StatusCode = 422;
+        await ctx.Response.WriteAsJsonAsync(new { error = ex.Message });
+    }
+    catch (Exception ex)
+    {
+        _logger.LogError(ex, "Unhandled exception");
+        ctx.Response.StatusCode = 500;
+        await ctx.Response.WriteAsJsonAsync(new { error = "Internal server error" });
+    }
+}</pre>
+      <strong>Best practice:</strong> Place custom exception middleware <em>first</em> in the pipeline (outermost wrapper).
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span>
+      <span class="qtext">Where in the pipeline should authentication middleware be placed, and why?</span>
+      <span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <code>UseAuthentication()</code> must come <strong>after</strong> <code>UseRouting()</code> (so the route is resolved) but <strong>before</strong> <code>UseAuthorization()</code>.<br><br>
+      Reason: Authentication reads the token and sets <code>HttpContext.User</code> (ClaimsPrincipal). Authorization then reads <code>HttpContext.User</code> to make access decisions. If you flip them, the user identity is null when authorization runs — every request will be rejected as anonymous.<br><br>
+      Static files (<code>UseStaticFiles()</code>) should come <em>before</em> auth if assets are public — no point authenticating file requests unnecessarily.
+    </div>
+  </div>
+
+  <div class="tip"><span class="tip-icon">💡</span> A common trick question: what happens if you call <code>Use()</code> after <code>Run()</code>? The middleware is registered but never reached. The compiler won't warn you — this is a silent bug.</div>
+</section>
+
+<!-- 2. JWT -->
+<section class="section" id="jwt">
+  <div class="section-header">
+    <div class="section-icon">🔐</div>
+    <h2>JWT Authentication</h2>
+    <span class="section-num">02 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">Header.Payload.Signature</span>
+    <span class="concept">RS256 vs HS256</span>
+    <span class="concept">Refresh token rotation</span>
+    <span class="concept">Claims-based identity</span>
+    <span class="concept">Token revocation</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">Why is JWT stateless and what problem does that cause?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      A JWT is self-contained — the server verifies it by checking the signature using a secret/key. No session state is stored server-side. This makes JWTs horizontally scalable (any server can verify any token).<br><br>
+      <strong>The problem:</strong> You can't revoke a valid JWT before its expiry. If a user's token is stolen or the user logs out, the token remains valid until <code>exp</code>. Solutions:<br>
+      <ul>
+        <li>Keep access tokens short-lived (5–15 min)</li>
+        <li>Maintain a <strong>token blacklist</strong> in Redis — check on each request (costs one Redis lookup)</li>
+        <li>Use <strong>refresh token rotation</strong> — long-lived refresh tokens stored in DB can be invalidated</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">How do you implement refresh token rotation?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Refresh token rotation means each time you use a refresh token, you get a new one and the old one is invalidated. This limits the window of misuse if a token is stolen.<br><br>
+      <strong>Pattern:</strong>
+      <ul>
+        <li>On login: issue short-lived JWT (15 min) + long-lived refresh token (7 days), stored hashed in DB</li>
+        <li>On refresh: validate refresh token, issue new JWT + new refresh token, invalidate old one atomically</li>
+        <li>If old refresh token is used again (reuse detection) — invalidate the entire family (sign out all sessions)</li>
+      </ul>
+      <pre>public async Task&lt;TokenPair&gt; RefreshAsync(string refreshToken)
+{
+    var stored = await _db.RefreshTokens
+        .FirstOrDefaultAsync(t => t.TokenHash == Hash(refreshToken) && !t.IsRevoked);
+
+    if (stored is null) throw new SecurityException("Invalid token");
+
+    stored.IsRevoked = true; // revoke old
+    var newRefresh = GenerateRefreshToken();
+    _db.RefreshTokens.Add(new RefreshToken { TokenHash = Hash(newRefresh), UserId = stored.UserId });
+    await _db.SaveChangesAsync();
+
+    return new TokenPair(GenerateJwt(stored.UserId), newRefresh);
+}</pre>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">How would you revoke a JWT before expiry?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Since JWTs are stateless, revocation requires introducing state. Two approaches:<br><br>
+      <strong>1. Redis blacklist:</strong> On logout, add the JWT's <code>jti</code> (unique ID claim) to Redis with TTL = remaining token lifetime. On each authenticated request, check Redis before proceeding.
+      <pre>// On logout
+await _redis.SetAsync($"revoked:{jti}", "1", tokenRemainingLifetime);
+
+// In middleware/auth handler
+if (await _redis.KeyExistsAsync($"revoked:{jti}"))
+    return AuthenticateResult.Fail("Token revoked");</pre>
+      <strong>2. Short expiry + refresh tokens:</strong> If access tokens expire in 5 minutes, revocation problem is minimized. Revoke the refresh token in DB for effective logout.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">What's the difference between authentication and authorization?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>Authentication</strong> = "Who are you?" — verifies identity. In ASP.NET Core, this sets <code>HttpContext.User</code> (ClaimsPrincipal) via JWT validation, cookie, etc.<br><br>
+      <strong>Authorization</strong> = "What are you allowed to do?" — checks permissions. Done via <code>[Authorize]</code>, policies, or roles against the established identity.<br><br>
+      In the pipeline: authentication always runs first. Authorization cannot make decisions without a verified identity.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">How do you secure endpoints with [Authorize] and policies?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <pre>// Define policy
+builder.Services.AddAuthorization(opt =>
+{
+    opt.AddPolicy("AdminOnly", p => p.RequireRole("Admin"));
+    opt.AddPolicy("MinAge18", p => p.RequireClaim("age", "18+"));
+    opt.AddPolicy("CanEditOrders", p =>
+        p.RequireAssertion(ctx =>
+            ctx.User.IsInRole("Admin") || ctx.User.HasClaim("permission", "orders.write")));
+});
+
+// Apply to endpoint
+[Authorize(Policy = "CanEditOrders")]
+[HttpPut("orders/{id}")]
+public async Task&lt;IActionResult&gt; UpdateOrder(int id, ...) { ... }</pre>
+      For resource-based authorization (e.g. "can this user edit <em>this</em> specific order"), use <code>IAuthorizationService.AuthorizeAsync(user, resource, policy)</code> rather than attribute-based.
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> Expect a follow-up on token revocation. JWT is stateless by design — the Redis blacklist pattern (jti claim + TTL) is the production answer. Know the tradeoff: one extra Redis lookup per request.</div>
+</section>
+
+<!-- 3. EF CORE -->
+<section class="section" id="ef">
+  <div class="section-header">
+    <div class="section-icon">🗄</div>
+    <h2>Entity Framework Core</h2>
+    <span class="section-num">03 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">N+1 problem</span>
+    <span class="concept">AsNoTracking</span>
+    <span class="concept">Soft delete via QueryFilter</span>
+    <span class="concept">Owned entities</span>
+    <span class="concept">Concurrency tokens</span>
+    <span class="concept">Interceptors</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">How do you avoid the N+1 problem in EF Core?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      The N+1 problem occurs when you load N entities then run 1 additional query per entity to fetch related data — resulting in N+1 total database round trips.<br><br>
+      <strong>Fix 1 — Eager loading with Include:</strong>
+      <pre>var orders = await _db.Orders
+    .Include(o => o.Customer)
+    .Include(o => o.OrderItems)
+        .ThenInclude(i => i.Product)
+    .ToListAsync();</pre>
+      <strong>Fix 2 — Projection (preferred for read queries):</strong>
+      <pre>var orders = await _db.Orders
+    .Select(o => new OrderDto
+    {
+        Id = o.Id,
+        CustomerName = o.Customer.Name,
+        Total = o.OrderItems.Sum(i => i.Price * i.Quantity)
+    }).ToListAsync();</pre>
+      Projection is better because EF generates a single JOIN query and only selects needed columns — no over-fetching.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">When would you use AsNoTracking() and why?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      By default, EF Core tracks every entity it loads via the <code>ChangeTracker</code> — this has memory and CPU overhead since EF stores snapshots for change detection.<br><br>
+      Use <code>AsNoTracking()</code> for <strong>read-only queries</strong> where you won't update the entities:
+      <pre>var products = await _db.Products
+    .AsNoTracking()
+    .Where(p => p.IsActive)
+    .ToListAsync();</pre>
+      Benefits: ~30% faster queries on large result sets, less memory usage. Never use it when you intend to modify and save the entity — EF won't know what changed.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">How do you handle concurrency conflicts in EF Core?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      EF Core uses optimistic concurrency — no locks, but it detects if a row changed between read and write.<br><br>
+      <strong>Setup:</strong> Add a <code>[ConcurrencyToken]</code> or <code>rowversion</code> column:
+      <pre>public byte[] RowVersion { get; set; }
+// In OnModelCreating:
+entity.Property(e => e.RowVersion).IsRowVersion();</pre>
+      <strong>Handle the conflict:</strong>
+      <pre>try
+{
+    await _db.SaveChangesAsync();
+}
+catch (DbUpdateConcurrencyException ex)
+{
+    var entry = ex.Entries.Single();
+    var dbValues = await entry.GetDatabaseValuesAsync();
+    // Option 1: client wins — keep user's changes
+    // Option 2: store wins — reload from DB
+    // Option 3: merge — application-specific logic
+    throw new ConflictException("Record was modified by another user.");
+}</pre>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">How do you implement soft delete transparently using EF Core?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Override <code>SaveChangesAsync</code> to intercept deletes, and use a global query filter to exclude soft-deleted records from all queries:
+      <pre>// Entity base
+public abstract class BaseEntity
+{
+    public bool IsDeleted { get; set; }
+    public DateTime? DeletedAt { get; set; }
+}
+
+// DbContext
+protected override void OnModelCreating(ModelBuilder mb)
+{
+    mb.Entity&lt;Order&gt;().HasQueryFilter(o => !o.IsDeleted);
+}
+
+public override Task&lt;int&gt; SaveChangesAsync(CancellationToken ct = default)
+{
+    foreach (var entry in ChangeTracker.Entries()
+        .Where(e => e.State == EntityState.Deleted && e.Entity is BaseEntity))
+    {
+        entry.State = EntityState.Modified;
+        ((BaseEntity)entry.Entity).IsDeleted = true;
+        ((BaseEntity)entry.Entity).DeletedAt = DateTime.UtcNow;
+    }
+    return base.SaveChangesAsync(ct);
+}</pre>
+      To query deleted records, use <code>.IgnoreQueryFilters()</code>.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">How do you configure a value object (owned entity) in EF Core?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      In DDD, value objects have no identity — they're equal by value. EF Core supports them as "owned entities":
+      <pre>// Domain
+public record Address(string Street, string City, string PostalCode);
+
+// Entity
+public class Customer
+{
+    public int Id { get; private set; }
+    public Address ShippingAddress { get; private set; }
+}
+
+// Config
+modelBuilder.Entity&lt;Customer&gt;().OwnsOne(c => c.ShippingAddress, addr =>
+{
+    addr.Property(a => a.Street).HasColumnName("ShippingStreet").HasMaxLength(200);
+    addr.Property(a => a.City).HasColumnName("ShippingCity").HasMaxLength(100);
+    addr.Property(a => a.PostalCode).HasColumnName("ShippingPostalCode");
+});</pre>
+      Owned entities map to the same table by default (no join needed). Use <code>ToTable()</code> to store them in a separate table if preferred.
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> Soft delete via QueryFilter + SaveChanges override is a classic senior question. Have this pattern memorized — it shows you understand EF internals beyond basic CRUD.</div>
+</section>
+
+<!-- 4. LINQ -->
+<section class="section" id="linq">
+  <div class="section-header">
+    <div class="section-icon">🔍</div>
+    <h2>LINQ</h2>
+    <span class="section-num">04 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">Deferred execution</span>
+    <span class="concept">IQueryable vs IEnumerable</span>
+    <span class="concept">Expression trees</span>
+    <span class="concept">GroupBy / SelectMany</span>
+    <span class="concept">SQL translation pitfalls</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">What's the difference between IQueryable and IEnumerable in a LINQ context?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>IEnumerable&lt;T&gt;</strong> — operates in memory. LINQ to Objects. The entire collection is loaded, then filtered locally. Extension methods accept <code>Func&lt;T, bool&gt;</code>.<br><br>
+      <strong>IQueryable&lt;T&gt;</strong> — builds an expression tree. The query is translated to SQL (or another query language) and executed <em>on the data source</em>. Extension methods accept <code>Expression&lt;Func&lt;T, bool&gt;&gt;</code>.<br><br>
+      <strong>Critical pitfall:</strong>
+      <pre>// BAD: loads ALL orders into memory, then filters in C#
+IEnumerable&lt;Order&gt; orders = _db.Orders;
+var result = orders.Where(o => o.Total > 1000).ToList();
+
+// GOOD: generates WHERE clause in SQL
+IQueryable&lt;Order&gt; orders = _db.Orders;
+var result = orders.Where(o => o.Total > 1000).ToList();</pre>
+      Always return <code>IQueryable</code> from repositories when the caller may add further filters.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">When does deferred execution cause bugs?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      LINQ queries don't execute until enumerated (<code>ToList()</code>, <code>foreach</code>, <code>First()</code>, etc.). This causes bugs when:<br><br>
+      <strong>1. DbContext is disposed before query executes:</strong>
+      <pre>IQueryable&lt;Order&gt; GetOrders() // BAD — context disposed after method returns
+{
+    using var db = new AppDbContext();
+    return db.Orders.Where(o => o.IsActive); // query not executed yet!
+}</pre>
+      <strong>2. Multiple enumeration:</strong>
+      <pre>var query = _db.Orders.Where(o => o.Total > 100); // not executed
+var count = query.Count();    // executes once
+var list = query.ToList();    // executes again — 2 DB round trips!</pre>
+      Fix: call <code>ToList()</code> once and work with the materialized result.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">Write a LINQ query to group orders by customer and get the total amount.</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <pre>var customerTotals = await _db.Orders
+    .GroupBy(o => new { o.CustomerId, o.Customer.Name })
+    .Select(g => new CustomerSummaryDto
+    {
+        CustomerId = g.Key.CustomerId,
+        CustomerName = g.Key.Name,
+        OrderCount = g.Count(),
+        TotalAmount = g.Sum(o => o.Total)
+    })
+    .OrderByDescending(x => x.TotalAmount)
+    .ToListAsync();</pre>
+      EF Core translates this to a single SQL GROUP BY query. Always verify the generated SQL with <code>ToQueryString()</code> or SQL logging for complex groupings.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">Why can't you use certain C# methods inside an EF Core LINQ query?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      EF Core translates LINQ expression trees to SQL. It can only translate expressions it knows how to map. C# methods like <code>string.Format()</code>, custom extension methods, or complex business logic have no SQL equivalent — EF throws <code>InvalidOperationException</code>.<br><br>
+      <pre>// FAILS — EF can't translate MyCustomHelper()
+var result = _db.Products.Where(p => MyCustomHelper(p.Name)).ToList();
+
+// FIX — evaluate in memory after fetching necessary data
+var products = await _db.Products
+    .Select(p => new { p.Id, p.Name }) // fetch only what's needed
+    .ToListAsync();
+var result = products.Where(p => MyCustomHelper(p.Name)).ToList();</pre>
+      <code>.AsEnumerable()</code> is a deliberate switch to client-side evaluation — use only after minimizing the data fetched.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">How would you debug a LINQ query that generates slow SQL?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>Step 1:</strong> Capture the generated SQL:
+      <pre>var sql = query.ToQueryString(); // EF Core 5+</pre>
+      Or enable SQL logging: <code>optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information)</code><br><br>
+      <strong>Step 2:</strong> Run the SQL in SSMS — check the execution plan. Look for Table Scans, Key Lookups, missing indexes.<br><br>
+      <strong>Step 3:</strong> Common EF-specific fixes:
+      <ul>
+        <li>Missing <code>.Include()</code> causes N+1</li>
+        <li>Calling <code>.ToList()</code> too early forces client evaluation</li>
+        <li>Complex predicates may prevent index use — simplify or add computed columns</li>
+        <li>Add covering indexes for frequently filtered + projected columns</li>
+      </ul>
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> IQueryable vs IEnumerable is asked in nearly every .NET interview. The one-liner answer: IQueryable builds an expression tree translated to SQL; IEnumerable operates on in-memory data.</div>
+</section>
+
+<!-- 5. REACT HOOKS -->
+<section class="section" id="react">
+  <div class="section-header">
+    <div class="section-icon">⚛</div>
+    <h2>React Hooks</h2>
+    <span class="section-num">05 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">Stale closure</span>
+    <span class="concept">useCallback vs useMemo</span>
+    <span class="concept">Custom hooks</span>
+    <span class="concept">useRef</span>
+    <span class="concept">React.memo</span>
+    <span class="concept">useReducer</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">What causes the stale closure problem in useEffect?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      A useEffect callback closes over variables from the render it was created in. If those variables change but the effect doesn't re-run (wrong/missing dependencies), it uses old (stale) values.
+      <pre>// BUG — stale closure: always logs initial count value
+useEffect(() => {
+    const id = setInterval(() => console.log(count), 1000);
+    return () => clearInterval(id);
+}, []); // empty deps — effect never re-runs
+
+// FIX 1 — add count to deps (re-creates interval on every change)
+useEffect(() => {
+    const id = setInterval(() => console.log(count), 1000);
+    return () => clearInterval(id);
+}, [count]);
+
+// FIX 2 — use functional updater + ref (preferred for intervals)
+const countRef = useRef(count);
+useEffect(() => { countRef.current = count; }, [count]);
+useEffect(() => {
+    const id = setInterval(() => console.log(countRef.current), 1000);
+    return () => clearInterval(id);
+}, []);</pre>
+      The ESLint rule <code>exhaustive-deps</code> catches most of these. Always include it in your project.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">When should you use useCallback vs useMemo?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong><code>useCallback(fn, deps)</code></strong> — memoizes a <em>function reference</em>. Use when passing callbacks to child components wrapped in <code>React.memo</code> — prevents unnecessary re-renders because the callback reference stays stable.<br><br>
+      <strong><code>useMemo(() => value, deps)</code></strong> — memoizes a <em>computed value</em>. Use for expensive calculations that shouldn't re-run on every render.<br><br>
+      <pre>// useCallback — stable function for memoized child
+const handleDelete = useCallback((id: number) => {
+    dispatch({ type: 'DELETE', id });
+}, [dispatch]);
+
+// useMemo — expensive computation
+const sortedItems = useMemo(() =>
+    [...items].sort((a, b) => a.price - b.price),
+[items]);</pre>
+      <strong>Don't overuse either.</strong> The memoization itself has a cost. Profile first — only optimize when you measure a real re-render problem.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">How would you debounce an API call inside a React component?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Extract the logic into a custom hook:
+      <pre>function useDebounce&lt;T&gt;(value: T, delay: number): T {
+    const [debounced, setDebounced] = useState(value);
+    useEffect(() => {
+        const timer = setTimeout(() => setDebounced(value), delay);
+        return () => clearTimeout(timer); // cleanup on value change
+    }, [value, delay]);
+    return debounced;
+}
+
+// Usage
+function SearchBox() {
+    const [query, setQuery] = useState('');
+    const debouncedQuery = useDebounce(query, 400);
+
+    useEffect(() => {
+        if (debouncedQuery) fetchResults(debouncedQuery);
+    }, [debouncedQuery]);
+}</pre>
+      The cleanup function is the key — it clears the timer if the value changes before the delay fires, preventing unnecessary API calls.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">How do you share stateful logic across components?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Use <strong>custom hooks</strong> — a function starting with <code>use</code> that internally calls React hooks. Custom hooks give each component its own state (they're not singletons), but share the logic.<br><br>
+      <pre>function usePagination(totalItems: number, pageSize: number) {
+    const [page, setPage] = useState(1);
+    const totalPages = Math.ceil(totalItems / pageSize);
+    const next = () => setPage(p => Math.min(p + 1, totalPages));
+    const prev = () => setPage(p => Math.max(p - 1, 1));
+    return { page, totalPages, next, prev };
+}
+
+// Reusable in any component
+const { page, next, prev } = usePagination(orders.length, 20);</pre>
+      For <em>shared state</em> (same state across multiple components), use Context + a custom hook, Zustand, or Redux.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">When should you use useReducer instead of useState?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Use <code>useReducer</code> when:<br>
+      <ul>
+        <li>State has multiple sub-values that change together</li>
+        <li>Next state depends on previous state in complex ways</li>
+        <li>State transitions need to be explicit and testable</li>
+      </ul>
+      <pre>type FormState = { name: string; email: string; errors: Record&lt;string, string&gt; };
+type Action = { type: 'SET_FIELD'; field: keyof FormState; value: string }
+            | { type: 'SET_ERRORS'; errors: Record&lt;string, string&gt; }
+            | { type: 'RESET' };
+
+function formReducer(state: FormState, action: Action): FormState {
+    switch (action.type) {
+        case 'SET_FIELD': return { ...state, [action.field]: action.value };
+        case 'SET_ERRORS': return { ...state, errors: action.errors };
+        case 'RESET': return initialState;
+    }
+}
+
+const [state, dispatch] = useReducer(formReducer, initialState);</pre>
+      The reducer is a pure function — easy to unit test without rendering.
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> Stale closure and the cleanup function in useEffect are the two signals that separate senior React devs. Be ready to walk through a live example.</div>
+</section>
+
+<!-- 6. AZURE APP SERVICES -->
+<section class="section" id="appservice">
+  <div class="section-header">
+    <div class="section-icon">☁</div>
+    <h2>Azure App Services</h2>
+    <span class="section-num">06 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">Deployment slots</span>
+    <span class="concept">Scale-up vs scale-out</span>
+    <span class="concept">Key Vault references</span>
+    <span class="concept">VNet integration</span>
+    <span class="concept">Health checks</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">How do deployment slots help with zero-downtime deployments?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Deployment slots are live environments within the same App Service. The standard pattern:<br>
+      <ol style="padding-left:1.2rem;margin:.5rem 0">
+        <li>Deploy new version to <strong>staging</strong> slot</li>
+        <li>Run smoke tests against staging URL</li>
+        <li><strong>Swap</strong> staging ↔ production — Azure routes traffic to the new version instantly</li>
+        <li>Old version is now in staging — quick rollback by swapping back</li>
+      </ol>
+      Slots have their own app settings. Mark settings as <strong>"slot settings"</strong> (sticky) to prevent them from swapping — e.g. connection strings that are environment-specific. Non-sticky settings (like app version) do swap with the slot.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">How do you store secrets securely in App Service?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Never store secrets in App Settings as plain text in source control. The production pattern:<br><br>
+      <strong>Key Vault References</strong> — App Service fetches the secret from Key Vault at runtime using its Managed Identity:
+      <pre>// App Setting value (not a plain secret — a reference):
+@Microsoft.KeyVault(VaultName=mykeyvault;SecretName=DbConnectionString)
+
+// Code reads it normally — transparent:
+var connStr = Configuration["DbConnectionString"];</pre>
+      Enable <strong>System-assigned Managed Identity</strong> on the App Service, then grant it <code>Key Vault Secrets User</code> role on the vault. No credentials needed — Azure handles the auth.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">What's the difference between vertical and horizontal scaling?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>Scale up (vertical)</strong> — move to a larger App Service Plan tier (more CPU/RAM per instance). Simple but has a ceiling and requires downtime during resize.<br><br>
+      <strong>Scale out (horizontal)</strong> — add more instances of the same size. Handles traffic spikes without changing instance size. Can be manual or auto-scale based on CPU %, request queue, or schedule.<br><br>
+      For stateless APIs, horizontal scaling is almost always preferred. The key requirement: your app must be <strong>stateless</strong> — no in-memory session, no local file system state. Use Redis for distributed caching and Azure Blob for file storage.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">How do you monitor App Service performance?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>Built-in tools:</strong>
+      <ul>
+        <li><strong>Application Insights</strong> — request/response times, failure rates, dependency calls, distributed traces. Integrate via NuGet + <code>builder.Services.AddApplicationInsightsTelemetry()</code></li>
+        <li><strong>Metrics</strong> — CPU %, memory, HTTP queue length in Azure Portal</li>
+        <li><strong>Diagnose and solve problems</strong> — built-in detector for common issues (memory leaks, CPU spikes, crashes)</li>
+        <li><strong>Log streaming</strong> — real-time stdout logs from the Kudu console</li>
+      </ul>
+      For production, set up <strong>alerts</strong> on 5xx error rate and P95 response time. Use Application Insights <strong>Live Metrics</strong> for real-time debugging during incidents.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">How do you configure health checks in App Service?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <pre>// Program.cs
+builder.Services.AddHealthChecks()
+    .AddSqlServer(connectionString)
+    .AddRedis(redisConnStr)
+    .AddCheck&lt;ExternalApiHealthCheck&gt;("external-api");
+
+app.MapHealthChecks("/health", new HealthCheckOptions
+{
+    ResponseWriter = UIResponseWriter.WriteHealthCheckUIResponse
+});</pre>
+      In Azure Portal → App Service → Health check: point to <code>/health</code>. Azure will automatically remove unhealthy instances from load balancing and restart them. Set the threshold (e.g. 2 consecutive failures) to avoid flapping.
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> Key Vault references (@Microsoft.KeyVault(...)) are the production secret management pattern. Knowing this shows security maturity — most junior devs just paste secrets directly into App Settings.</div>
+</section>
+
+<!-- 7. AZURE FUNCTIONS -->
+<section class="section" id="functions">
+  <div class="section-header">
+    <div class="section-icon">⚡</div>
+    <h2>Azure Functions</h2>
+    <span class="section-num">07 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">Trigger types</span>
+    <span class="concept">Durable Functions</span>
+    <span class="concept">Cold start</span>
+    <span class="concept">Idempotency</span>
+    <span class="concept">Dependency injection</span>
+    <span class="concept">Output bindings</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">When would you use Azure Functions over App Service?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>Use Azure Functions when:</strong>
+      <ul>
+        <li>Event-driven workloads — process messages from Service Bus, Blob uploads, Event Grid events</li>
+        <li>Infrequent or unpredictable traffic — Consumption plan charges only for execution time</li>
+        <li>Short-lived tasks — image resizing, sending emails, data transformation</li>
+        <li>Scheduled jobs — <code>TimerTrigger</code> replaces cron jobs</li>
+      </ul>
+      <strong>Use App Service when:</strong>
+      <ul>
+        <li>Long-running HTTP APIs with consistent traffic</li>
+        <li>WebSocket or SignalR connections (stateful)</li>
+        <li>You need predictable cold-start-free performance</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">How do you handle long-running operations with Durable Functions?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Durable Functions add state and orchestration on top of Azure Functions. The key constraint: the <strong>orchestrator must be deterministic</strong> — it replays from history, so never put non-deterministic code (DateTime.Now, Guid.NewGuid, I/O) directly in the orchestrator.<br><br>
+      <pre>[FunctionName("ProcessOrder_Orchestrator")]
+public static async Task RunOrchestrator(
+    [OrchestrationTrigger] IDurableOrchestrationContext ctx)
+{
+    var orderId = ctx.GetInput&lt;int&gt;();
+    await ctx.CallActivityAsync("ValidateOrder", orderId);
+    await ctx.CallActivityAsync("ChargePayment", orderId);
+    await ctx.CallActivityAsync("SendConfirmation", orderId);
+}
+
+[FunctionName("ProcessOrder_Start")]
+public static async Task&lt;string&gt; Start(
+    [HttpTrigger] HttpRequest req,
+    [DurableClient] IDurableOrchestrationClient client)
+{
+    return await client.StartNewAsync("ProcessOrder_Orchestrator", orderId);
+}</pre>
+      Patterns: chaining (sequential), fan-out/fan-in (parallel with <code>Task.WhenAll</code>), human interaction (wait for external event), eternal orchestrations.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">What is the cold start problem and how do you mitigate it?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      On the Consumption plan, Azure Functions scale to zero when idle. The first request after idle must spin up a new instance — loading the runtime, app code, and dependencies. This "cold start" can add 1–10 seconds of latency.<br><br>
+      <strong>Mitigations:</strong>
+      <ul>
+        <li><strong>Premium plan</strong> — keeps pre-warmed instances always running (no cold start)</li>
+        <li><strong>Dedicated (App Service) plan</strong> — always-on instances, no cold start</li>
+        <li>Minimize startup time — reduce DI registrations, avoid heavy initialization at startup</li>
+        <li>Use <code>WEBSITE_RUN_FROM_PACKAGE=1</code> — runs from a zip package, faster startup than file system</li>
+        <li>Ping/warm-up endpoint with App Insights availability tests every few minutes</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">How do you make an Azure Function idempotent?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Azure Functions (especially queue/Service Bus triggers) guarantee <strong>at-least-once delivery</strong> — the same message can be delivered more than once. Your function must be idempotent: processing the same message twice produces the same result.<br><br>
+      <strong>Patterns:</strong>
+      <ul>
+        <li>Use a unique message ID as an idempotency key — check if already processed before doing work</li>
+        <li>Database upserts instead of inserts</li>
+        <li>Store processed message IDs in a cache/DB with TTL</li>
+      </ul>
+      <pre>public async Task Run([ServiceBusTrigger("orders")] OrderMessage msg)
+{
+    if (await _db.ProcessedMessages.AnyAsync(m => m.Id == msg.MessageId))
+        return; // already handled — idempotent skip
+
+    await ProcessOrder(msg);
+    _db.ProcessedMessages.Add(new ProcessedMessage { Id = msg.MessageId });
+    await _db.SaveChangesAsync();
+}</pre>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">How do you inject services into Azure Functions?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Azure Functions v4 (.NET isolated) supports standard DI via <code>Program.cs</code>:
+      <pre>var host = new HostBuilder()
+    .ConfigureFunctionsWorkerDefaults()
+    .ConfigureServices(services =>
+    {
+        services.AddDbContext&lt;AppDbContext&gt;(opt =>
+            opt.UseSqlServer(Environment.GetEnvironmentVariable("SqlConn")));
+        services.AddScoped&lt;IOrderService, OrderService&gt;();
+        services.AddSingleton&lt;IEmailService, SendGridEmailService&gt;();
+    })
+    .Build();
+
+// Function class — constructor injection
+public class OrderFunction(IOrderService orderService)
+{
+    [Function("ProcessOrder")]
+    public async Task Run([ServiceBusTrigger("orders")] OrderMessage msg)
+        => await orderService.ProcessAsync(msg);
+}</pre>
+      In-process functions (v3) use <code>[assembly: FunctionsStartup]</code> instead. The isolated model is preferred for .NET 8+.
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> Durable Functions orchestrator constraint — deterministic execution only — is the senior differentiator. If you've used it, explaining replay-based execution shows real depth.</div>
+</section>
+
+<!-- 8. CLEAN ARCHITECTURE -->
+<section class="section" id="clean">
+  <div class="section-header">
+    <div class="section-icon">🏛</div>
+    <h2>Clean Architecture</h2>
+    <span class="section-num">08 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">Domain → Application → Infrastructure → Presentation</span>
+    <span class="concept">Dependency rule</span>
+    <span class="concept">Use cases</span>
+    <span class="concept">Domain purity</span>
+    <span class="concept">Testability</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">Why does Clean Architecture place Domain at the center?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      The Domain layer contains the core business logic and rules — the things that make your application unique. It must be independent of infrastructure (database, HTTP, UI) so that:<br>
+      <ul>
+        <li>Business rules can be tested without a database or web server</li>
+        <li>Infrastructure can be swapped (e.g. SQL → MongoDB) without changing business logic</li>
+        <li>The domain model can evolve independently of frameworks</li>
+      </ul>
+      The <strong>dependency rule</strong>: inner layers know nothing about outer layers. Domain has no reference to EF Core, HttpClient, or any framework — only C# primitives and .NET BCL types.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">Where does validation live — Domain or Application?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Both — but for different concerns:<br><br>
+      <strong>Domain layer</strong> — validates <em>invariants</em> (business rules that must always hold). Enforced in entity constructors or methods:
+      <pre>public class Order
+{
+    public Order(decimal total)
+    {
+        if (total &lt;= 0) throw new DomainException("Order total must be positive.");
+        Total = total;
+    }
+}</pre>
+      <strong>Application layer</strong> — validates <em>input/commands</em> (format, required fields, structural correctness). Use FluentValidation:
+      <pre>public class CreateOrderCommandValidator : AbstractValidator&lt;CreateOrderCommand&gt;
+{
+    public CreateOrderCommandValidator()
+    {
+        RuleFor(x => x.CustomerId).NotEmpty();
+        RuleFor(x => x.Items).NotEmpty().WithMessage("Order must have at least one item.");
+    }
+}</pre>
+      Application validation runs before the use case executes; domain validation runs when the entity is constructed.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">How do you test Application layer without a database?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Define interfaces in the Application layer (e.g. <code>IOrderRepository</code>, <code>IEmailService</code>). The Application layer depends on abstractions, not implementations. In tests, inject mocks:
+      <pre>public class CreateOrderHandlerTests
+{
+    [Fact]
+    public async Task Handle_ValidCommand_CreatesOrderAndSendsEmail()
+    {
+        var repoMock = new Mock&lt;IOrderRepository&gt;();
+        var emailMock = new Mock&lt;IEmailService&gt;();
+        var handler = new CreateOrderHandler(repoMock.Object, emailMock.Object);
+
+        await handler.Handle(new CreateOrderCommand { CustomerId = 1, Total = 99.99m }, default);
+
+        repoMock.Verify(r => r.AddAsync(It.IsAny&lt;Order&gt;()), Times.Once);
+        emailMock.Verify(e => e.SendConfirmationAsync(1), Times.Once);
+    }
+}</pre>
+      No database, no HTTP — pure unit test. This is the primary architectural benefit of Clean Architecture.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">How do you handle cross-cutting concerns like logging?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Cross-cutting concerns (logging, validation, performance monitoring, transactions) belong in the Application layer but should not pollute use-case handlers. Use <strong>MediatR pipeline behaviors</strong>:
+      <pre>public class LoggingBehavior&lt;TRequest, TResponse&gt;
+    : IPipelineBehavior&lt;TRequest, TResponse&gt;
+{
+    private readonly ILogger&lt;TRequest&gt; _logger;
+    public LoggingBehavior(ILogger&lt;TRequest&gt; logger) => _logger = logger;
+
+    public async Task&lt;TResponse&gt; Handle(TRequest request, RequestHandlerDelegate&lt;TResponse&gt; next, CancellationToken ct)
+    {
+        _logger.LogInformation("Handling {Request}", typeof(TRequest).Name);
+        var response = await next();
+        _logger.LogInformation("Handled {Request}", typeof(TRequest).Name);
+        return response;
+    }
+}</pre>
+      Register: <code>services.AddTransient(typeof(IPipelineBehavior&lt;,&gt;), typeof(LoggingBehavior&lt;,&gt;))</code>. Order behaviors by registration order.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">How does DI enforce the dependency rule?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      The Application layer declares <em>interfaces</em>: <code>IOrderRepository</code>, <code>IEmailService</code>. The Infrastructure layer <em>implements</em> them: <code>EfOrderRepository : IOrderRepository</code>.<br><br>
+      The DI container (in Presentation/Infrastructure) wires them together at runtime. This means:<br>
+      <ul>
+        <li>Application project has <strong>no project reference</strong> to Infrastructure</li>
+        <li>Domain project has <strong>no references</strong> to anything external</li>
+        <li>Infrastructure references Domain + Application (implements their interfaces)</li>
+        <li>Presentation (API) references everything to configure DI</li>
+      </ul>
+      The compile-time project reference graph enforces the dependency rule — you literally cannot reference a framework from the Domain because there's no NuGet package reference there.
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> "Where does validation live" has a nuanced answer that trips up many candidates. Domain = invariants (always enforced in entities). Application = input validation (FluentValidation on commands). Both, but for different reasons.</div>
+</section>
+
+<!-- 9. DDD -->
+<section class="section" id="ddd">
+  <div class="section-header">
+    <div class="section-icon">🗺</div>
+    <h2>Domain-Driven Design</h2>
+    <span class="section-num">09 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">Aggregate root</span>
+    <span class="concept">Bounded contexts</span>
+    <span class="concept">Value objects</span>
+    <span class="concept">Domain events</span>
+    <span class="concept">Ubiquitous language</span>
+    <span class="concept">Anti-corruption layer</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">What is an aggregate root and why should you only have one repository per aggregate?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      An <strong>aggregate</strong> is a cluster of domain objects treated as a single unit for data changes. The <strong>aggregate root</strong> is the sole entry point — all external access goes through it, and it enforces consistency of the entire cluster.<br><br>
+      Example: <code>Order</code> is the aggregate root. <code>OrderItem</code> and <code>ShippingAddress</code> are internal. You never update an <code>OrderItem</code> directly — you call <code>order.AddItem()</code> so the Order can enforce its own invariants (e.g. max 20 items, total recalculation).<br><br>
+      <strong>One repository per aggregate root</strong> because the repository persists the entire aggregate atomically. Having separate repos for <code>Order</code> and <code>OrderItem</code> would split the consistency boundary across two persistence operations.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">How do domain events decouple aggregates?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Aggregates should not directly reference each other — that creates tight coupling across consistency boundaries. Domain events allow side effects to happen without the aggregate knowing about them.
+      <pre>// Order raises an event — doesn't know who handles it
+public class Order : AggregateRoot
+{
+    public void Complete()
+    {
+        Status = OrderStatus.Completed;
+        AddDomainEvent(new OrderCompletedEvent(Id, CustomerId));
+    }
+}
+
+// Handler in Application layer — dispatched after SaveChanges
+public class OrderCompletedHandler : INotificationHandler&lt;OrderCompletedEvent&gt;
+{
+    public async Task Handle(OrderCompletedEvent evt, CancellationToken ct)
+    {
+        await _emailService.SendConfirmationAsync(evt.CustomerId);
+        await _inventoryService.ReleaseReservationAsync(evt.OrderId);
+    }
+}</pre>
+      Dispatch events after <code>SaveChangesAsync()</code> — not before — so events only fire if the transaction succeeds.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">Difference between entity and value object?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>Entity</strong> — has a unique identity (<code>Id</code>). Two entities with the same data but different IDs are <em>different</em> objects. Mutable over time (an order changes status, gets items added).<br><br>
+      <strong>Value object</strong> — has no identity. Two value objects with the same data are <em>equal</em>. Immutable — you replace them, not mutate them.<br><br>
+      <pre>// Value object — no Id, equality by value, immutable
+public record Money(decimal Amount, string Currency)
+{
+    public Money Add(Money other)
+    {
+        if (Currency != other.Currency) throw new InvalidOperationException();
+        return new Money(Amount + other.Amount, Currency); // returns new instance
+    }
+}</pre>
+      Examples of value objects: Money, Address, DateRange, Email, Coordinates.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">What is an anti-corruption layer?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      When integrating with an external system (legacy API, third-party service, different bounded context), its model may be very different from your domain model. An <strong>Anti-Corruption Layer (ACL)</strong> is a translation layer that maps the external model to your domain model — preventing the external system's concepts from "polluting" your domain.<br><br>
+      <pre>// External payment API returns its own model
+public class StripePaymentAdapter : IPaymentGateway
+{
+    public async Task&lt;PaymentResult&gt; ChargeAsync(Money amount, string cardToken)
+    {
+        // Translate domain model → Stripe model
+        var charge = await _stripe.Charges.CreateAsync(new ChargeCreateOptions
+        {
+            Amount = (long)(amount.Amount * 100), // Stripe uses cents
+            Currency = amount.Currency.ToLower(),
+            Source = cardToken
+        });
+
+        // Translate Stripe response → domain model
+        return new PaymentResult(charge.Id, charge.Status == "succeeded");
+    }
+}</pre>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">Can an Order directly reference a Product entity?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>No — if Order and Product are in different aggregates or bounded contexts.</strong><br><br>
+      Aggregates reference each other by <strong>ID only</strong>, not by object reference. This enforces the consistency boundary — loading an Order should not cascade-load an entire Product graph.
+      <pre>// WRONG — Order holds a reference to Product entity
+public class OrderItem { public Product Product { get; set; } }
+
+// CORRECT — Order holds Product's ID (and a snapshot of relevant data)
+public class OrderItem
+{
+    public int ProductId { get; private set; }       // ID reference only
+    public string ProductName { get; private set; }  // snapshot at order time
+    public decimal UnitPrice { get; private set; }   // snapshot — price may change
+    public int Quantity { get; private set; }
+}</pre>
+      Snapshotting price/name at order time also solves the problem of product data changing after an order is placed.
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> "Can Order reference Product directly?" is a trap question. The right answer is "ID only + snapshot of relevant data" — showing you understand both aggregate boundaries and real-world data consistency.</div>
+</section>
+
+<!-- 10. CQRS -->
+<section class="section" id="cqrs">
+  <div class="section-header">
+    <div class="section-icon">↔</div>
+    <h2>CQRS</h2>
+    <span class="section-num">10 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">Commands vs Queries</span>
+    <span class="concept">MediatR</span>
+    <span class="concept">Pipeline behaviors</span>
+    <span class="concept">Read model optimization</span>
+    <span class="concept">Event sourcing</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">Why would you separate read and write models?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Read and write operations have fundamentally different requirements:<br>
+      <ul>
+        <li><strong>Writes</strong> — need to enforce business rules, maintain consistency, use normalized domain models</li>
+        <li><strong>Reads</strong> — need to be fast, serve UI directly, can be denormalized/pre-joined</li>
+      </ul>
+      Using one model for both creates tension — the normalized write model generates complex joins for reads; the read-optimized model doesn't enforce business rules cleanly for writes.<br><br>
+      CQRS solves this by letting reads hit a separate, denormalized read model (could be a different DB, materialized views, or simple projections) while writes enforce business rules through the domain model.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">How does MediatR implement CQRS in .NET?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      MediatR acts as an in-process message bus. Commands and queries are message objects; handlers contain the logic.
+      <pre>// Command (write — no return value or just an ID)
+public record CreateOrderCommand(int CustomerId, List&lt;OrderItemDto&gt; Items)
+    : IRequest&lt;int&gt;;
+
+public class CreateOrderHandler : IRequestHandler&lt;CreateOrderCommand, int&gt;
+{
+    public async Task&lt;int&gt; Handle(CreateOrderCommand cmd, CancellationToken ct)
+    {
+        var order = Order.Create(cmd.CustomerId, cmd.Items);
+        await _repo.AddAsync(order);
+        return order.Id;
+    }
+}
+
+// Query (read — returns a DTO)
+public record GetOrderQuery(int OrderId) : IRequest&lt;OrderDto&gt;;
+
+// Controller — sends to MediatR, doesn't know the handler
+[HttpPost("orders")]
+public async Task&lt;IActionResult&gt; Create(CreateOrderCommand cmd)
+    => Ok(await _mediator.Send(cmd));</pre>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">What are pipeline behaviors and what are they used for?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Pipeline behaviors wrap every MediatR request/response — like middleware but for the application layer. They run in registration order and are the standard way to add cross-cutting concerns:
+      <pre>public class ValidationBehavior&lt;TRequest, TResponse&gt;
+    : IPipelineBehavior&lt;TRequest, TResponse&gt;
+    where TRequest : IRequest&lt;TResponse&gt;
+{
+    private readonly IEnumerable&lt;IValidator&lt;TRequest&gt;&gt; _validators;
+
+    public async Task&lt;TResponse&gt; Handle(
+        TRequest request, RequestHandlerDelegate&lt;TResponse&gt; next, CancellationToken ct)
+    {
+        var failures = _validators
+            .SelectMany(v => v.Validate(request).Errors)
+            .Where(f => f != null).ToList();
+
+        if (failures.Any())
+            throw new ValidationException(failures);
+
+        return await next();
+    }
+}</pre>
+      Common behaviors: Logging → Validation → Authorization → Transaction → (Handler) → Transaction commit.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">When would you NOT use CQRS?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      CQRS adds complexity — more classes, more abstractions, more indirection. It's not always worth it.<br><br>
+      <strong>Skip CQRS when:</strong>
+      <ul>
+        <li>Simple CRUD applications — the overhead outweighs the benefit</li>
+        <li>Small teams where the indirection slows development</li>
+        <li>Read and write loads are similar and don't need separate optimization</li>
+        <li>The domain has very little business logic — it's mostly data in, data out</li>
+      </ul>
+      <strong>A senior answer:</strong> "I use CQRS when the read/write complexity or load profiles diverge significantly, or when we need to scale reads independently. For internal tools and simple domains, I'll use a service layer pattern instead — CQRS is a tradeoff, not a default."
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">How do you implement validation as a cross-cutting concern with MediatR?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Use the ValidationBehavior pattern (shown in Q3) with FluentValidation. Registration:
+      <pre>// Register MediatR + validators + behavior
+builder.Services.AddMediatR(cfg => cfg.RegisterServicesFromAssembly(typeof(Application).Assembly));
+builder.Services.AddValidatorsFromAssembly(typeof(Application).Assembly);
+builder.Services.AddTransient(typeof(IPipelineBehavior&lt;,&gt;), typeof(ValidationBehavior&lt;,&gt;));
+
+// Catch in global exception middleware
+catch (ValidationException ex)
+{
+    ctx.Response.StatusCode = 422;
+    await ctx.Response.WriteAsJsonAsync(new
+    {
+        errors = ex.Errors.Select(e => new { e.PropertyName, e.ErrorMessage })
+    });
+}</pre>
+      This means every command/query is automatically validated without adding any validation code to individual handlers — zero boilerplate per handler.
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> Pipeline behaviors (IPipelineBehavior&lt;,&gt;) are the MediatR answer to cross-cutting concerns. Know the registration order — it matches the behavior pipeline order. Logging → Validation → Transaction is the classic stack.</div>
+</section>
+
+<!-- 11. AI INTEGRATION -->
+<section class="section" id="ai">
+  <div class="section-header">
+    <div class="section-icon">🤖</div>
+    <h2>AI Integration</h2>
+    <span class="section-num">11 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">RAG pattern</span>
+    <span class="concept">Semantic Kernel</span>
+    <span class="concept">Token limits & chunking</span>
+    <span class="concept">Streaming with SSE</span>
+    <span class="concept">Embeddings & vector search</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">How do you implement a RAG pipeline in .NET?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      RAG (Retrieval Augmented Generation) grounds LLM responses in your own data, avoiding hallucinations on domain-specific questions.<br><br>
+      <strong>Pipeline steps:</strong>
+      <ol style="padding-left:1.2rem;margin:.5rem 0">
+        <li><strong>Chunk</strong> — split documents into ~500-token overlapping chunks</li>
+        <li><strong>Embed</strong> — generate embedding vectors for each chunk (OpenAI <code>text-embedding-3-small</code>)</li>
+        <li><strong>Store</strong> — persist vectors in a vector DB (Azure AI Search, Qdrant, pgvector)</li>
+        <li><strong>Query</strong> — embed the user's question, retrieve top-K similar chunks</li>
+        <li><strong>Augment</strong> — inject retrieved chunks into the LLM prompt as context</li>
+        <li><strong>Generate</strong> — LLM answers based on the provided context</li>
+      </ol>
+      <pre>var questionEmbedding = await _embeddings.GetEmbeddingAsync(userQuestion);
+var relevantChunks = await _vectorDb.SearchAsync(questionEmbedding, topK: 5);
+var context = string.Join("\n\n", relevantChunks.Select(c => c.Text));
+
+var response = await _chat.CompleteAsync($"""
+    Use only the context below to answer. If unsure, say so.
+    Context: {context}
+    Question: {userQuestion}
+    """);</pre>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">How do you handle token limits when sending large documents to an LLM?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Never send the entire document — most models cap at 128K context, and large contexts are slow and expensive.<br><br>
+      <strong>Strategies:</strong>
+      <ul>
+        <li><strong>RAG (preferred)</strong> — retrieve only relevant chunks, not the whole document</li>
+        <li><strong>Sliding window summarization</strong> — chunk document, summarize each chunk, then summarize the summaries (map-reduce)</li>
+        <li><strong>Hierarchical chunking</strong> — chunk with overlap so sentences don't split mid-context</li>
+      </ul>
+      <pre>// Count tokens before sending (avoid truncation surprises)
+var tokenizer = TiktokenTokenizer.CreateForModel("gpt-4o");
+var tokenCount = tokenizer.CountTokens(promptText);
+if (tokenCount > MAX_TOKENS)
+    throw new InvalidOperationException($"Prompt too large: {tokenCount} tokens");</pre>
+      Use the <code>Microsoft.ML.Tokenizers</code> package (tiktoken) to count tokens client-side before making the API call.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">What is Semantic Kernel and how does it differ from calling the API directly?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>Direct API call</strong> — you construct prompts manually, call OpenAI/Azure OpenAI endpoint, parse the response. Simple, full control, but you build everything yourself.<br><br>
+      <strong>Semantic Kernel</strong> — Microsoft's SDK that provides higher-level abstractions:<br>
+      <ul>
+        <li><strong>Plugins</strong> — C# functions the AI can call (function calling / tool use)</li>
+        <li><strong>Planner</strong> — AI autonomously chains plugins to achieve a goal</li>
+        <li><strong>Memory</strong> — built-in vector store abstractions for RAG</li>
+        <li><strong>Multiple AI providers</strong> — swap between OpenAI, Azure OpenAI, Gemini via config</li>
+      </ul>
+      <pre>var kernel = Kernel.CreateBuilder()
+    .AddAzureOpenAIChatCompletion(deploymentName, endpoint, apiKey)
+    .Build();
+
+kernel.ImportPluginFromType&lt;OrderPlugin&gt;();
+var result = await kernel.InvokePromptAsync(
+    "What's the status of my latest order?",
+    new KernelArguments { ["userId"] = userId });</pre>
+      Use Semantic Kernel for agentic/multi-step flows; raw API calls for simple completions.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">How do you stream OpenAI responses to the client?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Use Server-Sent Events (SSE) from the API controller and the streaming API on the OpenAI client:
+      <pre>// API controller
+[HttpGet("chat/stream")]
+public async Task Stream(string prompt, CancellationToken ct)
+{
+    Response.Headers["Content-Type"] = "text/event-stream";
+    Response.Headers["Cache-Control"] = "no-cache";
+
+    await foreach (var chunk in _openAiClient
+        .GetChatClient("gpt-4o")
+        .CompleteChatStreamingAsync(prompt)
+        .WithCancellation(ct))
+    {
+        var text = chunk.ContentUpdate.FirstOrDefault()?.Text ?? "";
+        if (!string.IsNullOrEmpty(text))
+            await Response.WriteAsync($"data: {text}\n\n");
+        await Response.Body.FlushAsync(ct);
+    }
+}
+
+// React client
+const es = new EventSource('/api/chat/stream?prompt=Hello');
+es.onmessage = (e) => setResponse(prev => prev + e.data);</pre>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">How would you implement semantic search over a document corpus?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>Ingestion pipeline (offline):</strong>
+      <pre>foreach (var doc in documents)
+{
+    var chunks = ChunkText(doc.Content, maxTokens: 500, overlap: 50);
+    foreach (var chunk in chunks)
+    {
+        var embedding = await _embeddings.GetEmbeddingAsync(chunk);
+        await _vectorDb.UpsertAsync(new DocumentChunk
+        {
+            Id = Guid.NewGuid(),
+            DocumentId = doc.Id,
+            Text = chunk,
+            Vector = embedding
+        });
+    }
+}</pre>
+      <strong>Search pipeline (online):</strong>
+      <pre>var queryVector = await _embeddings.GetEmbeddingAsync(userQuery);
+var results = await _vectorDb.SearchAsync(queryVector,
+    filter: $"documentId eq '{docId}'", // optional filter
+    topK: 5,
+    minScore: 0.75f); // cosine similarity threshold</pre>
+      For Azure: use <strong>Azure AI Search</strong> with vector search enabled. It supports hybrid search (keyword + semantic) for best recall.
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> RAG is the most asked AI pattern. Know all 6 steps: chunk → embed → store → embed query → retrieve top-K → inject into prompt. Being able to explain each step fluently is what separates candidates.</div>
+</section>
+
+<!-- 12. SYSTEM DESIGN -->
+<section class="section" id="sysdesign">
+  <div class="section-header">
+    <div class="section-icon">📐</div>
+    <h2>System Design &amp; Performance</h2>
+    <span class="section-num">12 / 12</span>
+  </div>
+  <div class="concepts">
+    <span class="concept">Caching strategies</span>
+    <span class="concept">Indexing</span>
+    <span class="concept">Connection pooling</span>
+    <span class="concept">Async at scale</span>
+    <span class="concept">Rate limiting</span>
+    <span class="concept">Circuit breaker</span>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q1</span><span class="qtext">How would you add caching to an API without breaking consistency?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Choose the cache strategy based on consistency requirements:<br><br>
+      <strong>Cache-aside (lazy loading):</strong>
+      <pre>public async Task&lt;ProductDto&gt; GetProductAsync(int id)
+{
+    var key = $"product:{id}";
+    var cached = await _redis.GetStringAsync(key);
+    if (cached != null) return JsonSerializer.Deserialize&lt;ProductDto&gt;(cached);
+
+    var product = await _db.Products.FindAsync(id);
+    var dto = _mapper.Map&lt;ProductDto&gt;(product);
+    await _redis.SetStringAsync(key, JsonSerializer.Serialize(dto),
+        new DistributedCacheEntryOptions { AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5) });
+    return dto;
+}</pre>
+      <strong>Cache invalidation:</strong> On write, delete or update the cache entry. For complex scenarios, use cache tags or event-driven invalidation (domain event → invalidate cache).
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q2</span><span class="qtext">How do you diagnose a slow EF Core query in production?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>Step 1 — Find it:</strong> Application Insights → Performance → slowest dependencies (SQL). Or enable slow query logging in SQL Server (Query Store).<br><br>
+      <strong>Step 2 — Capture SQL:</strong>
+      <pre>// Development — log all SQL
+optionsBuilder.LogTo(Console.WriteLine, LogLevel.Information)
+              .EnableSensitiveDataLogging();
+
+// Capture query string in code
+var sql = query.ToQueryString();</pre>
+      <strong>Step 3 — Analyze in SSMS:</strong> Run with <code>SET STATISTICS IO ON</code>. Check execution plan. Look for:<br>
+      <ul>
+        <li>Table scans → add index on filtered columns</li>
+        <li>Key lookups → use covering index (INCLUDE columns)</li>
+        <li>Large logical reads → consider projecting fewer columns or splitting query</li>
+        <li>Parameter sniffing → add <code>OPTION(OPTIMIZE FOR UNKNOWN)</code></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q3</span><span class="qtext">What causes thread pool starvation in ASP.NET Core and how do you fix it?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      Thread pool starvation occurs when all available threads are blocked (e.g. waiting for I/O synchronously), so incoming requests queue up and the server stops responding.<br><br>
+      <strong>Root cause:</strong> Blocking async code with <code>.Result</code> or <code>.Wait()</code>, or using <code>Task.Run()</code> excessively to offload to the thread pool.<br><br>
+      <pre>// BAD — blocks a thread while waiting
+var result = GetDataAsync().Result;
+
+// GOOD — thread is returned to pool while awaiting I/O
+var result = await GetDataAsync();</pre>
+      <strong>Also avoid:</strong>
+      <ul>
+        <li>Long-running sync operations on request threads (use background services)</li>
+        <li>Excessive <code>Task.Run()</code> for CPU-bound work on web threads</li>
+        <li>Sync-over-async anti-pattern (calling async code from sync context with <code>.GetAwaiter().GetResult()</code>)</li>
+      </ul>
+      Use Application Insights to detect thread pool exhaustion via "Requests in queue" metric.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q4</span><span class="qtext">How do you implement retry and circuit breaker with Polly?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <pre>// Program.cs — HttpClient with Polly policies
+builder.Services.AddHttpClient&lt;IPaymentService, PaymentService&gt;()
+    .AddResilienceHandler("payment-pipeline", builder =>
+    {
+        // Retry: 3 times with exponential backoff
+        builder.AddRetry(new HttpRetryStrategyOptions
+        {
+            MaxRetryAttempts = 3,
+            Delay = TimeSpan.FromSeconds(1),
+            BackoffType = DelayBackoffType.Exponential,
+            ShouldHandle = args => args.Outcome.Exception is HttpRequestException
+        });
+
+        // Circuit breaker: open after 5 failures in 30 seconds
+        builder.AddCircuitBreaker(new HttpCircuitBreakerStrategyOptions
+        {
+            FailureRatio = 0.5,
+            SamplingDuration = TimeSpan.FromSeconds(30),
+            MinimumThroughput = 5,
+            BreakDuration = TimeSpan.FromSeconds(60)
+        });
+
+        // Timeout per attempt
+        builder.AddTimeout(TimeSpan.FromSeconds(10));
+    });</pre>
+      Circuit breaker prevents cascading failures — once the circuit opens, calls fail fast without hitting the failing service, giving it time to recover.
+    </div>
+  </div>
+
+  <div class="qa-card">
+    <div class="qa-q" onclick="toggle(this)">
+      <span class="qnum">Q5</span><span class="qtext">Design a URL shortener — how do you scale it?</span><span class="arrow">▶</span>
+    </div>
+    <div class="qa-a">
+      <strong>Requirements first:</strong> ~100M URLs, 10:1 read:write ratio, &lt;100ms redirect latency, global availability.<br><br>
+      <strong>Core design:</strong>
+      <ul>
+        <li><strong>Shortcode generation:</strong> Base62 encode a unique ID (counter from DB or distributed ID like Snowflake). 7 characters = 62^7 ≈ 3.5 trillion URLs</li>
+        <li><strong>Storage:</strong> SQL Server or Azure Cosmos DB — simple schema: <code>(shortCode, longUrl, createdAt, expiresAt)</code></li>
+        <li><strong>Redirect:</strong> Read shortcode → lookup → 301/302 redirect</li>
+      </ul>
+      <strong>Scaling reads (10:1 ratio):</strong>
+      <ul>
+        <li><strong>Redis cache</strong> — cache hot shortcodes (LRU policy). 99% of redirects served from cache</li>
+        <li><strong>CDN</strong> — for 301 (permanent) redirects, CDN caches at edge — zero origin hits</li>
+        <li><strong>Read replicas</strong> — scale DB reads horizontally</li>
+      </ul>
+      <strong>Scaling writes:</strong> Partition by shortcode prefix. Rate limit per IP/API key using Redis sliding window.<br><br>
+      <strong>Analytics:</strong> Async — publish redirect events to Service Bus, process with Azure Function, store in time-series DB.
+    </div>
+  </div>
+  <div class="tip"><span class="tip-icon">💡</span> For system design: always state requirements first, then make tradeoff decisions explicit. "I chose Redis over in-memory cache because we'll have multiple instances" shows the right thinking — not just what, but why.</div>
+</section>
+
+</main>
+
+<footer style="text-align:center;padding:2rem;color:var(--muted);font-size:13px;border-top:1px solid var(--border)">
+  .NET Full Stack Interview Prep · 12 Topics · 60 Q&amp;As · Generated for Kaara interview
+</footer>
+
+<script>
+function toggle(el) {
+  const card = el.closest('.qa-card');
+  card.classList.toggle('open');
+}
+function toggleAll(open) {
+  document.querySelectorAll('.qa-card').forEach(c => {
+    if (open) c.classList.add('open');
+    else c.classList.remove('open');
+  });
+}
+</script>
+</body>
+</html>
